@@ -1,5 +1,5 @@
 from Models.Models import Users
-from app import app, db
+from Config.Config import app, db
 from flask import jsonify
 
 from Config import Constants, Common

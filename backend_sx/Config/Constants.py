@@ -4,11 +4,11 @@ constants = {
             "db_name": "Ecomm",
             "host": "localhost",
             "user": "root",
-            "password": "admin11",
+            "password": "3646633",
         },
         #"static_root": "/usr/share/nginx/html/zelenaoaza/"
     },
-    "selector" : "local"
 }
-SECRET_KEY = "tajna_golema"
-constants = constants[constants["selector"]]
+SECRET_KEY = "420420420420420"
+selector = "local"
+constants = constants[selector]
