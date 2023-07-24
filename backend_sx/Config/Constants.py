@@ -4,7 +4,7 @@ constants = {
             "db_name": "Ecomm",
             "host": "localhost",
             "user": "root",
-            "password": "3646633",
+            "password": "admin11",
         },
         #"static_root": "/usr/share/nginx/html/zelenaoaza/"
     },

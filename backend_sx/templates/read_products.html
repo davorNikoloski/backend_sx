@@ -1,0 +1,47 @@
+<!-- templates/read_product.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Read Product</title>
+    <!-- Add Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Product Details</h1>
+        <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th>PID</th>
+                    <th>Name</th>
+                    <th>Info</th>
+                    <th>Price</th>
+                    <th>Product Number</th>
+                    <th>Category ID</th>
+                    <th>Subcategory ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in product_list %}
+                <tr>
+                    <td>{{ product.pid }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.info }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.productNo }}</td>
+                    <td>{{ product.cid }}</td>
+                    <td>{{ product.scid }}</td>
+                    <td>
+                        <!-- Link to the update page for the product -->
+                        <a href="{{ url_for('products.update_product', pid=product.pid) }}" class="btn btn-primary">Update</a>
+                        <form action="{{ url_for('products.delete_product', pid=product.pid) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}    
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

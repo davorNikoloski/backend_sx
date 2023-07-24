@@ -1,13 +1,8 @@
 from Config.Config import app, db
-from Routes.index import index_tp
+from Routes.Users.UserAPI import index_tp
+from Routes.Products.ProductAPI import products_api
 
-#from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-#from flask_wtf import FlaskForm
-#from wtforms import StringField, PasswordField, SubmitField, validators
-#from wtforms.validators import InputRequired, Length, ValidationError, Email, EqualTo
-#from flask_bcrypt import Bcrypt
-#from datetime import datetime
-#import calendar
+
 
 with app.app_context():
     try:
@@ -23,6 +18,7 @@ with app.app_context():
         print("Error message:", e)
 
 app.register_blueprint(index_tp)
+app.register_blueprint(products_api)
 if __name__ == "__main__":
     app.run(debug=True) 
 

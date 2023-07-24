@@ -1,7 +1,8 @@
 from Config.Constants import constants, SECRET_KEY
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 app = Flask(__name__, template_folder='../templates')
 
@@ -9,7 +10,13 @@ uri = "mysql+pymysql://"+constants["mysql"]["user"]+":"+constants["mysql"]["pass
 app.config["SQLALCHEMY_DATABASE_URI"] = uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = SECRET_KEY
+app.config['JWT_SECRET_KEY'] = 'secret'
+app.config['JWT_TOKEN_LOCATION'] = ['headers', 'query_string']
+app.config['JWT_BLACKLIST_ENABLED'] = True
+
 db = SQLAlchemy(app)
+jwt = JWTManager(app)
+CORS(app)  # This enables CORS for all routes of your Flask app
 
 def build_db():
     with app.app_context():

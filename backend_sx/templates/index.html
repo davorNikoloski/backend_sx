@@ -6,6 +6,8 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>hello {{users.first_name}}</h1>
+    {% for user in users %}
+    <h1>hello {{ user.email}}</h1>
+    {% endfor %}
 </body>
 </html>

@@ -1,0 +1,42 @@
+<!-- templates/update_product.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Product</title>
+    <!-- Add Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Update Product</h1>
+        <form action="{{ url_for('products.save_updated_product') }}" method="POST">
+            <input type="hidden" name="pid" value="{{ product.pid }}">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" class="form-control" value="{{ product.name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="info">Info:</label>
+                <textarea id="info" name="info" class="form-control" required>{{ product.info }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" class="form-control" value="{{ product.price }}" required>
+            </div>
+            <div class="form-group">
+                <label for="productNo">Product Number:</label>
+                <input type="text" id="productNo" name="productNo" class="form-control" value="{{ product.productNo }}" required>
+            </div>
+            <!--<div class="form-group">
+                <label for="cid">Category ID:</label>
+                <input type="number" id="cid" name="cid" class="form-control" value="{{ product.cid }}" required>
+            </div>
+            <div class="form-group">
+                <label for="scid">Subcategory ID:</label>
+                <input type="number" id="scid" name="scid" class="form-control" value="{{ product.scid }}" required>
+            </div>-->
+            <button type="submit" class="btn btn-primary">Update Product</button>
+        </form>
+    </div>
+</body>
+</html>

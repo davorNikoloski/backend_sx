@@ -1,0 +1,52 @@
+from flask import Blueprint, render_template, request, jsonify,redirect, url_for
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Email, InputRequired, Length, ValidationError, EqualTo
+from flask_jwt_extended import get_jwt_identity, jwt_required
+
+from Routes.Products.ProductCRUD import ProductCrud
+from Config.Common import crud_routes
+
+from Models.Models import Products
+
+products_api = Blueprint('products', __name__)
+
+
+#ADD----------------------------------------------------
+@products_api.route('/add_product', methods=['GET'])
+def add_product():
+    return render_template('add_product.html')
+
+@products_api.route('/create_product', methods=['POST'])
+def create_product():
+    response = ProductCrud.create(request)
+    return response
+
+
+#READ----------------------------------------------------
+@products_api.route('/read_products', methods=['GET'])
+def read_products():
+    #response = ProductCrud.read(request)
+    response = crud_routes(request, ProductCrud)
+    return render_template('read_products.html', product_list=response.get_json()['product'])
+
+
+
+#UPDATE----------------------------------------------------
+@products_api.route('/update_products/<int:pid>', methods=['GET'])
+def update_product(pid):
+    product = Products.query.filter_by(pid=pid).first()
+    if not product:
+        return "Product not found", 404
+    return render_template('update_products.html', product=product)
+
+@products_api.route('/update_products', methods=['POST'])
+def save_updated_product():
+    response = ProductCrud.update(request)
+    return response
+
+#DELETE----------------------------------------------------
+@products_api.route('/delete_product/<int:pid>', methods=['POST'])
+def delete_product(pid):
+    response = ProductCrud.delete(pid)
+    return response
