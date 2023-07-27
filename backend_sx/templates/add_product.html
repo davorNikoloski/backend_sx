@@ -3,27 +3,103 @@
 <html>
 <head>
     <title>Add New Product</title>
+    <!-- Add Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>Add New Product</h1>
-    <form action="{{ url_for('products.create_product') }}" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-        <br>
+    <div class="container mt-4">
+        <h1>Add New Product</h1>
+        <form action="{{ url_for('products.create_product') }}" method="POST">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
 
-        <label for="info">Info:</label>
-        <textarea id="info" name="info" required></textarea>
-        <br>
+            <div class="form-group">
+                <label for="info">Info:</label>
+                <textarea class="form-control" id="info" name="info" required></textarea>
+            </div>
 
-        <label for="price">Price:</label>
-        <input type="number" id="price" name="price" required>
-        <br>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" class="form-control" id="price" name="price" required>
+            </div>
 
-        <label for="productNo">Product Number:</label>
-        <input type="text" id="productNo" name="productNo" required>
-        <br>
+            <div class="form-group">
+                <label for="productNo">Product Number:</label>
+                <input type="text" class="form-control" id="productNo" name="productNo" required>
+            </div>
 
-        <input type="submit" value="Add Product">
-    </form>
+            <!-- Category dropdown -->
+            <div class="form-group">
+                <label for="cid">Category:</label>
+                <select class="form-control" id="cid" name="cid" required>
+                    <option value="" selected disabled>Select Category</option>
+                    {% for category in categories %}
+                    <option value="{{ category.cid }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Subcategory dropdown -->
+            <div class="form-group">
+                <label for="scid">Subcategory:</label>
+                <select class="form-control" id="scid" name="scid" required disabled>
+                    <option value="" selected disabled>Select Subcategory</option>
+                    <!-- The options will be populated dynamically using JavaScript -->
+                </select>
+            </div>
+
+            <input type="submit" class="btn btn-primary" value="Add Product">
+        </form>
+    </div>
+
+    <!-- Add Bootstrap JS and jQuery scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Add JavaScript to dynamically update the subcategory dropdown based on the selected category -->
+    <script>
+        $(document).ready(function () {
+            // Get the subcategory dropdown element
+            const subcategoryDropdown = $("#scid");
+    
+            // Get the category dropdown element
+            const categoryDropdown = $("#cid");
+    
+            // On category selection change, update the subcategory dropdown options
+            categoryDropdown.on("change", function () {
+                const selectedCategoryId = $(this).val();
+    
+                // Clear and disable the subcategory dropdown initially
+                subcategoryDropdown.empty().prop("enabled", true);
+    
+                // Fetch subcategories from the server based on the selected category
+                if (selectedCategoryId) {
+                    jQuery.ajax({
+                        url: "/get_subcategories",
+                        type: "GET",
+                        data: { cid: selectedCategoryId },
+                        success: function (response) {
+                            // Populate subcategory dropdown with fetched options
+                            response.subcategories.forEach((subcategory) => {
+                                subcategoryDropdown.append(
+                                    `<option value="${subcategory.scid}">${subcategory.name}</option>`
+                                );
+                            });
+    
+                            // Enable the subcategory dropdown
+                            subcategoryDropdown.prop("disabled", false);
+                        },
+                        error: function (error) {
+                            console.log("Error fetching subcategories:", error);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

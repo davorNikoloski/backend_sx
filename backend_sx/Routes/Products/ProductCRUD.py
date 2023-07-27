@@ -1,4 +1,4 @@
-from Models.Models import Products
+from Models.Models import Products, Categories, Subcategories
 from Config.Config import app, db
 
 from flask import jsonify
@@ -26,8 +26,7 @@ class Product():
         data = request.form
         print(data)
         # print(data["type_id"])
-        required_keys = ["name","info","price","productNo"]
-        optional_keys = ["cid","scid"]
+        required_keys = ["name","info","price","productNo","cid","scid"]
         for key in required_keys:
             if key not in data:
                 return custom_abort(400, "Недостасува компулсивен клуч - " + key)
@@ -39,7 +38,10 @@ class Product():
             db.session.commit()
             product = Products.query.filter_by(pid=product.pid).first()
 
+        
+
             ret = convertor(product)
+
 
             return jsonify({
                 "product" : ret
@@ -52,12 +54,18 @@ class Product():
         params = build_params(self.table_keys, request.args)
         
         product = Products.query.filter_by(**params).all()
-        ret = convertor(product, ["password", "reset_code"], True)
+        category = Categories.query.filter_by(**params).all()
+        subcategory = Subcategories.query.filter_by(**params).all()
+
+
+        ret_product = convertor(product, ["password", "reset_code"], True)
+        ret_category = convertor(category, ["password", "reset_code"], True)
+        ret_subcategory = convertor(subcategory, ["password", "reset_code"], True)
 
         if hash_info["enable_hash"] == True:
-            ret = hash_query_results(ret, hash_info["hash_key"], hash_info["hash_type"])
-
-        return jsonify({ "product" : ret, "hash_info" : hash_info }) 
+            ret_product = hash_query_results(ret_product, hash_info["hash_key"], hash_info["hash_type"])
+       
+        return jsonify({ "product" : ret_product,"category" : ret_category, "subcategory" : ret_subcategory,"hash_info" : hash_info }) 
     
     
     #-----------UPDATE------------------------------

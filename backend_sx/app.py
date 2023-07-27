@@ -1,6 +1,9 @@
 from Config.Config import app, db
 from Routes.Users.UserAPI import index_tp
 from Routes.Products.ProductAPI import products_api
+from Routes.Categories.CategoryAPI import categories_api
+from Routes.Categories.SubcategoryAPI import subcategories_api
+
 
 
 
@@ -19,6 +22,10 @@ with app.app_context():
 
 app.register_blueprint(index_tp)
 app.register_blueprint(products_api)
+app.register_blueprint(categories_api)
+app.register_blueprint(subcategories_api)
+
+
 if __name__ == "__main__":
     app.run(debug=True) 
 

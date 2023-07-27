@@ -9,6 +9,9 @@
 <body>
     <div class="container mt-4">
         <h1>Product Details</h1>
+        <!-- Add a button for adding a new product -->
+        <a href="{{ url_for('products.add_product') }}" class="btn btn-success mb-3">Add New Product</a>
+
         <table class="table table-bordered mt-4">
             <thead>
                 <tr>
@@ -19,6 +22,7 @@
                     <th>Product Number</th>
                     <th>Category ID</th>
                     <th>Subcategory ID</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,8 +33,16 @@
                     <td>{{ product.info }}</td>
                     <td>{{ product.price }}</td>
                     <td>{{ product.productNo }}</td>
-                    <td>{{ product.cid }}</td>
-                    <td>{{ product.scid }}</td>
+                    {% for category in category_list %}
+                    {% if product.cid == category.cid %}
+                    <td>{{ product.cid }} - {{ category.name }}</td>
+                    {% endif %}
+                    {% endfor %}
+                    {% for subcategory in subcategory_list %}
+                    {% if product.scid == subcategory.scid %}
+                    <td>{{ product.scid }} - {{ subcategory.name }}</td>
+                    {% endif %}
+                    {% endfor %}
                     <td>
                         <!-- Link to the update page for the product -->
                         <a href="{{ url_for('products.update_product', pid=product.pid) }}" class="btn btn-primary">Update</a>

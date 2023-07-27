@@ -6,8 +6,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from Routes.Products.ProductCRUD import ProductCrud
 from Config.Common import crud_routes
-
-from Models.Models import Products
+from Models.Models import Products, Categories, Subcategories
 
 products_api = Blueprint('products', __name__)
 
@@ -15,12 +14,28 @@ products_api = Blueprint('products', __name__)
 #ADD----------------------------------------------------
 @products_api.route('/add_product', methods=['GET'])
 def add_product():
-    return render_template('add_product.html')
+    categories = Categories.query.all()
+    subcategories = Subcategories.query.all()
+
+
+    return render_template('add_product.html', categories = categories, subcategories = subcategories)
 
 @products_api.route('/create_product', methods=['POST'])
 def create_product():
     response = ProductCrud.create(request)
     return response
+
+@products_api.route('/get_subcategories', methods=['GET'])
+def get_subcategories():
+    cid = request.args.get('cid')
+    if not cid:
+        return jsonify({"subcategories": []})
+
+    subcategories = Subcategories.query.filter_by(cid=cid).all()
+    subcategories_list = [
+        {"scid": subcategory.scid, "name": subcategory.name} for subcategory in subcategories
+    ]
+    return jsonify({"subcategories": subcategories_list})
 
 
 #READ----------------------------------------------------
@@ -28,7 +43,7 @@ def create_product():
 def read_products():
     #response = ProductCrud.read(request)
     response = crud_routes(request, ProductCrud)
-    return render_template('read_products.html', product_list=response.get_json()['product'])
+    return render_template('read_products.html', product_list=response.get_json()['product'], category_list=response.get_json()['category'], subcategory_list=response.get_json()['subcategory'])
 
 
 
@@ -44,6 +59,7 @@ def update_product(pid):
 def save_updated_product():
     response = ProductCrud.update(request)
     return response
+
 
 #DELETE----------------------------------------------------
 @products_api.route('/delete_product/<int:pid>', methods=['POST'])
