@@ -54,13 +54,13 @@ class registerForm(FlaskForm):
 
 
 #ROUTES-----------------------
-@index_tp.route('/', methods=["GET", "UPDATE"])
+@index_tp.route('/users', methods=["GET", "UPDATE"])
 #@jwt_required()
-def index():
+def sendUsers():
     # current_user = get_jwt_identity()  # Get the user information from the JWT token
 
     response = crud_routes(request, userCrud)
-    return render_template('index.html', users=response.get_json()['user'])
+    return response.get_json()['user']
 
 
 #-------------------LOGIN--------------------------------
@@ -72,14 +72,14 @@ def login():
     if request.method == "POST" and form.validate_on_submit():
         response, status_code = user_auth.login(request)
         if status_code == 200:
-            access_token = response.get("access")
-            return render_template('index.html', access_token=access_token)
+            #access_token = response.get("access")
+            return user_auth.login(request)
         else:
             # Handle unsuccessful login here, maybe show an error message to the user
             error_message = response
             return render_template('login.html', form=form, error_message=error_message)
 
-    return render_template('login.html', form=form)
+    return user_auth.login(request)
 
 
 @index_tp.route('/register', methods=["GET", "POST"])
@@ -90,17 +90,17 @@ def register():
         response, status_code = user_auth.register(request)
         if status_code == 200:
             # Registration successful, redirect to the 'index' route
-            return render_template_string(react_template, react_bundle_url="/static/js/main.js")
+            return user_auth.register(request)
 
         else:
             # Registration failed, show error message to the user
             error_message = response
             return render_template('register.html', form=form, error_message=error_message)
 
-    return render_template_string(react_template, react_bundle_url="/static/js/main.js")
+    return user_auth.register(request)
 
 
-@index_tp.route('/users', methods=["GET", "UPDATE"])
+@index_tp.route('/ne', methods=["GET", "UPDATE"])
 def users():
     #current_user = get_jwt_identity()  # Get the user information from the JWT token
-    return {"users": ["User1", "User2", "User3"]}
+    return render_template("index.html", flask_token="hello flask")

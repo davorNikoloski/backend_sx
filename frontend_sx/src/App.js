@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import NavMenu from './components/NavMenu';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import Login from './components/Users/Login';
+import Register from './components/Users/Register';
+import UserList from './components/UserList';
 
 function App() {
-  const [data, setData] = useState([{}]);
-
-  useEffect(() => {
-    fetch("/api/users")
-      .then(res => res.json())
-      .then(data => {
-        setData(data);
-        console.log(data);
-      })
-      .catch(error => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
-
   return (
-    <div>
-      <h1>User Data:</h1>
-      {data.map((item, index) => (
-        <p key={index}>{item.name}</p>
-      ))}
-    </div>
+    <Router>
+      <NavMenu />
+      <Routes>
+        <Route path="/userlist" component={UserList} />
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+        {/* Add other routes as needed */}
+      </Routes>
+      {/* Recommended products */}
+      {/* Sidebar with filter order .... */}
+      {/* Products grid */}
+      {/* Product card */}
+      {/* Similar products */}
+    </Router>
   );
 }
 

@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
-app = Flask(__name__, template_folder='../templates')
+app = Flask(__name__, template_folder='../templates', static_url_path='/Static/react', static_folder='backend_sx/Static/react')
 
 uri = "mysql+pymysql://"+constants["mysql"]["user"]+":"+constants["mysql"]["password"]+"@"+constants["mysql"]["host"]+"/"+constants["mysql"]["db_name"]+"?&autocommit=false"
 app.config["SQLALCHEMY_DATABASE_URI"] = uri
@@ -16,7 +16,8 @@ app.config['JWT_BLACKLIST_ENABLED'] = True
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
-CORS(app)  # This enables CORS for all routes of your Flask app
+#CORS(app)  # This enables CORS for all routes of your Flask app
+CORS(app, resources={r"/user/*": {"origins": "http://localhost:5000"}})
 
 def build_db():
     with app.app_context():
