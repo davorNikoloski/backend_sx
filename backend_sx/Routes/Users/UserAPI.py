@@ -3,10 +3,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, InputRequired, Length, ValidationError, EqualTo
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask import render_template_string
 
 
 from Routes.Users.UserCRUD import userCrud
-from Routes.Users.UserAUTH import UserAuth
+from Routes.Users.UserAUTH import user_auth 
 
 from Config.Common import crud_routes
 index_tp = Blueprint('index', __name__)
@@ -26,10 +27,10 @@ class loginForm(FlaskForm):
 #---------REGISTER FORM---------------
 class registerForm(FlaskForm):
 
-    firstName=StringField(validators=[InputRequired(), Length(min=4, max=20)],
+    first_name=StringField(validators=[InputRequired(), Length(min=4, max=20)],
     render_kw={"placeholder": "First Name"})
 
-    lastName=StringField(validators=[InputRequired(), Length(min=4, max=20)],
+    last_name=StringField(validators=[InputRequired(), Length(min=4, max=20)],
     render_kw={"placeholder": "Last Name"})
 
     email = StringField('Email', validators=[InputRequired(), Email()],
@@ -43,20 +44,20 @@ class registerForm(FlaskForm):
 
     submit = SubmitField("Register")
 
-    #def validate_user(self, username, email):
-        #existing_user_email = User.query.filter_by(email=email.data).first()
-        #if existing_user_email:
-            #raise ValidationError(
-             #   "That Email already exists, please choose another one."
-            #)
+    def validate_user(self, username, email):
+        existing_user_email = User.query.filter_by(email=email.data).first()
+        if existing_user_email:
+            raise ValidationError(
+                "That Email already exists, please choose another one."
+            )
 
 
 
 #ROUTES-----------------------
 @index_tp.route('/', methods=["GET", "UPDATE"])
+#@jwt_required()
 def index():
-    #current_user = get_jwt_identity()  # Get the user information from the JWT token
-
+    # current_user = get_jwt_identity()  # Get the user information from the JWT token
 
     response = crud_routes(request, userCrud)
     return render_template('index.html', users=response.get_json()['user'])
@@ -66,19 +67,13 @@ def index():
 
 @index_tp.route('/login', methods=["GET", "POST"])
 def login():
-    form=loginForm()
+    form = loginForm()
 
     if request.method == "POST" and form.validate_on_submit():
-        # Handle form submission and authentication here
-        # Assuming UserAuth().login(request) returns a tuple (response, status_code)
-        response, status_code = UserAuth().login(request)
-        if status_code == 200:  # Replace 200 with the appropriate status code for successful login
+        response, status_code = user_auth.login(request)
+        if status_code == 200:
             access_token = response.get("access")
-            #if access_token:
-                # Set the JWT token in the cookies (optional)
-                #response.set_cookie("access_token_cookie", value=access_token)
-            # Redirect to the 'index' route after successful login
-            return redirect(url_for('index.index'))
+            return render_template('index.html', access_token=access_token)
         else:
             # Handle unsuccessful login here, maybe show an error message to the user
             error_message = response
@@ -89,25 +84,21 @@ def login():
 
 @index_tp.route('/register', methods=["GET", "POST"])
 def register():
-    form=registerForm()
+    form = registerForm()
 
     if request.method == "POST" and form.validate_on_submit():
-        # Handle form submission and authentication here
-        # Assuming UserAuth().login(request) returns a tuple (response, status_code)
-        response, status_code = UserAuth().login(request)
-        if status_code == 200:  # Replace 200 with the appropriate status code for successful login
-            access_token = response.get("access")
-            #if access_token:
-                # Set the JWT token in the cookies (optional)
-                #response.set_cookie("access_token_cookie", value=access_token)
-            # Redirect to the 'index' route after successful login
-            return redirect(url_for('index.index'))
+        response, status_code = user_auth.register(request)
+        if status_code == 200:
+            # Registration successful, redirect to the 'index' route
+            return render_template_string(react_template, react_bundle_url="/static/js/main.js")
+
         else:
-            # Handle unsuccessful login here, maybe show an error message to the user
+            # Registration failed, show error message to the user
             error_message = response
             return render_template('register.html', form=form, error_message=error_message)
 
-    return render_template('register.html', form=form)
+    return render_template_string(react_template, react_bundle_url="/static/js/main.js")
+
 
 @index_tp.route('/users', methods=["GET", "UPDATE"])
 def users():

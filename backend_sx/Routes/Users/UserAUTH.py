@@ -4,8 +4,11 @@ from Config.Common import custom_abort, get_user_from_jwt, convertor, get_hash_i
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity
 import datetime, random
 from flask import jsonify
+from flask_bcrypt import Bcrypt
+import bcrypt
 
-class UserAuth():
+
+class UsersAuth():
     def __init__(self):
         self.table_keys = {
             "uid": "Integer",
@@ -24,31 +27,28 @@ class UserAuth():
             if key not in data:
                 return custom_abort(400, "Недостасува компулсивен клуч - " + key)
 
-        # confirm = ""
-        # for character in random.sample(range(0, 9), 5):
-        #     confirm = confirm + str(character)
-
         existing_email = Users.query.filter_by(email=data["email"]).first()
         if existing_email is not None:
             return custom_abort(409, "Оваа е-пошта веќе е во базата на податоци.")
 
-        if int(data["type_id"]) in [2, 3]:
-            return custom_abort(409, "Не смеете да креирате корисник од овој тип.")
-        
+        # Hash the password using bcrypt before storing it in the database
+        hashed_password = bcrypt.hashpw(data["password"].encode("utf-8"), bcrypt.gensalt())
+
         user = Users()
         [setattr(user, key, data[key]) for key in required]
+        user.password = hashed_password.decode("utf-8")  # Save the hashed password
         db.session.add(user)
         db.session.commit()
-        user = Users.query.filter_by(id = user.uid).first()
+        user = Users.query.filter_by(uid=user.uid).first()
 
         ret = convertor(user, ["password", "confirmed"])
-        access = create_access_token(ret, expires_delta=datetime.timedelta(days = 1))
-        refresh = create_refresh_token(ret, expires_delta=datetime.timedelta(days = 30))
+        access = create_access_token(ret, expires_delta=datetime.timedelta(days=1))
+        refresh = create_refresh_token(ret, expires_delta=datetime.timedelta(days=30))
         return jsonify({
             "user": ret,
             "access": access,
-            "refresh" : refresh
-        })
+            "refresh": refresh
+        }), 200
 
 
     def login(self, request):
@@ -59,9 +59,9 @@ class UserAuth():
             if key not in data:
                 return "Missing required key: " + key, 400
 
-        user = Users.query.filter_by(email=data["email"], password=data["password"]).first()
+        user = Users.query.filter_by(email=data["email"]).first()
 
-        if user is None:
+        if user is None or not bcrypt.checkpw(data["password"].encode("utf-8"), user.password.encode("utf-8")):
             return "Invalid email or password", 401
 
         ret = convertor(user, ["password", "confirmed"])
@@ -81,4 +81,4 @@ class UserAuth():
     def verify_email(self, reqeust):
         pass
 
-user_auth = UserAuth()
+user_auth  = UsersAuth()

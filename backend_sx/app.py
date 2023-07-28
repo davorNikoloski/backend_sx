@@ -20,10 +20,11 @@ with app.app_context():
         print("Error: Could not establish a connection to the database.")
         print("Error message:", e)
 
-app.register_blueprint(index_tp)
+app.register_blueprint(index_tp, url_prefix='/api')
 app.register_blueprint(products_api)
 app.register_blueprint(categories_api)
 app.register_blueprint(subcategories_api)
+
 
 
 if __name__ == "__main__":

@@ -57,22 +57,22 @@ class User():
 
         identity = get_jwt_identity()
         auth_user = get_user_from_jwt(identity)
-        user = Users.query.filter_by(id = data["uid"]).first()
+        user = Users.query.filter_by(uid = data["uid"]).first()
         if user is None:
             return custom_abort(404, "User not found")
 
-        if (auth_user.type_id == 1 and auth_user.id != user.id) or (auth_user.type_id < user.type_id):
-            return custom_abort(401, "You are not authorized to update users.")
+        #if (auth_user.type_id == 1 and auth_user.id != user.id) or (auth_user.type_id < user.type_id):
+#return custom_abort(401, "You are not authorized to update users.")
 
         if "email" in data:
             exists_email = Users.query.filter_by(email = data["email"]).first()
             if exists_email is not None or exists_email.id != user.id:
                 return custom_abort(409, "This email address is already in use.")
 
-        if "phone_number" in data:
-            exists_phone = Users.query.filter_by(phone_number = data["phone_number"]).first()
-            if exists_phone is not None or exists_phone.id != user.id:
-                return custom_abort(409, "This phone number is already in use.")
+        #if "phone_number" in data:
+        #    exists_phone = Users.query.filter_by(phone_number = data["phone_number"]).first()
+       #     if exists_phone is not None or exists_phone.id != user.id:
+       #         return custom_abort(409, "This phone number is already in use.")
 
         #if "profile_path" in files:
          #   profile_picture = files["profile_path"]
@@ -83,7 +83,7 @@ class User():
 
         [setattr(user, key, data[key]) for key in self.table_keys if key in data]
         db.session.commit()
-        user = Users.query.filter_by(id = data["uid"]).first()
+        user = Users.query.filter_by(uid = data["uid"]).first()
         ret = convertor(user, ["password", "reset_code"])
 
         return jsonify({"user" : ret})
