@@ -13,7 +13,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`/products/getProducts/${pid}`); // Update the API endpoint to fetch the specific product using pid
+        const response = await axios.get(`/products/getProducts`); // Update the API endpoint to fetch the specific product using pid
         setProduct(response.data.product);
         setLoading(false);
       } catch (error) {

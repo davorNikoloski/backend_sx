@@ -52,7 +52,7 @@ class User():
     def update(self, request):
         data = request.form
         files = request.files
-        if "id" not in data:
+        if "uid" not in data:
             return custom_abort(400, "Required key is missing from request - id")
 
         identity = get_jwt_identity()

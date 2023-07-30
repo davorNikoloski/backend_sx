@@ -60,7 +60,7 @@ def sendUsers():
     # current_user = get_jwt_identity()  # Get the user information from the JWT token
 
     response = crud_routes(request, userCrud)
-    return response.get_json()['user']
+    return response.get_json()['user'] 
 
 
 #-------------------LOGIN--------------------------------
