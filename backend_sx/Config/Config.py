@@ -13,11 +13,12 @@ app.secret_key = SECRET_KEY
 app.config['JWT_SECRET_KEY'] = 'secret'
 app.config['JWT_TOKEN_LOCATION'] = ['headers', 'query_string']
 app.config['JWT_BLACKLIST_ENABLED'] = True
+app.config['UPLOAD_FOLDER'] = 'backend_sx\Static\img'
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
-#CORS(app)  # This enables CORS for all routes of your Flask app
-CORS(app, resources={r"/user/*": {"origins": "http://localhost:5000"}})
+CORS(app)  
+#CORS(app, resources={r"/user/*": {"origins": "http://localhost:5000"}})
 
 def build_db():
     with app.app_context():

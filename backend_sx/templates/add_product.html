@@ -9,7 +9,7 @@
 <body>
     <div class="container mt-4">
         <h1>Add New Product</h1>
-        <form action="{{ url_for('products.create_product') }}" method="POST">
+        <form action="{{ url_for('products.create_product') }}" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" class="form-control" id="name" name="name" required>
@@ -50,6 +50,12 @@
                 </select>
             </div>
 
+            <!-- Image upload -->
+            <div class="form-group">
+                <label for="productImage">Product Image:</label>
+                <input type="file" class="form-control-file" id="productImage" name="product_image" accept=".jpg, .jpeg, .png">
+            </div>
+
             <input type="submit" class="btn btn-primary" value="Add Product">
         </form>
     </div>
@@ -65,21 +71,21 @@
         $(document).ready(function () {
             // Get the subcategory dropdown element
             const subcategoryDropdown = $("#scid");
-    
+
             // Get the category dropdown element
             const categoryDropdown = $("#cid");
-    
+
             // On category selection change, update the subcategory dropdown options
             categoryDropdown.on("change", function () {
                 const selectedCategoryId = $(this).val();
-    
+
                 // Clear and disable the subcategory dropdown initially
-                subcategoryDropdown.empty().prop("enabled", true);
-    
+                subcategoryDropdown.empty().prop("disabled", true);
+
                 // Fetch subcategories from the server based on the selected category
                 if (selectedCategoryId) {
                     jQuery.ajax({
-                        url: "/get_subcategories",
+                        url: "/products/get_subcategories",
                         type: "GET",
                         data: { cid: selectedCategoryId },
                         success: function (response) {
@@ -89,7 +95,7 @@
                                     `<option value="${subcategory.scid}">${subcategory.name}</option>`
                                 );
                             });
-    
+
                             // Enable the subcategory dropdown
                             subcategoryDropdown.prop("disabled", false);
                         },

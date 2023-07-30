@@ -27,7 +27,6 @@ class Subcategory():
             if key not in data:
                 return custom_abort(400, "Required key is missing from request - " + key)
 
-        # Validate 'scid' as a foreign key to the Categories table
         if Categories.query.filter_by(cid=data["cid"]).first() is None:
             return custom_abort(404, "Category with the given 'scid' not found")
 
@@ -77,11 +76,9 @@ class Subcategory():
         if subcategory is None:
             return custom_abort(404, "Subcategory not found")
 
-        # Validate 'cid' as a foreign key to the Categories table
         if category is None:
             return custom_abort(404, "Category with the given 'cid' not found")
 
-        # Update the subcategory details
         [setattr(subcategory, key, data[key]) for key in self.table_keys if key in data]
 
         db.session.commit()
@@ -99,7 +96,6 @@ class Subcategory():
         if subcategory is None:
             return custom_abort(404, "subcategory not found")
 
-        # Delete the product from the database
         db.session.delete(subcategory)
         db.session.commit()
 

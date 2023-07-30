@@ -47,11 +47,9 @@ def save_updated_subcategory():
     response = SubcategoryCrud.update(request)
 
     if response.status_code == 200 :
-        # Successful update, redirect to the read_subcategories route
         flash('Subcategory updated successfully!', 'success')
         return redirect(url_for('subcategories.read_subcategories'))
     else:
-        # Handle the error case if needed
         return response
     
 #DELETE----------------------------------------------------

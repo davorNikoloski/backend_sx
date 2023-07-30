@@ -1,6 +1,7 @@
 from Models.Models import Products, Categories, Subcategories
 from Config.Config import app, db
-
+from werkzeug.utils import secure_filename
+import os
 from flask import jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
 from Config import Constants, Common
@@ -8,6 +9,9 @@ from Config.Common import custom_abort, crud_routes, build_params, get_user_from
 
 #MODEL
 class Product():
+
+    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
+
     def __init__(self): 
         self.table_keys = {
             "pid": "Integer",
@@ -15,6 +19,7 @@ class Product():
             "info": "String",
             "price": "Integer",
             "productNo": "String",
+            "product_path": "String",
             
             "cid": "Integer",
             "scid": "Integer",
@@ -22,31 +27,45 @@ class Product():
         
 #-----------------CRUD---------------------------
     #-----------CREATE------------------------------
+    
+    
+    def allowed_file(self, filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS
+
+    
+
     def create(self , request):
         data = request.form
         print(data)
-        # print(data["type_id"])
-        required_keys = ["name","info","price","productNo","cid","scid"]
+        product_path = None
+
+        if 'product_image' in request.files:
+            product_image = request.files['product_image']
+            if self.allowed_file(product_image.filename):
+                filename = secure_filename(product_image.filename)
+
+                product_image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+                product_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+        required_keys = ["name", "info", "price", "productNo", "cid", "scid", "product_path"]
         for key in required_keys:
             if key not in data:
-                return custom_abort(400, "Недостасува компулсивен клуч - " + key)
-                
-            product = Products() 
-            #event = Events(banner_photo = "")
-            [setattr(product, key, data[key]) for key in required_keys]
-            db.session.add(product)
-            db.session.commit()
-            product = Products.query.filter_by(pid=product.pid).first()
+                return custom_abort(400, "Required key is missing - " + key + "-----" + product_path)
 
-        
+        product = Products()
+        [setattr(product, key, data[key]) for key in required_keys]
+        product.product_path = product_path
+        db.session.add(product)
+        db.session.commit()
+        product = Products.query.filter_by(pid=product.pid).first()
 
-            ret = convertor(product)
+        ret = convertor(product)
+
+        return jsonify({"product": ret})
 
 
-            return jsonify({
-                "product" : ret
-            })
-        
+    
     #-----------READ------------------------------
 
     def read(self , request):
@@ -102,7 +121,6 @@ class Product():
         if product is None:
             return custom_abort(404, "Product not found")
 
-        # Delete the product from the database
         db.session.delete(product)
         db.session.commit()
 

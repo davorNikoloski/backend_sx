@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import '../output.css';
 
-const NavMenu = () => {
+const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -41,7 +41,7 @@ const NavMenu = () => {
           </ul>
 
           {/* Logo (Middle) */}
-          <div className="text-white text-xl font-bold">MyWebShop</div>
+          <div className="text-white text-xl font-bold">Shopex</div>
 
           {/* Login/Register/Profile, Search, and Cart Icons (Right) */}
           <div className="hidden md:flex items-center space-x-4">
@@ -55,17 +55,17 @@ const NavMenu = () => {
             {/* Profile Icon */}
             <FontAwesomeIcon
               icon={faUser}
-              className="text-white text-2xl hover:text-gray-300 cursor-pointer"
+              className="text-white text-2xl hover:text-gray-300 cursor-pointer hidden"
             />
             {/* Search Icon */}
             <FontAwesomeIcon
               icon={faSearch}
-              className="text-white text-2xl hover:text-gray-300 cursor-pointer"
+              className="text-white text-2xl hover:text-gray-300 cursor-pointer "
             />
             {/* Cart Icon */}
             <FontAwesomeIcon
               icon={faShoppingCart}
-              className="text-white text-2xl hover:text-gray-300 cursor-pointer"
+              className="text-white text-2xl hover:text-gray-300 cursor-pointer "
             />
           </div>
 
@@ -124,4 +124,4 @@ const NavMenu = () => {
   );
 };
 
-export default NavMenu;
+export default Navbar;

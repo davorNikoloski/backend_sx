@@ -41,10 +41,8 @@ def update_category(cid):
 def save_updated_category():
     response = CategoryCrud.update(request)
     if response.status_code == 200:
-        # Redirect to the read_categories route
         return redirect(url_for('categories.read_categories'))
     else:
-        # Handle the error case if needed
         return response
     
 #DELETE----------------------------------------------------

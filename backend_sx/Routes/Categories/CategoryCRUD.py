@@ -88,7 +88,6 @@ class Category():
         if category is None:
             return custom_abort(404, "category not found")
 
-        # Delete the product from the database
         db.session.delete(category)
         db.session.commit()
 

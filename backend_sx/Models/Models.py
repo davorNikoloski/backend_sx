@@ -40,6 +40,7 @@ class Products(db.Model):
     info = db.Column(db.String(256), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     productNo = db.Column(db.String(128), nullable=True)
+    product_path = db.Column(db.String(256), nullable=True, default='default_path.jpg')
     
     cid = db.Column(db.Integer, db.ForeignKey('Categories.cid'), nullable=True)
     scid = db.Column(db.Integer, db.ForeignKey('Subcategories.scid'), nullable=True)

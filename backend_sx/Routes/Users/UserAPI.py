@@ -89,11 +89,9 @@ def register():
     if request.method == "POST" and form.validate_on_submit():
         response, status_code = user_auth.register(request)
         if status_code == 200:
-            # Registration successful, redirect to the 'index' route
             return user_auth.register(request)
 
         else:
-            # Registration failed, show error message to the user
             error_message = response
             return render_template('register.html', form=form, error_message=error_message)
 

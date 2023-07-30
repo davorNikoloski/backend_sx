@@ -44,7 +44,7 @@ def read_products():
     #response = ProductCrud.read(request)
     response = crud_routes(request, ProductCrud)
     return render_template('read_products.html', product_list=response.get_json()['product'], category_list=response.get_json()['category'], subcategory_list=response.get_json()['subcategory'])
-
+    #return crud_routes(request, ProductCrud)
 
 
 #UPDATE----------------------------------------------------
@@ -66,3 +66,9 @@ def save_updated_product():
 def delete_product(pid):
     response = ProductCrud.delete(pid)
     return response
+
+
+#test
+@products_api.route("/getProducts", methods=["GET", "PUT" , "POST"])
+def products_crud():
+    return crud_routes(request, ProductCrud)
