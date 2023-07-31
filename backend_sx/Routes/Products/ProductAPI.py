@@ -25,18 +25,6 @@ def create_product():
     response = ProductCrud.create(request)
     return response
 
-@products_api.route('/get_subcategories', methods=['GET'])
-def get_subcategories():
-    cid = request.args.get('cid')
-    if not cid:
-        return jsonify({"subcategories": []})
-
-    subcategories = Subcategories.query.filter_by(cid=cid).all()
-    subcategories_list = [
-        {"scid": subcategory.scid, "name": subcategory.name} for subcategory in subcategories
-    ]
-    return jsonify({"subcategories": subcategories_list})
-
 
 #READ----------------------------------------------------
 @products_api.route('/read_products', methods=['GET'])
@@ -61,6 +49,7 @@ def save_updated_product():
     return response
 
 
+
 #DELETE----------------------------------------------------
 @products_api.route('/delete_product/<int:pid>', methods=['POST'])
 def delete_product(pid):
@@ -68,7 +57,52 @@ def delete_product(pid):
     return response
 
 
-#test
+
+#PRODUCTS CARDS API
+
+    #POST PRODUCTS TO ProductList
 @products_api.route("/getProducts", methods=["GET", "PUT" , "POST"])
 def products_crud():
     return crud_routes(request, ProductCrud)
+
+    #POST PRODUCT DATA TO ProductDetals (Every product card by id)
+@products_api.route('/getProducts/<int:pid>', methods=["GET", "PUT" , "POST"])
+def get_product_by_id(pid):
+    return ProductCrud.get_product_by_id(pid)
+
+
+    #POST TO Sidebar 
+@products_api.route('/getCategories', methods=['GET'])
+def get_categories():
+    
+    categories = Categories.query.all()
+    ret_categories = [{"cid": category.cid, "name": category.name} for category in categories]
+
+    return jsonify({"categories": ret_categories})
+
+    #POST TO Sidebar 
+@products_api.route('/getSub', methods=['GET'])
+def get_sub():
+
+    subcategories = Subcategories.query.all()
+    ret_subcategories = [{"scid": subcategory.scid, "cid": subcategory.cid ,"name": subcategory.name} for subcategory in subcategories]
+
+    return jsonify({"subcategories": ret_subcategories})
+
+
+
+
+#------------------------
+
+#PROBABLY NOT USED
+@products_api.route('/get_subcategories', methods=['GET'])
+def get_subcategories():
+    cid = request.args.get('cid')
+    if not cid:
+        return jsonify({"subcategories": []})
+
+    subcategories = Subcategories.query.filter_by(cid=cid).all()
+    subcategories_list = [
+        {"scid": subcategory.scid, "name": subcategory.name} for subcategory in subcategories
+    ]
+    return jsonify({"subcategories": subcategories_list})

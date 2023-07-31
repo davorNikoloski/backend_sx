@@ -11,7 +11,7 @@ import ProductDetails from './ProductDetails';
 const ProductsList = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProductId, setSelectedProductId] = useState(null); // Change the state to store the selected productId
 
   // Sample categories data (replace this with API data)
   const categories = [
@@ -37,14 +37,13 @@ const ProductsList = () => {
   };
 
   const handleCardClick = (productId) => {
-    const product = products.find((item) => item.pid === productId);
-    setSelectedProduct(product);
+    setSelectedProductId(productId); 
   };
 
   return (
     <div className="flex">
       <Sidebar categories={categories} handleCategoryClick={handleCategoryClick} />
-      <div className="flex flex-wrap flex-1 justify-center">
+      <div className="flex flex-wrap justify-center">
         {products
           .filter((product) => !selectedCategory || product.categoryId === selectedCategory)
           .map((product) => (
@@ -55,7 +54,6 @@ const ProductsList = () => {
             </div>
           ))}
       </div>
-      {selectedProduct && <ProductDetails product={selectedProduct} />}
     </div>
   );
 };

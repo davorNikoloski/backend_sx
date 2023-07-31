@@ -20,6 +20,7 @@
                     <th>Info</th>
                     <th>Price</th>
                     <th>Product Number</th>
+                    <th>Image</th>
                     <th>Category ID</th>
                     <th>Subcategory ID</th>
                     <th>Actions</th>
@@ -33,6 +34,7 @@
                     <td>{{ product.info }}</td>
                     <td>{{ product.price }}</td>
                     <td>{{ product.productNo }}</td>
+                    <td>{{ product.product_path }}</td>
                     {% for category in category_list %}
                     {% if product.cid == category.cid %}
                     <td>{{ product.cid }} - {{ category.name }}</td>

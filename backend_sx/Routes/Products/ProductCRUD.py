@@ -39,19 +39,17 @@ class Product():
         print(data)
         product_path = None
 
-        if 'product_image' in request.files:
-            product_image = request.files['product_image']
+        if 'product_path' in request.files:
+            product_image = request.files['product_path']
             if self.allowed_file(product_image.filename):
                 filename = secure_filename(product_image.filename)
-
                 product_image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
                 product_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-        required_keys = ["name", "info", "price", "productNo", "cid", "scid", "product_path"]
+        required_keys = ["name", "info", "price", "productNo", "cid", "scid"]
         for key in required_keys:
             if key not in data:
-                return custom_abort(400, "Required key is missing - " + key + "-----" + product_path)
+                return custom_abort(400, "Required key is missing - " + key + "-----" )
 
         product = Products()
         [setattr(product, key, data[key]) for key in required_keys]
@@ -63,7 +61,6 @@ class Product():
         ret = convertor(product)
 
         return jsonify({"product": ret})
-
 
     
     #-----------READ------------------------------
@@ -127,5 +124,13 @@ class Product():
         return jsonify({
             "message": "Product deleted successfully"
         })
+    
+    def get_product_by_id(self, pid):
+        product = Products.query.filter_by(pid=pid).first()
+        if product is None:
+            return custom_abort(404, "Product not found")
+
+        ret = convertor(product)
+        return jsonify({"product": ret})
 
 ProductCrud = Product()

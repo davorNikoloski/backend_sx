@@ -3,8 +3,14 @@ import { Link } from 'react-router-dom';
 import bikeImage from '../../images/bike.jpg';
 
 const ProductCard = ({ product }) => {
+  const dummyProduct = {
+    name: 'Sample Product',
+    price: 19.99,
+    image: bikeImage,
+    info: 'This is a sample product info.',
+  };
 
-  const { pid, name, price, image, info } = product ;
+  const { pid, name, price, image, info } = product || dummyProduct;
 
   const handleOrderNow = () => {
     window.open(`/getProducts/${pid}`, '_blank');
