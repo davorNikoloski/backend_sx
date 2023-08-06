@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-import bikeImage from '../../images/bike.jpg';
+import SimilarProducts from '../Slides/SimilarProducts';
 
+import bikeImage from '../../images/bike.jpg';
 
 const ProductDetails = () => {
   const { pid } = useParams();
@@ -13,8 +14,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`/products/getProducts/${pid}`); // Update the API endpoint to fetch the specific product using pid
-        console.log(response.data.product);
+        const response = await axios.get(`/products/getProducts/${pid}`);
         setProduct(response.data.product);
         setLoading(false);
       } catch (error) {
@@ -24,7 +24,6 @@ const ProductDetails = () => {
     };
 
     fetchProduct();
-    console.log(pid)
   }, [pid]);
 
   if (loading) {
@@ -32,8 +31,6 @@ const ProductDetails = () => {
   }
 
   if (!product) {
-    console.log(product);
-
     return <div>Product not found.</div>;
   }
 
@@ -63,12 +60,15 @@ const ProductDetails = () => {
           <li className="text-gray-600 mb-2"><strong>Category:</strong> {product.category}</li>
           <li className="text-gray-600 mb-2"><strong>Brand:</strong> {product.brand}</li>
           <li className="text-gray-600 mb-2"><strong>Color:</strong> {product.color}</li>
-          {/* Add more product details here */}
         </ul>
       </div>
       <div className="my-8 p-4 bg-white rounded-lg shadow-md">
         <h3 className="text-xl font-semibold mb-4">Product Description</h3>
         <p className="text-gray-600">{product.description}</p>
+
+        <section>
+          <SimilarProducts productDet={product} />
+        </section>
       </div>
     </div>
   );

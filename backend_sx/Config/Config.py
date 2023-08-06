@@ -3,17 +3,37 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+import os
 
 app = Flask(__name__, template_folder='../templates', static_url_path='/Static/react', static_folder='backend_sx/Static/react')
 
+#-----------------------DATABASE CONFIG----------------------
 uri = "mysql+pymysql://"+constants["mysql"]["user"]+":"+constants["mysql"]["password"]+"@"+constants["mysql"]["host"]+"/"+constants["mysql"]["db_name"]+"?&autocommit=false"
 app.config["SQLALCHEMY_DATABASE_URI"] = uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+
+#------------------------JWT CONFIG----------------------------------------
 app.secret_key = SECRET_KEY
-app.config['JWT_SECRET_KEY'] = 'secret'
+app.config['JWT_SECRET_KEY'] = '420420420'
 app.config['JWT_TOKEN_LOCATION'] = ['headers', 'query_string']
 app.config['JWT_BLACKLIST_ENABLED'] = True
-app.config['UPLOAD_FOLDER'] = 'backend_sx\Static\img'
+
+#------------------MAIL CONFIG------------------
+app.config['EMAIL_HOST']="smtp-mail.outlook.com"
+app.config['EMAIL_PORT'] = 587
+app.config['EMAIL_USERNAME'] = "pyFlaskDBTest@hotmail.com"
+app.config['EMAIL_PASSWORD'] = "Flasktest123321"
+app.config['MAIL_DEFAULT_SENDER'] = 'pyFlaskDBTest@hotmail.com'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+
+
+#---------------------STATIC CONFIG
+current_directory = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(current_directory, '../','../', 'frontend_sx', 'public', 'images')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.static_folder = 'frontend/public'
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)

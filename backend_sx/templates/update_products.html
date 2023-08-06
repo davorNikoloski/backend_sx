@@ -27,6 +27,10 @@
                 <label for="productNo">Product Number:</label>
                 <input type="text" id="productNo" name="productNo" class="form-control" value="{{ product.productNo }}" required>
             </div>
+            <div class="form-group">
+                <label for="productImage">Product Image:</label>
+                <input type="file" class="form-control-file" id="productImage" name="product_path" accept=".jpg, .jpeg, .png">
+            </div>
             <!--<div class="form-group">
                 <label for="cid">Category ID:</label>
                 <input type="number" id="cid" name="cid" class="form-control" value="{{ product.cid }}" required>

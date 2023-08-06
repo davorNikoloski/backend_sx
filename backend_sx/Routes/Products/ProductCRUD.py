@@ -41,15 +41,20 @@ class Product():
 
         if 'product_path' in request.files:
             product_image = request.files['product_path']
+            print("Uploaded file name:", product_image.filename)
+
             if self.allowed_file(product_image.filename):
                 filename = secure_filename(product_image.filename)
+                print("Saving file to:", os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 product_image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 product_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            else:
+                return custom_abort(400, "Invalid file format. Allowed formats: jpg, jpeg, png, gif")
 
         required_keys = ["name", "info", "price", "productNo", "cid", "scid"]
         for key in required_keys:
             if key not in data:
-                return custom_abort(400, "Required key is missing - " + key + "-----" )
+                return custom_abort(400, "Required key is missing - " + key + "-----")
 
         product = Products()
         [setattr(product, key, data[key]) for key in required_keys]
@@ -89,8 +94,20 @@ class Product():
     # @jwt_required()
     def update(self , request):
         data = request.form
+        product_path = None
+
         if "pid" not in data:
             return custom_abort(400, "Required key is missing from request - id")
+        
+        if 'product_path' in request.files:
+            product_image = request.files['product_path']
+            if self.allowed_file(product_image.filename):
+                filename = secure_filename(product_image.filename)
+                product_image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                product_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        
+        
+        
         # identity = get_jwt_identity()
         # auth_user = get_user_from_jwt(identity)
         # if auth_user.id != data["organizer_id"]:
@@ -98,11 +115,12 @@ class Product():
         # if auth_user.type_id < 2:
         #     return custom_abort(401, "You are not authorized to update users.")
         product = Products.query.filter_by(pid=data["pid"]).first()
-
+        
         if product is None:
             return custom_abort(404, "Product not found")
             
         [setattr(product, key, data[key]) for key in self.table_keys if key in data]
+        product.product_path = product_path
         db.session.commit()
         product = Products.query.filter_by(pid=product.pid).first()
         ret = convertor(product)

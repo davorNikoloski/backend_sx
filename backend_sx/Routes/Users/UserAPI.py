@@ -2,59 +2,20 @@ from flask import Blueprint, render_template, request, jsonify,redirect, url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, InputRequired, Length, ValidationError, EqualTo
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask import render_template_string
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, verify_jwt_in_request
 
 
 from Routes.Users.UserCRUD import userCrud
 from Routes.Users.UserAUTH import user_auth 
 
 from Config.Common import crud_routes
-index_tp = Blueprint('index', __name__)
-
-#-----------------------FORMS------------------
-
-#---------LOGIN FORM---------------
-class loginForm(FlaskForm):
-    email=StringField(validators=[InputRequired(), Email(), Length(min=4, max=20)],
-    render_kw={"placeholder": "Email"})
-
-    password=PasswordField(validators=[InputRequired(), Length(min=4, max=20)],
-    render_kw={"placeholder": "Password"})
-
-    submit = SubmitField("Login")
-
-#---------REGISTER FORM---------------
-class registerForm(FlaskForm):
-
-    first_name=StringField(validators=[InputRequired(), Length(min=4, max=20)],
-    render_kw={"placeholder": "First Name"})
-
-    last_name=StringField(validators=[InputRequired(), Length(min=4, max=20)],
-    render_kw={"placeholder": "Last Name"})
-
-    email = StringField('Email', validators=[InputRequired(), Email()],
-    render_kw={"placeholder": "Email"})
-
-    password=PasswordField(validators=[InputRequired(), Length(min=4, max=20)],
-    render_kw={"placeholder": "Password"})
-
-    confirm_password = PasswordField('Confirm Password', validators=[InputRequired(), Length(min=4, max=20), EqualTo('password', message='Passwords must match')],
-    render_kw={"placeholder": "Confirm"})
-
-    submit = SubmitField("Register")
-
-    def validate_user(self, username, email):
-        existing_user_email = User.query.filter_by(email=email.data).first()
-        if existing_user_email:
-            raise ValidationError(
-                "That Email already exists, please choose another one."
-            )
-
+user = Blueprint('index', __name__)
 
 
 #ROUTES-----------------------
-@index_tp.route('/users', methods=["GET", "UPDATE"])
+@user.route('/users', methods=["GET", "UPDATE"])
+
 #@jwt_required()
 def sendUsers():
     # current_user = get_jwt_identity()  # Get the user information from the JWT token
@@ -65,40 +26,34 @@ def sendUsers():
 
 #-------------------LOGIN--------------------------------
 
-@index_tp.route('/login', methods=["GET", "POST"])
+@user.route('/login', methods=["GET", "POST"])
 def login():
-    form = loginForm()
-
-    if request.method == "POST" and form.validate_on_submit():
+    if request.method == "POST":
+        #verify_jwt_in_request()  # Check for the JWT token in the request headers
+        #current_user = get_jwt_identity()
         response, status_code = user_auth.login(request)
         if status_code == 200:
-            #access_token = response.get("access")
-            return user_auth.login(request)
+            return response, status_code#, current_user
         else:
-            # Handle unsuccessful login here, maybe show an error message to the user
             error_message = response
-            return render_template('login.html', form=form, error_message=error_message)
-
-    return user_auth.login(request)
+            return error_message
 
 
-@index_tp.route('/register', methods=["GET", "POST"])
+@user.route('/register', methods=["GET", "POST"])
 def register():
-    form = registerForm()
 
-    if request.method == "POST" and form.validate_on_submit():
+    if request.method == "POST":
         response, status_code = user_auth.register(request)
         if status_code == 200:
-            return user_auth.register(request)
+            return response,status_code #smeni pokasno
 
         else:
             error_message = response
-            return render_template('register.html', form=form, error_message=error_message)
-
-    return user_auth.register(request)
+            return error_message
 
 
-@index_tp.route('/ne', methods=["GET", "UPDATE"])
+
+@user.route('/ne', methods=["GET", "UPDATE"])
 def users():
     #current_user = get_jwt_identity()  # Get the user information from the JWT token
     return render_template("index.html", flask_token="hello flask")

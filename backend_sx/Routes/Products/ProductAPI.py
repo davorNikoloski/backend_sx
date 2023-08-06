@@ -90,8 +90,18 @@ def get_sub():
     return jsonify({"subcategories": ret_subcategories})
 
 
+#POST TO Search 
+@products_api.route('/searchProducts', methods=['GET'])
+def searchProducts():
+    products = Products.query.all()
+    subcategories = Subcategories.query.all()
+    categories = Categories.query.all()
 
+    ret_products = [{"pid": product.pid, "name": product.name} for product in products]
+    ret_subcategories = [{"scid": subcategory.scid, "cid": subcategory.cid ,"name": subcategory.name} for subcategory in subcategories]
+    ret_categories = [{"cid": category.cid ,"name": category.name} for category in categories]
 
+    return jsonify({"subcategories": ret_subcategories, "products": ret_products,"categories": ret_categories })
 #------------------------
 
 #PROBABLY NOT USED
@@ -106,3 +116,10 @@ def get_subcategories():
         {"scid": subcategory.scid, "name": subcategory.name} for subcategory in subcategories
     ]
     return jsonify({"subcategories": subcategories_list})
+
+
+@products_api.route('/getProductsBySubcategory/<int:scid>', methods=['GET'])
+def get_products_by_subcategory(scid):
+    products = Products.query.filter(Products.scid == scid).all()
+    ret_products = [{"pid": product.pid, "name": product.name} for product in products]
+    return jsonify({"products": ret_products})

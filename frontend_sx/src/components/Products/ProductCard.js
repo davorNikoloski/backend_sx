@@ -2,15 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import bikeImage from '../../images/bike.jpg';
 
-const ProductCard = ({ product }) => {
-  const dummyProduct = {
-    name: 'Sample Product',
-    price: 19.99,
-    image: bikeImage,
-    info: 'This is a sample product info.',
-  };
+const realImg = '../../images/car.jpg';
 
-  const { pid, name, price, image, info } = product || dummyProduct;
+const ProductCard = ({ product }) => {
+
+  const { pid, name, price, product_path, info } = product;
 
   const handleOrderNow = () => {
     window.open(`/getProducts/${pid}`, '_blank');
@@ -19,7 +15,7 @@ const ProductCard = ({ product }) => {
   return (
     <div className="relative flex flex-col items-stretch p-4 border rounded-lg shadow-md bg-white transition-all hover:shadow-xl hover:bg-gray-100">
       <img
-        src={bikeImage}
+        src={realImg}
         alt={name}
         className="h-64 w-full object-cover rounded-t-lg"
       />
