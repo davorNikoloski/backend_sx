@@ -3,6 +3,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+from flask_login import LoginManager
+
 import os
 
 app = Flask(__name__, template_folder='../templates', static_url_path='/Static/react', static_folder='backend_sx/Static/react')
@@ -37,6 +39,8 @@ app.static_folder = 'frontend/public'
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
+login_manager = LoginManager(app)
+
 CORS(app)  
 #CORS(app, resources={r"/user/*": {"origins": "http://localhost:5000"}})
 

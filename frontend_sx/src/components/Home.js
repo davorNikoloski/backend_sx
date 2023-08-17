@@ -1,23 +1,25 @@
 import React from 'react';
-
-import SimilarProducts from './Slides/SimilarProducts';
 import RecommendedProducts from './Slides/RecommendedProducts';
-
-import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa'; // Import icons from the react-icons library
-//import RecommendedProduct from './RecommendedProduct'; // Assuming you have a component for recommended products
+import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const Home = () => {
-  const bannerImageUrl = 'https://happywall-statix.imgix.net/rooms/room-162.jpg?w=1830&h=1220&fit=min&crop=bottom%2Ccenter&blend64=aHR0cHM6Ly9oYXBweXdhbGwtaW1nLWdhbGxlcnkuaW1naXgubmV0L3dhbGxwYXBlci5qcGc_dz0xODMwJmg9MTIyMCZmaXQ9Y3JvcCZibGVuZDY0PWFIUjBjSE02THk5b1lYQndlWGRoYkd3dGFXMW5MV2RoYkd4bGNua3VhVzFuYVhndWJtVjBMelEyT0RBekwySnlhV2RvZEY5bWJHOXlZV3hmY0dGMGRHVnlibDlrYVhOd2JHRjVMbXB3Wno5M1BURTFPRFltYUQwNU1UVW1abWwwUFdOeWIzQW1ZM0p2Y0QxaWIzUjBiMjBsTWtOalpXNTBaWEltWW14bGJtUXRZMjlzYjNJOU1EQXdNREF3Sm1Kc1pXNWtMVzF2WkdVOWJYVnNkR2x3YkhrbVlteGxibVF0WVd4d2FHRTlNU1ppY21rOU15WnpZWFE5TVRBJTNEJmJsZW5kLW1vZGU9bm9ybWFsJmJsZW5kLXk9MCZibGVuZC14PTI0NA%3D%3D&blend-mode=multiply&mark64=aHR0cHM6Ly9oYXBweXdhbGwtc3RhdGl4LmltZ2l4Lm5ldC9yb29tcy9yb29tLTE2Mi5wbmc_dz0xODMwJmg9MTIyMCZmaXQ9bWluJmNyb3A9Ym90dG9tJTJDY2VudGVy&mark-x=0&mark-y=0&q=70';
+  const bannerImageUrl =
+    'https://happywall-statix.imgix.net/rooms/room-162.jpg?w=1830&h=1220&fit=min&crop=bottom%2Ccenter&blend64=aHR0cHM6Ly9oYXBweXdhbGwtaW1nLWdhbGxlcnkuaW1naXgubmV0L3dhbGxwYXBlci5qcGc_dz0xODMwJmg9MTIyMCZmaXQ9Y3JvcCZibGVuZDY0PWFIUjBjSE02THk5b1lYQndlWGRoYkd3dGFXMW5MV2RoYkd4bGNua3VhVzFuYVhndWJtVjBMelEyT0RBekwySnlhV2RvZEY5bWJHOXlZV3hmY0dGMGRHVnlibDlrYVhOd2JHRjVMbXB3Wno5M1BURTFPRFltYUQwNU1UVW1abWwwUFdOeWIzQW1ZM0p2Y0QxaWIzUjBiMjBsTWtOalpXNTBaWEltWW14bGJtUXRZMjlzYjNJOU1EQXdNREF3Sm1Kc1pXNWtMVzF2WkdVOWJYVnNkR2x3YkhrbVlteGxibVF0WVd4d2FHRTlNU1ppY21rOU15WnpZWFE5TVRBJTNEJmJsZW5kLW1vZGU9bm9ybWFsJmJsZW5kLXk9MCZibGVuZC14PTI0NA%3D%3D&blend-mode=multiply&mark64=aHR0cHM6Ly9oYXBweXdhbGwtc3RhdGl4LmltZ2l4Lm5ldC9yb29tcy9yb29tLTE2Mi5wbmc_dz0xODMwJmg9MTIyMCZmaXQ9bWluJmNyb3A9Ym90dG9tJTJDY2VudGVy&mark-x=0&mark-y=0&q=70';
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* Banner */}
       <section
-        className="bg-cover bg-center text-white h-60 md:h-96 flex flex-col justify-center items-center"
+        className="bg-cover bg-center text-white h-60 md:h-96 flex flex-col justify-center items-center shadow-md"
         style={{ backgroundImage: `url(${bannerImageUrl})` }}
       >
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center">Cheap Blabla</h1>
-        <a href="/products" className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center text-shadow-lg">
+          Trending
+        </h1>
+        <a
+          href="/products"
+          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
+        >
           Browse Products
         </a>
       </section>
@@ -40,10 +42,11 @@ const Home = () => {
         </div>
       </section>
 
-     <RecommendedProducts/>
       {/* Recommended Products */}
-      {/* Add your RecommendedProduct component here */}
-
+      <div className="text-left mt-8 pl-4">
+        <h2 className="text-lg md:text-xl font-semibold mb-2">Recommended Products</h2>
+        <RecommendedProducts />
+      </div>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-8">
+    <footer className="bg-gray-800 text-white py-4 text-center mt-auto">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-8">
         <div className="md:order-1 flex space-x-4 pl-5">
           <a href="#" className="text-white hover:text-gray-400">
@@ -18,7 +18,7 @@ const Footer = () => {
           </a>
         </div>
         <div className="md:order-2 text-center md:text-center">
-          <p className="text-white">&copy; {new Date().getFullYear()} YourCompany. All rights reserved.</p>
+          <p className="text-white">&copy; {new Date().getFullYear()} Shopex. All rights reserved.</p>
         </div>
         <div className="md:order-3 flex space-x-4 pr-5">
           <a href="/faq" className="text-white hover:text-gray-400">FAQ</a>

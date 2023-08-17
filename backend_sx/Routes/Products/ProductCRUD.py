@@ -86,7 +86,7 @@ class Product():
         if hash_info["enable_hash"] == True:
             ret_product = hash_query_results(ret_product, hash_info["hash_key"], hash_info["hash_type"])
        
-        return jsonify({ "product" : ret_product,"category" : ret_category, "subcategory" : ret_subcategory,"hash_info" : hash_info }) 
+        return jsonify({ "products" : ret_product,"category" : ret_category, "subcategory" : ret_subcategory,"hash_info" : hash_info }) 
     
     
     #-----------UPDATE------------------------------
@@ -144,11 +144,12 @@ class Product():
         })
     
     def get_product_by_id(self, pid):
-        product = Products.query.filter_by(pid=pid).first()
-        if product is None:
+        products = Products.query.filter_by(pid=pid).first()
+        print(products)
+        if products is None:
             return custom_abort(404, "Product not found")
 
-        ret = convertor(product)
-        return jsonify({"product": ret})
+        ret = convertor(products)
+        return jsonify({"products": ret})
 
 ProductCrud = Product()

@@ -1,12 +1,16 @@
 // Sidebar.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const Sidebar = ({ handleCategoryClick, setSearchQuery, handleSubcategoryClick }) => {
+const Sidebar = ({ setSearchQuery }) => {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [searchQuery, setSearchQueryLocal] = useState('');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCategories();
@@ -31,13 +35,18 @@ const Sidebar = ({ handleCategoryClick, setSearchQuery, handleSubcategoryClick }
     }
   };
 
-  const handleCategoryDropdownClick = (categoryCID, subcategoryName) => {
+  const handleCategoryDropdownClick = (categoryCID, subcategoryName, subcategoryID) => {
     setSelectedCategory((prevSelectedCategory) =>
       prevSelectedCategory === categoryCID ? null : categoryCID
     );
-  
+
     if (subcategoryName) {
       setSearchQuery(subcategoryName);
+    }
+
+    if (subcategoryID) {
+      // Navigate to the new route for the selected subcategory
+      navigate(`/products/getProducts/${subcategoryID}`);
     }
   };
 
@@ -53,7 +62,6 @@ const Sidebar = ({ handleCategoryClick, setSearchQuery, handleSubcategoryClick }
 
   return (
     <div className="sticky top-0 h-screen bg-gray-200 w-1/5 p-4 shadow-md z-10">
-      <h2 className="text-lg font-semibold mb-4">Sort By</h2>
       <h2 className="text-lg font-semibold mb-4">Filter Options</h2>
       <div className="mb-4">
         <input
@@ -70,6 +78,7 @@ const Sidebar = ({ handleCategoryClick, setSearchQuery, handleSubcategoryClick }
       >
         Clear Filters
       </button>
+      <h3 className="w-full bg-white-300 py-2 rounded-md mb-4 text-center" >Categories</h3>
       {categories?.length > 0 ? (
         <ul className="space-y-2">
           {categories.map((category) => (
@@ -90,7 +99,8 @@ const Sidebar = ({ handleCategoryClick, setSearchQuery, handleSubcategoryClick }
                         <li key={subcategory.scid}>
                           <button
                             onClick={() =>
-                              handleCategoryDropdownClick(category.cid, subcategory.name)
+                              window.open(`/getProducts/${subcategory.scid}`, '_blank')
+                              //handleCategoryDropdownClick(category.cid, subcategory.name)
                             }
                           >
                             {subcategory.name}

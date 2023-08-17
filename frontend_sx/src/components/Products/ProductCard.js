@@ -9,7 +9,8 @@ const ProductCard = ({ product }) => {
   const { pid, name, price, product_path, info } = product;
 
   const handleOrderNow = () => {
-    window.open(`/getProducts/${pid}`, '_blank');
+    window.open(`/product/${pid}`, '_blank');
+    
   };
 
   return (

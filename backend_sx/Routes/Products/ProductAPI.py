@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Email, InputRequired, Length, Valid
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from Routes.Products.ProductCRUD import ProductCrud
-from Config.Common import crud_routes
+from Config.Common import crud_routes, convertor
 from Models.Models import Products, Categories, Subcategories
 
 products_api = Blueprint('products', __name__)
@@ -31,7 +31,7 @@ def create_product():
 def read_products():
     #response = ProductCrud.read(request)
     response = crud_routes(request, ProductCrud)
-    return render_template('read_products.html', product_list=response.get_json()['product'], category_list=response.get_json()['category'], subcategory_list=response.get_json()['subcategory'])
+    return render_template('read_products.html', product_list=response.get_json()['products'], category_list=response.get_json()['category'], subcategory_list=response.get_json()['subcategory'])
     #return crud_routes(request, ProductCrud)
 
 
@@ -58,6 +58,13 @@ def delete_product(pid):
 
 
 
+
+
+
+
+
+
+
 #PRODUCTS CARDS API
 
     #POST PRODUCTS TO ProductList
@@ -66,7 +73,7 @@ def products_crud():
     return crud_routes(request, ProductCrud)
 
     #POST PRODUCT DATA TO ProductDetals (Every product card by id)
-@products_api.route('/getProducts/<int:pid>', methods=["GET", "PUT" , "POST"])
+@products_api.route('/product/<int:pid>', methods=["GET", "PUT" , "POST"])
 def get_product_by_id(pid):
     return ProductCrud.get_product_by_id(pid)
 
@@ -121,5 +128,21 @@ def get_subcategories():
 @products_api.route('/getProductsBySubcategory/<int:scid>', methods=['GET'])
 def get_products_by_subcategory(scid):
     products = Products.query.filter(Products.scid == scid).all()
-    ret_products = [{"pid": product.pid, "name": product.name} for product in products]
+    ret_products = convertor(products, ["password", "reset_code"], True)
     return jsonify({"products": ret_products})
+
+
+# Add to cart route
+@products_api.route('/cart/add', methods=['POST'])
+def add_to_cart():
+    data = request.json
+    product_id = data.get('productId')
+    # Logic to add the product to the cart (database, session, etc.)
+    return jsonify({"message": "Product added to cart"})
+
+# Get cart contents route
+@products_api.route('/cart', methods=['GET'])
+def get_cart_contents():
+    # Logic to retrieve cart contents
+    cart_contents = [...]  # Replace with actual cart data
+    return jsonify({"cart": cart_contents})

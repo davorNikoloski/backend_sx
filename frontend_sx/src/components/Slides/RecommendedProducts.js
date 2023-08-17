@@ -21,8 +21,8 @@ const RecommendedProducts = () => {
     const fetchRecommendedProducts = async () => {
       try {
         const response = await axios.get('/products/getProducts');
-        if (response.data && response.data.product) {
-          const products = response.data.product;
+        if (response.data && response.data.products) {
+          const products = response.data.products;
           const shuffledProducts = shuffleArray(products);
           setProducts(shuffledProducts);
           setLoading(false);
@@ -44,7 +44,7 @@ const RecommendedProducts = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-center md:items-start p-4">
+    <div className="flex flex-col md:flex-row items-center md:items-start p-4 ">
       <button
         onClick={() => scroll(-200)}
         className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 focus:outline-none"
@@ -54,7 +54,7 @@ const RecommendedProducts = () => {
         </svg>
       </button>
 
-      <div className="flex overflow-x-auto w-full" ref={scrollContainerRef}>
+      <div className="flex overflow-x-auto w-full " ref={scrollContainerRef}>
         <div className="flex space-x-4">
           {products.map((product) => (
             <div key={product.pid} className="recommended-product-card" style={{ minWidth: '280px' }}>

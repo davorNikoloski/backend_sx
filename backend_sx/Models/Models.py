@@ -1,5 +1,5 @@
 from Config.Config import db
-#from flask_login import UserMixin
+from flask_login import UserMixin
 
 #USERS-----------------------------------------------------------
 class Users(db.Model):
@@ -49,3 +49,12 @@ class Products(db.Model):
     Subcategories = db.relationship('Subcategories', backref=db.backref('Products', lazy=True))
 
 
+#PRODUCTS-----------------------------------------------------------
+class Auth(db.Model, UserMixin):
+    __tablename__ = 'auth'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(128), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
+
+    def get_id(self):
+        return str(self.id)
