@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, request, jsonify,redirect, url_for
+from flask import Blueprint, render_template, request, jsonify, send_from_directory
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, InputRequired, Length, ValidationError, EqualTo
 from flask_jwt_extended import get_jwt_identity, jwt_required
-
+from Config.Config import app
 from Routes.Products.ProductCRUD import ProductCrud
 from Config.Common import crud_routes, convertor
 from Models.Models import Products, Categories, Subcategories
@@ -62,7 +62,9 @@ def delete_product(pid):
 
 
 
-
+@products_api.route('/images/<filename>')
+def serve_image(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 #PRODUCTS CARDS API

@@ -60,12 +60,28 @@ if __name__ == "__main__":
                     #DONE
 
     #- Imorove the admin panel so as everything is in one place
+                    #DONE
 
     #- Add auth to the admin panel
                     #DONE
+
     #- Improve the overall design of the website
 
     #- Get a domain and publish the website
-
+            #DOMAIN DONE 
 
             ####Navbar is fucked
+            #DONE
+
+    #- ADD IN THE DB EVERYTHING THAT IS NECCESSARY ALSO IN THE CRUD
+        #AND IN THE FRONTEND THE INPUTS ALSO WHERE THE DATA IS READ
+                    #DONE
+
+
+    #SIDEBAR DESIGN 
+    
+    #FIX THE IMAGE URL FIND ON YOUTUBE OR ANYWHERE
+    #MULTIPLE PICTURES AFTER ONE WORKS LIKE A GALLERY AND U DONE
+    #TOTAL PRICE SHOULD BE FROM ALL PRODUCTS TOGETHER NOW IT JUST
+        #SHOWS FROM ONE PRODUCT
+    #LOGIN AND REGISTER HANDLE WHEN LOGGED IN SHOW NAME AND LOGOUT

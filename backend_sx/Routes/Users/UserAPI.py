@@ -29,11 +29,12 @@ def sendUsers():
 @user.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        #verify_jwt_in_request()  # Check for the JWT token in the request headers
-        #current_user = get_jwt_identity()
         response, status_code = user_auth.login(request)
         if status_code == 200:
-            return response, status_code#, current_user
+            user_data = response.get_json()['user']
+            access_token = create_access_token(identity=user_data)
+            user_data['access_token'] = access_token
+            return jsonify(user_data), status_code
         else:
             error_message = response
             return error_message

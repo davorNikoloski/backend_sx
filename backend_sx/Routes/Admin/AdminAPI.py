@@ -14,6 +14,7 @@ admin_api = Blueprint('Auth', __name__)
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 from Config.Config import app, db, login_manager
+from Routes.Users.UserCRUD import userCrud
 
 
 #MODEL
@@ -31,6 +32,7 @@ def load_user(user_id):
     return Auth.query.get(int(user_id))
 
 
+
 @admin_api.route('/adminAuth', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -44,7 +46,7 @@ def login():
         if admin and admin.password == password:  # Compare passwords without hashing
             print("Login successful for user:", username)
             login_user(admin)
-            return redirect(url_for('products.read_products'))
+            return redirect('/secret/read_products')  # Use direct URL path
 
         print("Invalid login attempt for user:", username)
         flash('Invalid username or password', 'danger')
@@ -59,7 +61,12 @@ def logout():
 
 
 
-
+@admin_api.route('/read_users', methods=["GET", "UPDATE"])
+@login_required
+def sendUsers():
+    response = crud_routes(request, userCrud)
+    user_list = response.get_json()['user'] 
+    return render_template('read_users.html', user_list=user_list)
 
 
 
@@ -68,6 +75,7 @@ def logout():
 
 #ADD----------------------------------------------------
 @admin_api.route('/add_product', methods=['GET'])
+@login_required
 def add_product():
     categories = Categories.query.all()
     subcategories = Subcategories.query.all()
@@ -76,6 +84,7 @@ def add_product():
     return render_template('add_product.html', categories = categories, subcategories = subcategories)
 
 @admin_api.route('/create_product', methods=['POST'])
+@login_required
 def create_product():
     response = ProductCrud.create(request)
     return response
@@ -93,6 +102,7 @@ def read_products():
 
 #UPDATE----------------------------------------------------
 @admin_api.route('/update_products/<int:pid>', methods=['GET'])
+@login_required
 def update_product(pid):
     product = Products.query.filter_by(pid=pid).first()
     if not product:
@@ -100,19 +110,28 @@ def update_product(pid):
     return render_template('update_products.html', product=product)
 
 @admin_api.route('/update_products', methods=['POST'])
+@login_required
 def save_updated_product():
     response = ProductCrud.update(request)
+    return response
+
+#DELETE----------------------------------------------------
+@admin_api.route('/delete_product/<int:pid>', methods=['POST'])
+def delete_product(pid):
+    response = ProductCrud.delete(pid)
     return response
 
 
 #------------SUBCATEGORIES--------------------------------
 #ADD----------------------------------------------------
 @admin_api.route('/add_subcategory', methods=['GET'])
+@login_required
 def add_subcategory():
     categories = Categories.query.all()
     return render_template('add_subcategory.html', categories = categories)
 
 @admin_api.route('/create_subcategory', methods=['POST'])
+@login_required
 def create_subcategory():
     response = SubcategoryCrud.create(request)
     return response
@@ -120,6 +139,7 @@ def create_subcategory():
 
 #READ----------------------------------------------------
 @admin_api.route('/read_subcategories', methods=['GET'])
+@login_required
 def read_subcategories():
     response = crud_routes(request, SubcategoryCrud)
     return render_template('read_subcategories.html', subcategory_list=response.get_json()['subcategory'], category_list=response.get_json()['category'])
@@ -128,6 +148,7 @@ def read_subcategories():
 
 #UPDATE----------------------------------------------------
 @admin_api.route('/update_subcategory/<int:scid>', methods=['GET', 'POST'])
+@login_required
 def update_subcategory(scid):
     subcategory = Subcategories.query.filter_by(scid=scid).first()
     category_list = Categories.query.all()
@@ -138,6 +159,7 @@ def update_subcategory(scid):
     return render_template('update_subcategory.html', subcategory=subcategory, category_list=category_list)
 
 @admin_api.route('/update_subcategory', methods=['GET', 'POST'])
+@login_required
 def save_updated_subcategory():
     response = SubcategoryCrud.update(request)
 
@@ -149,6 +171,7 @@ def save_updated_subcategory():
     
 #DELETE----------------------------------------------------
 @admin_api.route('/delete_subcategory/<int:scid>', methods=['GET', 'POST'])
+@login_required
 def delete_subcategory(scid):
     subcategory = Subcategories.query.filter_by(scid=scid).first()
     if not subcategory:
@@ -165,3 +188,55 @@ def delete_subcategory(scid):
 #-------------------CATEGORIES--------------------------
 
 
+#ADD----------------------------------------------------
+@admin_api.route('/add_category', methods=['GET'])
+@login_required
+def add_category():
+    return render_template('add_category.html')
+
+@admin_api.route('/create_category', methods=['POST'])
+@login_required
+def create_category():
+    response = CategoryCrud.create(request)
+    return response
+
+
+#READ----------------------------------------------------
+@admin_api.route('/read_categories', methods=['GET'])
+@login_required
+def read_categories():
+    response = crud_routes(request, CategoryCrud)
+    return render_template('read_categories.html', category_list=response.get_json()['category'])
+
+
+#UPDATE----------------------------------------------------
+@admin_api.route('/update_category/<int:cid>', methods=['GET', 'POST'])
+@login_required
+def update_category(cid):
+    category = Categories.query.filter_by(cid=cid).first()
+    if not category:
+        return "Category not found", 404
+    return render_template('update_category.html', category=category)
+
+@admin_api.route('/update_category', methods=['GET', 'POST'])
+@login_required
+def save_updated_category():
+    response = CategoryCrud.update(request)
+    if response.status_code == 200:
+        return redirect(url_for('categories.read_categories'))
+    else:
+        return response
+    
+#DELETE----------------------------------------------------
+@admin_api.route('/delete_category/<int:cid>', methods=['GET', 'POST'])
+@login_required
+def delete_category(cid):
+    category = Categories.query.filter_by(cid=cid).first()
+    if not category:
+        return "Category not found", 404
+
+    if request.method == 'POST':
+        response = CategoryCrud.delete(cid)
+        return response
+
+    return render_template('delete_category.html', category=category)

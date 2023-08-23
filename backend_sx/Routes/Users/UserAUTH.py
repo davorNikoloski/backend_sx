@@ -16,6 +16,9 @@ class UsersAuth():
             "uid": "Integer",
             "first_name": "String",
             "last_name": "String",
+            "phone_number": "String",
+            "address": "String",
+            "address_number": "String",
             "email": "String",
             "password": "String",
             "profile_path": "String",
@@ -29,7 +32,7 @@ class UsersAuth():
 
         #--------------CHECKS-----------------------
 
-        required = ["first_name", "last_name", "email", "password"]
+        required = ["first_name", "last_name","phone_number","address", "email", "password"]
         for key in required:
             if key not in data:
                 return custom_abort(400, "Недостасува компулсивен клуч - " + key)

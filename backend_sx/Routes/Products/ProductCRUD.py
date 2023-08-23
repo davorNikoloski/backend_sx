@@ -17,6 +17,9 @@ class Product():
             "pid": "Integer",
             "name": "String",
             "info": "String",
+            "description": "String",
+            "brand": "String",
+            "color": "String",
             "price": "Integer",
             "productNo": "String",
             "product_path": "String",
@@ -55,9 +58,18 @@ class Product():
         for key in required_keys:
             if key not in data:
                 return custom_abort(400, "Required key is missing - " + key + "-----")
+        
+        secondary_keys = ["description", "brand", "color"]
+
+        for u_key in secondary_keys:
+            if u_key not in data:
+                return print("Недостасува : " + u_key)
+
 
         product = Products()
         [setattr(product, key, data[key]) for key in required_keys]
+        [setattr(product, u_key, data[u_key]) for u_key in secondary_keys]
+
         product.product_path = product_path
         db.session.add(product)
         db.session.commit()

@@ -7,6 +7,9 @@ class Users(db.Model):
     uid = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(128), nullable=False)
     last_name = db.Column(db.String(128), nullable=False)
+    phone_number = db.Column(db.String(256), nullable=False, unique=True)
+    address = db.Column(db.String(50), nullable=False)
+    address_number = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(256), nullable=False, unique=True)
     password = db.Column(db.String(512), nullable=False)
     profile_path = db.Column(db.String(256), nullable=True)
@@ -41,7 +44,10 @@ class Products(db.Model):
     price = db.Column(db.Integer, nullable=False)
     productNo = db.Column(db.String(128), nullable=True)
     product_path = db.Column(db.String(256), nullable=True, default='default_path.jpg')
-    
+    description = db.Column(db.String(256), nullable=True)
+    brand = db.Column(db.String(40), nullable=True)
+    color = db.Column(db.String(255), nullable=True)
+
     cid = db.Column(db.Integer, db.ForeignKey('Categories.cid'), nullable=True)
     scid = db.Column(db.Integer, db.ForeignKey('Subcategories.scid'), nullable=True)
 

@@ -33,9 +33,9 @@ app.config['MAIL_USE_SSL'] = False
 
 #---------------------STATIC CONFIG
 current_directory = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(current_directory, '../','../', 'frontend_sx', 'public', 'images')
+UPLOAD_FOLDER = constants["static_root"]
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.static_folder = 'frontend/public'
+app.static_folder = UPLOAD_FOLDER
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
