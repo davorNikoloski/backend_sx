@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import ProductCard from './ProductCard';
 import Sidebar from './Sidebar';
+import FiltersBar from './Filtersbar'; // Import the FiltersBar component
 import Sortbar from './Sortbar'; // Import the Sortbar component
 
 const ProductsList = () => {
@@ -12,6 +13,7 @@ const ProductsList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [sortBy, setSortBy] = useState('recommended'); // Add state for sorting
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const { scid } = useParams(); // Get the subcategory ID from URL parameter
 
@@ -65,6 +67,9 @@ const ProductsList = () => {
     setSortBy(sortValue);
   };
 
+  const [showFilters, setShowFilters] = useState(false); // State for toggling filters
+
+
   const sortedProducts = products.slice(); // Create a copy of products array to avoid mutating state
 
   if (sortBy === 'nameAsc') {
@@ -76,20 +81,54 @@ const ProductsList = () => {
   } else if (sortBy === 'priceDesc') {
     sortedProducts.sort((a, b) => b.price - a.price);
   }
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
+
+  const toggleMobileFilters = () => {
+    setShowMobileFilters(!showMobileFilters);
+  };
+
+  const isMobileOrTablet = window.innerWidth <= 768; // Adjust the breakpoint as needed
+
+  
   return (
     <div className="flex">
-      <h3></h3>
-      <Sidebar
-        handleCategoryClick={handleCategoryClick}
-        setSearchQuery={setSearchQuery}
-      />
+      {/* FiltersBar for mobile */}
+      {isMobileOrTablet && (
+        <button
+          className="LOVA bg-blue-500 text-white px-4 py-2 rounded-md fixed bottom-4 right-4 z-10"
+          onClick={toggleMobileFilters}
+        >
+          Toggle Filters
+        </button>
+      )}
+
+      {/* Sidebar */}
+      {!isMobileOrTablet && (
+        <Sidebar
+          handleCategoryClick={handleCategoryClick}
+          setSearchQuery={setSearchQuery}
+        />
+      )}
+
       <div className="flex flex-col flex-1">
+        {/* Sortbar */}
         <Sortbar
           categoryName={getCurrentCategoryName() || selectedCategory}
           productCount={sortedProducts.length}
           onSortChange={handleSortChange}
         />
+
+        {/* FiltersBar for mobile */}
+        {isMobileOrTablet && showMobileFilters && (
+          <FiltersBar
+            categories={subcategories}
+            setSelectedCategory={setSelectedCategory}
+            setSearchQuery={setSearchQuery}
+          />
+        )}
+
+        
         <div className="flex flex-wrap justify-center">
           {sortedProducts
             .filter((product) =>

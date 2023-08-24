@@ -8,46 +8,50 @@ const Home = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Banner */}
-      <section
-        className="bg-cover bg-center text-white h-60 md:h-96 flex flex-col justify-center items-center shadow-md"
-        style={{ backgroundImage: `url(${bannerImageUrl})` }}
-      >
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center text-shadow-lg">
-          Trending
-        </h1>
-        <a
-          href="/products"
-          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
-        >
-          Browse Products
-        </a>
-      </section>
+  {/* Banner */}
+  <section
+    className="relative bg-cover bg-center text-white h-60 md:h-96 flex flex-col justify-center items-center shadow-md"
+    style={{ backgroundImage: `url(${bannerImageUrl})` }}
+  >
+    {/* Blurry Overlay */}
+    <div className="absolute inset-0 bg-black opacity-50"></div>
 
-      {/* Commercial Info */}
-      <section className="py-8 md:py-12 bg-gray-100">
-        <div className="container mx-auto flex flex-col md:flex-row justify-center md:space-x-4">
-          <div className="text-center mb-4 md:mb-0">
-            <h2 className="text-xl font-semibold mb-2">Quality Products</h2>
-            <p>We offer a wide range of high-quality products for all your needs.</p>
-          </div>
-          <div className="text-center mb-4 md:mb-0">
-            <h2 className="text-xl font-semibold mb-2">Fast Shipping</h2>
-            <p>Our efficient shipping ensures you get your orders as quickly as possible.</p>
-          </div>
-          <div className="text-center">
-            <h2 className="text-xl font-semibold mb-2">24/7 Support</h2>
-            <p>Our dedicated support team is available around the clock to assist you.</p>
-          </div>
-        </div>
-      </section>
+    <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center relative z-10">
+      Истражете ги нашите продукти!
+    </h1>
+    <a
+      href="/products"
+      className="bg-lime-500 hover:bg-lime-600 text-lg text-black py-4 px-6 rounded-lg relative z-10"
+    >
+      Истражи
+    </a>
+  </section>
 
-      {/* Recommended Products */}
-      <div className="text-left mt-8 pl-4">
-        <h2 className="text-lg md:text-xl font-semibold mb-2">Recommended Products</h2>
-        <RecommendedProducts />
+  {/* Commercial Info */}
+  <section className="py-8 md:py-12 bg-gray-100">
+    <div className="container mx-auto px-4 text-center md:flex md:justify-center">
+      <div className="mb-4 md:w-1/3 md:mb-0 bg-blue-100 p-6 rounded-md shadow-md">
+        <h2 className="text-xl font-semibold mb-2">Квалитетни продукти</h2>
+        <p className="px-4">Во нашиот богат асортиман, квалитетот е во самиот срце на сè што го нудиме. Секој производ кој го одбираме и ставаме на располагање е резултат на внимателен избор и стручност. Сме посветени да ви обезбедиме само најдоброто, бидејќи сме сигурни дека вистинскиот квалитет се препознава во долготрајноста и задоволството на нашите клиенти. Секој производ во нашата палета е гаранција за извонредност и одлична вредност, бидејќи знаеме дека квалитетот не е компромис, туку начин на живот.</p>
+      </div>
+      <div className="mb-4 md:w-1/3 md:mb-0 bg-green-100 p-6 rounded-md shadow-md">
+        <h2 className="text-xl font-semibold mb-2">Брза достава</h2>
+        <p className="px-4">Вашето време е важно, затоа ние се посветени на брза достава. Со нашата ефикасна систем на испорака, вашите нарачки стигнуваат до вас во најкраток можен рок. Ние го разбираме вашето нетрпение да ги добиете вашите квалитетни производи, затоа работиме нон-стоп за да ви обезбедиме брза, безбедна и точна достава секој пат. Вашата задоволство и очекувањата се наш приоритет, и ние не престануваме да се трудиме да ви го обезбедиме најдоброто и најбрзото.</p>
+      </div>
+      <div className="md:w-1/3 bg-yellow-100 p-6 rounded-md shadow-md">
+        <h2 className="text-xl font-semibold mb-2">Поддршка</h2>
+        <p className="px-4">Вашиот задоволен усмивка е наш успех. Се грижиме за вас од почеток до крај - со поддршка што стои зад вас, гаранција за враќање и рефундирање. Ние не сакаме само еднаш да ве видиме; сакаме да се вратите затоа што вие сте дел од нашата фамилија на задоволни клиенти.</p>
       </div>
     </div>
+  </section>
+
+  {/* Recommended Products */}
+  <div className="text-left mt-8 pl-4">
+    <h2 className="text-lg md:text-xl font-semibold mb-2">Recommended Products</h2>
+    <RecommendedProducts />
+  </div>
+</div>
+
   );
 };
 

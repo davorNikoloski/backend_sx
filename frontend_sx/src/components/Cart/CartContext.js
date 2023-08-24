@@ -19,8 +19,17 @@ export const CartProvider = ({ children }) => {
     sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product) => {
-    setCartItems([...cartItems, product]);
+  const addToCart = (product, quantity) => {
+    const existingCartItem = cartItems.find(item => item.pid === product.pid);
+
+    if (existingCartItem) {
+      const updatedCartItems = cartItems.map(item =>
+        item.pid === product.pid ? { ...item, quantity } : item
+      );
+      setCartItems(updatedCartItems);
+    } else {
+      setCartItems([...cartItems, { ...product, quantity }]);
+    }
   };
 
   const removeFromCart = (productId) => {

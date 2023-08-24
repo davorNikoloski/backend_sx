@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react'; // Import useState and useEffect
+
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NavMenu from './components/Navbar';
 import Footer from './components/Footer';
@@ -11,6 +12,7 @@ import ProductList from './components/Products/ProductList';
 import Home from './components/Home';
 import Contact from './components/Contact';
 import Cart from './components/Cart/Cart';
+import FiltersBar from './components/Products/Filtersbar';
 
 import CartPage from './components/Cart/CartPage';
 
@@ -20,20 +22,54 @@ import ThankYouPage from './components/Cart/ThankYouPage';
 
 import { CartProvider } from './components/Cart/CartContext'; // Import the CartProvider
 
+
+
+
 function App() {
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [matchedUser, setMatchedUser] = useState(null); // State to store the matched user data
+
+  useEffect(() => {
+    // Retrieve matchedUser from local storage and set it to the state
+    const storedMatchedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedMatchedUser) {
+      setMatchedUser(storedMatchedUser);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setMatchedUser(null);
+    setIsLoggedIn(false);
+    window.location.reload();
+
+  };
+
   return (
     <Router>
       <CartProvider> {/* Wrap your app with CartProvider */}
         <div className="flex flex-col min-h-screen">
-          <NavMenu />
-          <Routes>
+        <NavMenu
+            isSticky={true}
+            isLoggedIn={isLoggedIn}
+            matchedUser={matchedUser}
+            onLogout={handleLogout}
+            setIsLoggedIn={setIsLoggedIn} // Pass setIsLoggedIn as a prop
+
+          />
+            <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/userlist" element={<UserList />} />
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/login"
+              element={<Login onLoginSuccess={() => setIsLoggedIn(true)} />}
+              />
             <Route path="/register" element={<Register />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/cart" element={<Cart />} /> {/* Display the cart */}
             <Route path="/cartPage" element={<CartPage />} /> {/* Display the cart */}
+            <Route path="/filtersbar" element={<FiltersBar />} /> {/* Display the cart */}
 
             <Route path="/getProducts" element={<Products />} />
             <Route path="/product/:pid" element={<ProductDetails />} /> {/* New route */}

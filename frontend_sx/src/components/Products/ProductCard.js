@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import bikeImage from '../../images/bike.jpg';
+//import img from '/products/images/${product_path}';
 
 const realImg = '../../images/car.jpg';
 
@@ -16,7 +16,7 @@ const ProductCard = ({ product }) => {
   return (
     <div className="relative flex flex-col items-stretch p-4 border rounded-lg shadow-md bg-white transition-all hover:shadow-xl hover:bg-gray-100">
       <img
-        src={realImg}
+        src={product_path}
         alt={name}
         className="h-64 w-full object-cover rounded-t-lg"
       />

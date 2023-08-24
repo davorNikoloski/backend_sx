@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [email, setEmail] = useState('');
+  const [phone_number, setPhone_number] = useState('');
+  const [address, setAddress] = useState('');
+  const [address_number, setAddress_number] = useState('');
   const [first_name, setFirst_name] = useState('');
   const [last_name, setLast_name] = useState('');
   const [password, setPassword] = useState('');
@@ -35,6 +38,9 @@ const Register = () => {
         {
           first_name,
           last_name,
+          phone_number,
+          address,
+          address_number,
           email,
           password,
           confirm,
@@ -59,13 +65,13 @@ const Register = () => {
 
   return (
     <div className="max-w-xs mx-auto mt-8">
-      <h2 className="text-2xl font-bold mb-4">Register</h2>
+      <h2 className="text-2xl font-bold mb-4">Регистрација</h2>
       <form onSubmit={handleRegister}>
         <input
           className="w-full px-4 py-2 mb-2 border rounded-md"
           type="text"
           name="first_name"
-          placeholder="First Name"
+          placeholder="Име"
           value={first_name}
           onChange={(e) => setFirst_name(e.target.value)}
         />
@@ -73,7 +79,7 @@ const Register = () => {
           className="w-full px-4 py-2 mb-2 border rounded-md"
           type="text"
           name="last_name"
-          placeholder="Last Name"
+          placeholder="Презиме"
           value={last_name}
           onChange={(e) => setLast_name(e.target.value)}
         />
@@ -81,20 +87,53 @@ const Register = () => {
           className="w-full px-4 py-2 mb-2 border rounded-md"
           type="text"
           name="email"
-          placeholder="Email"
+          placeholder="Емаил"
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
             setValidEmailFormat(true);
           }}
         />
+
+        <input
+          className="w-full px-4 py-2 mb-2 border rounded-md"
+          type="text"
+          name="phone_number"
+          placeholder="Телефонски број"
+          value={phone_number}
+          onChange={(e) => {
+            setPhone_number(e.target.value);
+          }}
+        />
+        <div className="flex mb-2">
+      <div className="w-1/2 pr-1">
+        <input
+          className="w-full px-4 py-2 border rounded-md"
+          type="text"
+          name="address"
+          placeholder="Улица"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+        />
+      </div>
+      <div className="w-1/2 pl-1">
+        <input
+          className="w-full px-4 py-2 border rounded-md"
+          type="text"
+          name="address_number"
+          placeholder="Бр. Улица"
+          value={address_number}
+          onChange={(e) => setAddress_number(e.target.value)}
+        />
+      </div>
+    </div>
         
 
         <input
           className="w-full px-4 py-2 mb-2 border rounded-md"
           type="password"
           name="password"
-          placeholder="Password"
+          placeholder="Лозинка"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -102,7 +141,7 @@ const Register = () => {
           className="w-full px-4 py-2 mb-2 border rounded-md"
           type="password"
           name="confirm"
-          placeholder="Confirm password"
+          placeholder="Повторете лозинка"
           value={confirm}
           onChange={(e) => {
             setConfirm(e.target.value);

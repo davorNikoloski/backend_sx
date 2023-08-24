@@ -26,33 +26,33 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-graynp-100 flex justify-center items-center">
       <div className="bg-white shadow-md rounded-lg p-8 max-w-sm w-full">
-        <h2 className="text-2xl font-semibold mb-6">Contact Us</h2>
+        <h2 className="text-2xl font-semibold mb-6">Контактирајте</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <label className="block text-sm font-medium text-gray-700">Име</label>
             <input
               type="text"
               className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-blue-500"
-              placeholder="Your Name"
+              placeholder="Име"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-gray-700">Емаил</label>
             <input
               type="email"
               className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-blue-500"
-              placeholder="Your Email"
+              placeholder="Емаил"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Message</label>
+            <label className="block text-sm font-medium text-gray-700">Порака</label>
             <textarea
               className="mt-1 p-2 w-full h-24 border rounded-md focus:outline-none focus:border-blue-500"
-              placeholder="Your Message"
+              placeholder="Пратете порака...."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             ></textarea>
@@ -61,7 +61,7 @@ const Contact = () => {
             type="submit"
             className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-300"
           >
-            Send
+            Испрати
           </button>
         </form>
       </div>

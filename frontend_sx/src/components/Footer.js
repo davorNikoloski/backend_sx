@@ -1,10 +1,16 @@
 // components/Footer.js
 import React from 'react';
 import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
+import Newsletter from '../components/newsletter';
 
 const Footer = () => {
   return (
+    <div className='text-center mt-auto'>
+      <Newsletter />
+    
     <footer className="bg-gray-800 text-white py-4 text-center mt-auto">
+                
+
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-8">
         <div className="md:order-1 flex space-x-4 pl-5">
           <a href="#" className="text-white hover:text-gray-400">
@@ -18,14 +24,15 @@ const Footer = () => {
           </a>
         </div>
         <div className="md:order-2 text-center md:text-center">
-          <p className="text-white">&copy; {new Date().getFullYear()} Shopex. All rights reserved.</p>
+          <p className="text-white">&copy; {new Date().getFullYear()} Shopex. Сите права задржани.</p>
         </div>
         <div className="md:order-3 flex space-x-4 pr-5">
           <a href="/faq" className="text-white hover:text-gray-400">FAQ</a>
-          <a href="/contact" className="text-white hover:text-gray-400">Contact Us</a>
+          <a href="/contact" className="text-white hover:text-gray-400">Контакт</a>
         </div>
       </div>
     </footer>
+    </div>
   );
 };
 

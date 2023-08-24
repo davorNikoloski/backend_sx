@@ -2,6 +2,7 @@ import React from 'react';
 
 const Newsletter = () => {
   return (
+    
     <div className="flex flex-col md:flex-row items-center justify-center md:justify-between p-4 bg-gray-100 rounded-md shadow-md">
       <div className="md:w-1/2 md:pr-8">
         <h3 className="text-2xl md:text-3xl font-semibold mb-4">Бидете во тек!</h3>

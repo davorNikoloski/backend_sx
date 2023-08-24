@@ -1,9 +1,8 @@
-// Sidebar.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const Sidebar = ({ setSearchQuery }) => {
+const Sidebar = ({ setSearchQuery, showMobileSidebar, setShowMobileSidebar }) => {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -62,60 +61,78 @@ const Sidebar = ({ setSearchQuery }) => {
 
   return (
     <div className="sticky top-0 h-screen bg-gray-200 w-1/5 p-4 shadow-md z-10">
-      <h2 className="text-lg font-semibold mb-4">Filter Options</h2>
-      <div className="mb-4">
+      <h2 className="text-lg font-semibold mb-4">Филтри</h2>
+
+      {/* Search bar */}
+      <div className="mb-6">
         <input
           type="text"
-          placeholder="Search products..."
+          placeholder="Пребарај..."
           className="w-full px-4 py-2 border rounded-md"
           value={searchQuery}
           onChange={handleSearchInputChange}
         />
       </div>
-      <button
-        onClick={handleClearFilters}
-        className="w-full bg-gray-300 py-2 rounded-md mb-4"
-      >
-        Clear Filters
-      </button>
-      <h3 className="w-full bg-white-300 py-2 rounded-md mb-4 text-center" >Categories</h3>
-      {categories?.length > 0 ? (
-        <ul className="space-y-2">
-          {categories.map((category) => (
-            <li key={category.cid} className="cursor-pointer">
-              <button
-                onClick={() => handleCategoryDropdownClick(category.cid)}
-                className="flex items-center justify-between w-full bg-white text-left px-2 py-1 rounded-md"
+
+      {/* Categories */}
+      <div className="mb-6">
+        <h3 className="py-2 mb-2 text-center font-semibold bg-blue-500 text-white rounded-md">
+          Категории
+        </h3>
+        {categories?.length > 0 ? (
+          <ul className="space-y-1">
+            {categories.map((category) => (
+              <li
+                key={category.cid}
+                className={`cursor-pointer ${
+                  selectedCategory === category.cid ? 'bg-blue-100' : ''
+                }`}
               >
-                {category.name}
-                <span>{selectedCategory === category.cid ? '▲' : '▼'}</span>
-              </button>
-              {selectedCategory === category.cid && (
-                <div>
-                  <ul className="pl-4 space-y-2">
-                    {subcategories
-                      .filter((subcategory) => subcategory.cid === category.cid)
-                      .map((subcategory) => (
-                        <li key={subcategory.scid}>
-                          <button
-                            onClick={() =>
-                              window.open(`/getProducts/${subcategory.scid}`, '_blank')
-                              //handleCategoryDropdownClick(category.cid, subcategory.name)
-                            }
-                          >
-                            {subcategory.name}
-                        </button>
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No categories available.</p>
-      )}
+                <button
+                  onClick={() => handleCategoryDropdownClick(category.cid)}
+                  className={`flex items-center justify-between w-full bg-white text-left px-4 py-2 rounded-md ${
+                    selectedCategory === category.cid ? 'bg-blue-200 text-blue-700' : ''
+                  }`}
+                >
+                  <span className={`${selectedCategory === category.cid ? 'text-blue-700' : 'text-gray-700'}`}>
+                    {category.name}
+                  </span>
+                  <span>{selectedCategory === category.cid ? '▲' : '▼'}</span>
+                </button>
+                {selectedCategory === category.cid && (
+                  <div className="pl-4">
+                    <ul className="space-y-1">
+                      {subcategories
+                        .filter((subcategory) => subcategory.cid === category.cid)
+                        .map((subcategory) => (
+                          <li key={subcategory.scid} className="pl-2">
+                            <button
+                              onClick={() =>
+                                window.open(`/getProducts/${subcategory.scid}`, '_blank')
+                              }
+                              className={`text-${
+                                selectedCategory === category.cid ? 'blue' : 'gray'
+                              }-600 hover:underline`}
+                            >
+                              {subcategory.name}
+                            </button>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No categories available.</p>
+        )}
+      </div>
+
+      {/* Clear Filters */}
+      <button onClick={handleClearFilters} className="w-full bg-gray-300 py-2 rounded-md">
+        Исчисти филтри
+      </button>
     </div>
   );
 };
