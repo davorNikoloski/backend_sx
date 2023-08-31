@@ -11,7 +11,7 @@ constants = {
     "remote" : {
         "mysql": {
             "db_name": "Ecomm",
-            "host": "localhost",
+            "host": "142.93.109.181",
             "user": "root",
             "password": "!123ShopexPass",
         },
@@ -19,5 +19,5 @@ constants = {
     },
 }
 SECRET_KEY = "420420420420420"
-selector = "remote"
+selector = "local"
 constants = constants[selector]
