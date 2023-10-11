@@ -15,7 +15,7 @@ const shuffleArray = (array) => {
 const RecommendedProducts = () => {
   const scrollContainerRef = useRef(null);
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [/*loading,*/ setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRecommendedProducts = async () => {

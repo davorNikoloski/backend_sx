@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types'; // Import PropTypes
 
 const Filtersbar = ({ categories, subcategories, setSelectedCategory, setSearchQuery }) => {
   const [showSubcategories, setShowSubcategories] = useState(false);
@@ -73,4 +74,10 @@ const Filtersbar = ({ categories, subcategories, setSelectedCategory, setSearchQ
   );
 };
 
+Filtersbar.propTypes = {
+  categories: PropTypes.arrayOf(PropTypes.string).isRequired, // An array of category strings
+  subcategories: PropTypes.arrayOf(PropTypes.string).isRequired, // An array of subcategory strings
+  setSelectedCategory: PropTypes.func.isRequired, // A function to set the selected category
+  setSearchQuery: PropTypes.func.isRequired, // A function to set the search query
+};
 export default Filtersbar;

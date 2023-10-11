@@ -1,36 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faShoppingCart, faBars } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+//import axios from 'axios';
+import PropTypes from 'prop-types';
 
 import '../output.css';
 
-const Navbar = ({ isSticky, isLoggedIn, matchedUser, onLogout, setIsLoggedIn }) => {
+const Navbar = ({ isSticky, isLoggedIn, matchedUser, onLogout }) => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState(null);
+  //const [loggedInUser, /*setLoggedInUser*/] = useState(null);
 
- 
-  
-  useEffect(() => {
-    
-      fetchUserData();
-    
-  }, [isLoggedIn]);
-
-  const fetchUserData = async () => {
-    try {
-      const response = await axios.get('/auth/users', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        },
-      });
-      setLoggedInUser(response.data.user);
-      console.log(response.data.user)
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
@@ -60,33 +40,35 @@ const Navbar = ({ isSticky, isLoggedIn, matchedUser, onLogout, setIsLoggedIn }) 
         <div className="text-white text-xl font-bold">Shopex</div>
 
         <div className="hidden md:flex items-center space-x-4">
-        {matchedUser ? (
-            <>
-          <span className="text-white ">{"Здраво "+ matchedUser.first_name}</span>
-          <div className="w-px h-6 bg-gray-500"></div>
-          <button
-            className="text-white hover:text-gray-300"
-            onClick={onLogout}
-          >
-            Одјави се
-          </button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="text-white hover:text-gray-300">
-                <FontAwesomeIcon icon={faUser} className="text-white text-2xl hover:text-gray-300 cursor-pointer" />
-                <span className="ml-2">Најави се</span>
-              </Link>
-              <Link to="/register" className="text-white hover:text-gray-300">
-                <FontAwesomeIcon icon={faUser} className="text-white text-2xl hover:text-gray-300 cursor-pointer" />
-                <span className="ml-2">Регистрирај се</span>
-              </Link>
-            </>
-          )}
-          <Link to="/cartPage" className="text-white hover:text-gray-300">
-            <FontAwesomeIcon icon={faShoppingCart} className="text-white text-2xl hover:text-gray-300 cursor-pointer" />
-          </Link>
-        </div>
+  {isLoggedIn ? (
+    <>
+      <span className="text-white">
+        Здраво {matchedUser ? matchedUser.first_name : 'Гост'}
+      </span>
+      <div className="w-px h-6 bg-gray-500"></div>
+      <button
+        className="text-white hover-text-gray-300"
+        onClick={onLogout}
+      >
+        Одјави се
+      </button>
+    </>
+  ) : (
+    <>
+      <Link to="/login" className="text-white hover:text-gray-300">
+        <FontAwesomeIcon icon={faUser} className="text-white text-2xl hover:text-gray-300 cursor-pointer" />
+        <span className="ml-2">Најави се</span>
+      </Link>
+      <Link to="/register" className="text-white hover:text-gray-300">
+        <FontAwesomeIcon icon={faUser} className="text-white text-2xl hover:text-gray-300 cursor-pointer" />
+        <span className="ml-2">Регистрирај се</span>
+      </Link>
+    </>
+  )}
+  <Link to="/cartPage" className="text-white hover:text-gray-300">
+    <FontAwesomeIcon icon={faShoppingCart} className="text-white text-2xl hover:text-gray-300 cursor-pointer" />
+  </Link>
+</div>
 
         <div className="md:hidden">
           <button
@@ -174,5 +156,10 @@ const Navbar = ({ isSticky, isLoggedIn, matchedUser, onLogout, setIsLoggedIn }) 
     </div>
   );
 };
-
+Navbar.propTypes = {
+  isSticky: PropTypes.bool.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
+  matchedUser: PropTypes.object,
+  onLogout: PropTypes.func.isRequired,
+};
 export default Navbar;

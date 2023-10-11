@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'; // Import useState and useEffect
+import Cookies from 'js-cookie'; // Import the js-cookie library
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NavMenu from './components/Navbar';
@@ -17,7 +18,7 @@ import FiltersBar from './components/Products/Filtersbar';
 import CartPage from './components/Cart/CartPage';
 
 import CheckoutPage from './components/Cart/CheckoutPage';
-import OrderConfirmation from './components/Cart/OrderConfirmation';
+{/*import OrderConfirmation from './components/Cart/OrderConfirmation';*/}
 import ThankYouPage from './components/Cart/ThankYouPage';
 
 import { CartProvider } from './components/Cart/CartContext'; // Import the CartProvider
@@ -30,21 +31,38 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [matchedUser, setMatchedUser] = useState(null); // State to store the matched user data
 
+
   useEffect(() => {
-    // Retrieve matchedUser from local storage and set it to the state
-    const storedMatchedUser = JSON.parse(localStorage.getItem('user'));
-    if (storedMatchedUser) {
-      setMatchedUser(storedMatchedUser);
+    const userCookie = Cookies.get('user');
+    if (userCookie) {
+      setIsLoggedIn(true);
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    setMatchedUser(null);
-    setIsLoggedIn(false);
-    window.location.reload();
+  useEffect(() => {
+  const storedMatchedUser = Cookies.get('user');
+  if (storedMatchedUser) {
+    // If the item exists, parse it and set it in the state
+    
+    try {
+      const parsedUser = JSON.parse(storedMatchedUser);
+      console.log(parsedUser[0])
 
-  };
+      setMatchedUser(parsedUser[0]);
+    } catch (error) {
+      // Handle any potential parsing errors
+      console.error('Error parsing user data from local storage:', error);
+    }
+  }
+}, [isLoggedIn]);
+
+const handleLogout = () => {
+  Cookies.remove('user');
+  Cookies.remove('access_token');
+  Cookies.remove('cartItems'); 
+  setIsLoggedIn(false);
+  // Additional actions as needed.
+};
 
   return (
     <Router>
@@ -63,7 +81,8 @@ function App() {
             <Route path="/userlist" element={<UserList />} />
             <Route
               path="/login"
-              element={<Login onLoginSuccess={() => setIsLoggedIn(true)} />}
+              element={<Login setIsLoggedIn={setIsLoggedIn} // Pass setIsLoggedIn function
+              />}
               />
             <Route path="/register" element={<Register />} />
             <Route path="/contact" element={<Contact />} />
@@ -79,7 +98,7 @@ function App() {
 
 
             <Route path="/checkout" component={<CheckoutPage/>} />
-            <Route path="/OrderConfirmation" element={<OrderConfirmation />} />
+            {/*<Route path="/OrderConfirmation" element={<OrderConfirmation />} />*/}
             <Route path="/thank-you" component={<ThankYouPage/>} />
            
            

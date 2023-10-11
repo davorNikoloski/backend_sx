@@ -2,18 +2,14 @@ import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../Cart/CartContext';
 import axios from 'axios';
-import OrderConfirmation from '../Cart/OrderConfirmation';
 
 const CartPage = () => {
-  const { cartItems } = useContext(CartContext);
+  const { cartItems, clearCart } = useContext(CartContext); // Include clearCart from the CartContext
   const total = cartItems.reduce((acc, item) => acc + parseFloat(item.price), 0);
-  const deliveryCost = 8; // Set your delivery cost here
-  const discount = 0; // Set your discount amount here
-  const finalTotal = total + deliveryCost - discount; // Calculate the final total including shipping
-  const navigate = useNavigate(); // Add useNavigate hook
-
-
-  const productIds = cartItems.map(item => item.pid); // Get an array of product IDs
+  const deliveryCost = 8;
+  const discount = 0;
+  const finalTotal = total + deliveryCost - discount;
+  const navigate = useNavigate();
 
   const [shippingInfo, setShippingInfo] = useState({
     firstName: '',
@@ -27,56 +23,54 @@ const CartPage = () => {
   });
 
   const handleBuyNow = async () => {
-    // Prepare the order data
     const orderData = {
-    shippingInfo: {
-      ...shippingInfo, // Spread the existing shippingInfo fields
-    },
-    products: cartItems.map(item => ({
-      productId: item.pid,
-      quantity: item.quantity, // Include the quantity of each item
-    })),
-  };
-  
+      shippingInfo: { ...shippingInfo },
+      products: cartItems.map(item => ({
+        productId: item.pid,
+        quantity: item.quantity,
+      })),
+    };
+
     try {
       const response = await axios.post('/order/order', orderData);
       const orderDetails = response.data.orderDetails;
       const orderDetailsJson = JSON.stringify(orderDetails);
 
-  // Navigate to the order confirmation page with orderDetails as state
-  navigate('/OrderConfirmation', { state: { orderDetailsJson } });
-
-  // Handle the response as needed
-} catch (error) {
-  console.error('Error sending order:', error);
-  console.log('Error response data:', error.response.data);
+      navigate('/OrderConfirmation', { state: { orderDetailsJson } });
+    } catch (error) {
+      console.error('Error sending order:', error);
+      console.log('Error response data:', error.response.data);
     }
   };
 
   return (
     <div className="bg-gray-100 min-h-screen py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <div className="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
-  <div className="px-4 pt-8">
-    <p className="text-xl font-medium">Order Summary</p>
-    <p className="text-gray-400">Check your items. And select a suitable shipping method.</p>
-    <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-      {/* Cart Items */}
-      {cartItems.map(item => (
-        <div key={item.pid} className="flex flex-col sm:flex-row rounded-lg bg-white">
-          <img className="m-2 h-24 w-28 rounded-md border object-cover object-center" src={item.image} alt="" />
-          <div className="flex w-full flex-col px-4 py-4">
-            <span className="font-semibold">{item.name}</span>
-            <span className="float-right text-gray-400">Quantity: {item.quantity}</span> {/* Display quantity */}
-            <p className="mt-auto text-lg font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+        <div className="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
+          <div className="px-4 pt-8">
+            <p className="text-xl font-medium">Order Summary</p>
+            <p className="text-gray-400">Check your items. And select a suitable shipping method.</p>
+            <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
+              {cartItems.map(item => (
+                <div key={item.pid} className="flex flex-col sm:flex-row rounded-lg bg-white">
+                  <img className="m-2 h-24 w-28 rounded-md border object-cover object-center" src={item.image} alt="" />
+                  <div className="flex w-full flex-col px-4 py-4">
+                    <span className="font-semibold">{item.name}</span>
+                    <span className="float-right text-gray-400">Quantity: {item.quantity}</span>
+                    <p className="mt-auto text-lg font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button
+              className="mt-4 mb-8 w-full rounded-md bg-red-500 px-6 py-3 font-medium text-white"
+              onClick={clearCart}
+            >
+              Clear Cart
+            </button>
           </div>
-        </div>
-      ))}
-    </div>
-            
-            
-          </div>
+
+          
           <div className="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0">
             <p className="text-xl font-medium">Shipping Details</p>
             <p className="text-gray-400">Complete your order by providing your payment details.</p>

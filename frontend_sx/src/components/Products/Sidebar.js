@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types'; // Import PropTypes
 
-const Sidebar = ({ setSearchQuery, showMobileSidebar, setShowMobileSidebar }) => {
+const Sidebar = ({ setSearchQuery, /*showMobileSidebar, setShowMobileSidebar */}) => {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  //const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [searchQuery, setSearchQueryLocal] = useState('');
 
   const navigate = useNavigate();
@@ -136,5 +137,7 @@ const Sidebar = ({ setSearchQuery, showMobileSidebar, setShowMobileSidebar }) =>
     </div>
   );
 };
-
+Sidebar.propTypes = {
+  setSearchQuery: PropTypes.func.isRequired, // A function to set the search query
+};
 export default Sidebar;

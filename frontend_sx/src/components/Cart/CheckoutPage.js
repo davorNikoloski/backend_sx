@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 const CheckoutPage = () => {
   const location = useLocation();
-  const { cartItems, finalTotal, deliveryCost, discount } = location.state;
+  const { /*cartItems*/ finalTotal, deliveryCost, discount } = location.state;
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
 import React from 'react';
 import RecommendedProducts from './Slides/RecommendedProducts';
-import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
+//import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const Home = () => {
   const bannerImageUrl =

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import ProductCard from '../Products/ProductCard';
+import PropTypes from 'prop-types';
 
 const SimilarProducts = ({ productDet }) => {
   const scrollContainerRef = useRef(null);
@@ -38,7 +39,7 @@ const SimilarProducts = ({ productDet }) => {
         </svg>
       </button>
 
-      <div ref={scrollContainerRef} className="flex space-x-4 overflow-x-auto flex-1 w-full">
+      <div ref={scrollContainerRef} className="flex space-x-4 overflow-x-auto flex-1 w-full ">
         {products.map((product) => (
           <div key={product.pid} className="similar-product-card" style={{ minWidth: '280px' }}>
             <ProductCard product={product} />
@@ -57,5 +58,10 @@ const SimilarProducts = ({ productDet }) => {
     </div>
   );
 };
-
+SimilarProducts.propTypes = {
+  productDet: PropTypes.shape({
+    scid: PropTypes.number.isRequired, // Adjust the type as needed
+    // Add other properties as needed
+  }).isRequired,
+};
 export default SimilarProducts;

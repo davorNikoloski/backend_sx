@@ -26,6 +26,10 @@ class User():
 
     #-----------------READ
     user = Users()
+
+
+    
+    
     def readd(self, request):
         params = build_params(self.table_keys, request.args)
         user = Users.query.filter_by(**params).all()
@@ -39,6 +43,28 @@ class User():
         #})
         
     #
+
+    def readId(self, request, user_id):
+        try:
+            # Extract the 'uid' attribute from the 'user_id' object
+            uid = user_id.get('uid')
+            print("-----------" + str(uid))
+            if uid is not None:
+                user = Users.query.get(uid)
+                print(user)
+                if user is not None:
+                    ret = convertor(user, ["password", "reset_code"], True)
+                    return jsonify({"user": ret}), 200
+                else:
+                    return jsonify({"message": "User not found"}), 404
+            else:
+                return jsonify({"message": "Invalid user ID"}), 400
+        except Exception as e:
+            # Log the exception for debugging purposes
+            print(f"Error in readId: {str(e)}")
+            return jsonify({"message": "Internal Server Error"}), 500
+
+    
     def read(self, request):
         hash_info = get_hash_info(request.args)
         params = build_params(self.table_keys, request.args)

@@ -44,13 +44,16 @@ class Product():
 
         if 'product_path' in request.files:
             product_image = request.files['product_path']
+
             print("Uploaded file name:", product_image.filename)
 
             if self.allowed_file(product_image.filename):
                 filename = secure_filename(product_image.filename)
+
                 print("Saving file to:", os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                product_image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                product_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+                image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                product_image.save(image_path)
             else:
                 return custom_abort(400, "Invalid file format. Allowed formats: jpg, jpeg, png, gif")
 
@@ -70,7 +73,7 @@ class Product():
         [setattr(product, key, data[key]) for key in required_keys]
         [setattr(product, u_key, data[u_key]) for u_key in secondary_keys]
 
-        product.product_path = product_path
+        product.product_path = filename #PRIVREMENO VAKA TREBA DA BIDI URL
         db.session.add(product)
         db.session.commit()
         product = Products.query.filter_by(pid=product.pid).first()

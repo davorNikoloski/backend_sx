@@ -1,69 +1,53 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import Cookies from 'js-cookie'; // Import the js-cookie library
 
-const Login = () => {
+const Login = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleLogin = async (onLoginSuccess ) => {
+  const handleLogin = async () => {
     try {
-      const response = await axios.post(
-        '/auth/login',
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      
-      console.log(response.config.data); // Add this line to check the response data
-
-      const accessToken = response.data.access_token;
-      localStorage.setItem('access_token', accessToken);
-
-      // Fetch user data using the access token
-      const userResponse = await axios.get('/auth/users', {
+      const response = await axios.post('/auth/login', {
+        email,
+        password,
+      }, {
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
         },
       });
 
-      const loggedInUserData = response.data.email; // User data from the login response
-      const fetchedUserData = userResponse.data; // User data from the users response
+      const { access_token } = response.data;
 
-      const loggedInUserEmail = loggedInUserData.toLowerCase().trim();
-      const fetchedEmails = fetchedUserData.map(user => user.email.toLowerCase().trim());
+      if (access_token) {
+        // Store the access_token in a cookie
+        Cookies.set('access_token', access_token);
 
-      if (fetchedEmails.includes(loggedInUserEmail)) {
-        // User data corresponds to the same user who logged in
-        const matchedUser = fetchedUserData.find(user => user.email.toLowerCase().trim() === loggedInUserEmail);
-        localStorage.setItem('user', JSON.stringify(matchedUser));
+        // Fetch the user data using the access_token
+        const userResponse = await axios.get('/auth/getUser', {
+          headers: {
+            'Authorization': `Bearer ${access_token}`,
+          },
+        });
+
+        const user = userResponse.data;
+        Cookies.set('user', JSON.stringify(user));
+
+        //localStorage.setItem('user', JSON.stringify(user));
+
         setIsLoggedIn(true);
-        //onLoginSuccess();
-
         navigate('/getProducts');
-        window.location.reload();
-
-        console.log("User data from login:", loggedInUserData);
-        console.log("Matched user data from users response:", matchedUser);
       } else {
-        console.log("Fetched user data does not match the logged-in user.");
+        setMessage('Login failed. Please check your credentials.');
       }
-
-
-          } catch (error) {
-            setMessage('Login failed. Please check your credentials.' + error.message);
-          }
-        };
-
+    } catch (error) {
+      setMessage('Login failed. Please check your credentials.' + error);
+    }
+  };
 
   //-----------------------HTML-------------------------------------
 
@@ -95,6 +79,10 @@ const Login = () => {
       {message && <p className="text-red-500 mt-2">{message}</p>}
     </div>
   );
+};
+
+Login.propTypes = {
+  setIsLoggedIn: PropTypes.func.isRequired,
 };
 
 export default Login;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'; // Import PropTypes
 
 const OrderConfirmation = ({ location }) => {
   if (!location.state || !location.state.orderDetailsJson) {
@@ -59,5 +60,12 @@ const OrderConfirmation = ({ location }) => {
     </div>
   );
 };
-
+OrderConfirmation.propTypes = {
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      orderDetailsJson: PropTypes.string,
+      // Add other properties if needed
+    }),
+  }),
+};
 export default OrderConfirmation;

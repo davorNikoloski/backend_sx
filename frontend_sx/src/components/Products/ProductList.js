@@ -67,7 +67,7 @@ const ProductsList = () => {
     setSortBy(sortValue);
   };
 
-  const [showFilters, setShowFilters] = useState(false); // State for toggling filters
+  //const [showFilters, setShowFilters] = useState(false); // State for toggling filters
 
 
   const sortedProducts = products.slice(); // Create a copy of products array to avoid mutating state
@@ -81,7 +81,7 @@ const ProductsList = () => {
   } else if (sortBy === 'priceDesc') {
     sortedProducts.sort((a, b) => b.price - a.price);
   }
-  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  //const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
 
   const toggleMobileFilters = () => {

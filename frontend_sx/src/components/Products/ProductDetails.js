@@ -2,19 +2,21 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import SimilarProducts from '../Slides/SimilarProducts';
-import bikeImage from '../../images/bike.jpg';
+//import bikeImage from '../../images/products/bike.jpg';
 import { CartContext } from '../Cart/CartContext';
 
 const ProductDetails = () => {
+
+  const [imageURL, setImageURL] = useState(null);
   const { pid } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [imageFilename, setImageFilename] = useState(''); // Initial value can be empty or a default image filename
 
   const [quantity, setQuantity] = useState(1); // Initialize quantity with 1
 
   const { addToCart, removeFromCart, cartItems } = useContext(CartContext);
   const isItemInCart = product && cartItems.some(item => item.pid === product.pid);
-
 
 
   // Increase quantity
@@ -47,7 +49,11 @@ const ProductDetails = () => {
         const response = await axios.get(`/products/product/${pid}`);
         setProduct(response.data.products);
         setLoading(false);
-        console.log(response.data.products)
+
+        const productImagePath = response.data.products.product_path;
+        setImageFilename(productImagePath); // Assume you have a state for imageFilename
+        console.log(productImagePath);
+        console.log(response.data.products);
       } catch (error) {
         console.log('Error fetching product:', error);
         setLoading(false);
@@ -56,6 +62,28 @@ const ProductDetails = () => {
 
     fetchProduct();
   }, [pid]);
+  //let imageFilename = 'random.jpeg';
+  //let imageFilename = product.product_path;
+console.log(imageFilename + "-------------")
+  useEffect(() => {
+
+    const backendURL = 'http://localhost:5000';
+    
+
+    axios.get(`${backendURL}/products/images/${imageFilename}`)
+      .then((response) => {
+        if (response.status === 200) {
+          setImageURL(response.config.url);
+        } else {
+          console.error('Failed to fetch image');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }, [imageFilename]);
+
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -68,11 +96,11 @@ const ProductDetails = () => {
 
   return (
     <div className="container mx-auto my-8 p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div>
+      <div className='flex w-full h-full justify-center align-center items-center'>
         <img
-          src={`/products/images/${product.product_path}`}
-          alt={product.name}
-          className="w-full h-96 object-cover rounded-lg shadow-md"
+          src={imageURL}
+          alt={"nemat"}
+          className="w-full w-100 object-contain rounded-lg shadow-md"
         />
       </div>
       <div className="md:mt-0">

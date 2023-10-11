@@ -22,7 +22,7 @@ app.config['JWT_TOKEN_LOCATION'] = ['headers', 'query_string']
 app.config['JWT_BLACKLIST_ENABLED'] = True
 
 #------------------MAIL CONFIG------------------
-app.config['EMAIL_HOST']="smtp-mail.outlook.com"
+app.config['EMAIL_HOST'] = 'smtp.office365.com'  # Correct SMTP server address for Outlook/Hotmail
 app.config['EMAIL_PORT'] = 587
 app.config['EMAIL_USERNAME'] = "pyFlaskDBTest@hotmail.com"
 app.config['EMAIL_PASSWORD'] = "Flasktest123321"

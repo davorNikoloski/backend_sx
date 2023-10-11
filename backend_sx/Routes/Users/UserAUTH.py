@@ -3,11 +3,12 @@ from Config.Config import app, db
 from Config.Common import custom_abort, get_user_from_jwt, convertor, get_hash_info, build_params
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
 import datetime, random
-from flask import jsonify
+from flask import jsonify,Blueprint
 from flask_bcrypt import Bcrypt
 import bcrypt
 from email_validator import validate_email
 
+auth = Blueprint('authenticate', __name__)
 
 
 class UsersAuth():

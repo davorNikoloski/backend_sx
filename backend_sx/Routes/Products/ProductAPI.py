@@ -7,9 +7,15 @@ from Config.Config import app
 from Routes.Products.ProductCRUD import ProductCrud
 from Config.Common import crud_routes, convertor
 from Models.Models import Products, Categories, Subcategories
+from flask import send_from_directory
 
 products_api = Blueprint('products', __name__)
 
+
+
+@products_api.route('/images/<filename>')
+def send_image(filename):
+    return send_from_directory('C:/Users/Davor/Desktop/Shopex/backend_sx/Static/img/products', filename)
 
 #ADD----------------------------------------------------
 @products_api.route('/add_product', methods=['GET'])

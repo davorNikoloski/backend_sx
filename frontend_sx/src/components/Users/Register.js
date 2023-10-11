@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import Cookies from 'js-cookie';
 
-const Register = () => {
+const Register = ({ setIsLoggedIn }) => {
+  const navigate = useNavigate();
+  const [first_name, setFirst_name] = useState('');
+  const [last_name, setLast_name] = useState('');
   const [email, setEmail] = useState('');
   const [phone_number, setPhone_number] = useState('');
   const [address, setAddress] = useState('');
   const [address_number, setAddress_number] = useState('');
-  const [first_name, setFirst_name] = useState('');
-  const [last_name, setLast_name] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [message, setMessage] = useState('');
   const [passwordsMatch, setPasswordsMatch] = useState(true);
   const [validEmailFormat, setValidEmailFormat] = useState(true);
-
-  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -51,17 +52,25 @@ const Register = () => {
           },
         }
       );
-      const { access_token } = response.data; // Get the access token from the response
-      localStorage.setItem('access_token', access_token); // Store the token in local storage
-      
-      console.log(response.data);
-      setMessage(response.data.msg);
-      navigate('/login');
+      const { access_token } = response.data;
+
+      if (access_token) {
+        // Store the access_token in a cookie
+        Cookies.set('access_token', access_token);
+
+        setMessage(response.data.msg);
+        setIsLoggedIn(true);
+        navigate('/login');
+      } else {
+        setMessage('Registration failed. Please try again later.');
+      }
     } catch (error) {
-      // If registration fails, show error message
+      // If registration fails, show an error message
       setMessage('Registration failed. Please try again later.' + error);
     }
   };
+
+  //-----------------------HTML-------------------------------------
 
   return (
     <div className="max-w-xs mx-auto mt-8">
@@ -94,41 +103,36 @@ const Register = () => {
             setValidEmailFormat(true);
           }}
         />
-
         <input
           className="w-full px-4 py-2 mb-2 border rounded-md"
           type="text"
           name="phone_number"
           placeholder="Телефонски број"
           value={phone_number}
-          onChange={(e) => {
-            setPhone_number(e.target.value);
-          }}
+          onChange={(e) => setPhone_number(e.target.value)}
         />
         <div className="flex mb-2">
-      <div className="w-1/2 pr-1">
-        <input
-          className="w-full px-4 py-2 border rounded-md"
-          type="text"
-          name="address"
-          placeholder="Улица"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-        />
-      </div>
-      <div className="w-1/2 pl-1">
-        <input
-          className="w-full px-4 py-2 border rounded-md"
-          type="text"
-          name="address_number"
-          placeholder="Бр. Улица"
-          value={address_number}
-          onChange={(e) => setAddress_number(e.target.value)}
-        />
-      </div>
-    </div>
-        
-
+          <div className="w-1/2 pr-1">
+            <input
+              className="w-full px-4 py-2 border rounded-md"
+              type="text"
+              name="address"
+              placeholder="Улица"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
+          <div className="w-1/2 pl-1">
+            <input
+              className="w-full px-4 py-2 border rounded-md"
+              type="text"
+              name="address_number"
+              placeholder="Бр. Улица"
+              value={address_number}
+              onChange={(e) => setAddress_number(e.target.value)}
+            />
+          </div>
+        </div>
         <input
           className="w-full px-4 py-2 mb-2 border rounded-md"
           type="password"
@@ -164,6 +168,10 @@ const Register = () => {
       {message && <p className="text-green-500 mt-2">{message}</p>}
     </div>
   );
+};
+
+Register.propTypes = {
+  setIsLoggedIn: PropTypes.func.isRequired,
 };
 
 export default Register;

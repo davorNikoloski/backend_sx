@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const Sortbar = ({ categoryName, productCount, onSortChange }) => {
   return (
@@ -25,5 +26,9 @@ const Sortbar = ({ categoryName, productCount, onSortChange }) => {
     </div>
   );
 };
-
+Sortbar.propTypes = {
+  categoryName: PropTypes.string.isRequired,
+  productCount: PropTypes.number.isRequired,
+  onSortChange: PropTypes.func.isRequired,
+};
 export default Sortbar;

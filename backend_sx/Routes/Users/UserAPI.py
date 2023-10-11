@@ -10,23 +10,39 @@ from Routes.Users.UserCRUD import userCrud
 from Routes.Users.UserAUTH import user_auth 
 
 from Config.Common import crud_routes
-user = Blueprint('index', __name__)
+user_api = Blueprint('index', __name__)
 
 
 #ROUTES-----------------------
-@user.route('/users', methods=["GET", "UPDATE"])
+@user_api.route('/getUser', methods=["GET", "UPDATE"])
+@jwt_required()
+def getUser():
+    current_user = get_jwt_identity()  # Get the user information from the JWT token
+    #print(str(current_user) + "TEST")
 
-#@jwt_required()
-def sendUsers():
-    # current_user = get_jwt_identity()  # Get the user information from the JWT token
+    # Call the 'readId' function to fetch the user by their ID
+    response, status_code = userCrud.readId(request,current_user)
 
-    response = crud_routes(request, userCrud)
-    return response.get_json()['user'] 
+    if status_code == 200:
+        user_data = response.get_json()['user']
+
+        return jsonify(user_data), status_code
+
+    else:
+        error_message = response
+        return error_message
+    #print(str(user_data) + "OVA E OVA E" + str(status_code) + "STATUS")
+    #if isinstance(user_data, tuple) and user_data[1] == 200:
+       # return user_data
+    #else:
+        # Handle the case where the user is not found or there's an error
+        #return user_data
+
 
 
 #-------------------LOGIN--------------------------------
 
-@user.route('/login', methods=["GET", "POST"])
+@user_api.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         response, status_code = user_auth.login(request)
@@ -40,7 +56,7 @@ def login():
             return error_message
 
 
-@user.route('/register', methods=["GET", "POST"])
+@user_api.route('/register', methods=["GET", "POST"])
 def register():
 
     if request.method == "POST":
@@ -54,7 +70,7 @@ def register():
 
 
 
-@user.route('/ne', methods=["GET", "UPDATE"])
+@user_api.route('/ne', methods=["GET", "UPDATE"])
 def users():
     #current_user = get_jwt_identity()  # Get the user information from the JWT token
     return render_template("index.html", flask_token="hello flask")
