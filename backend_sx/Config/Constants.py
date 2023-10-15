@@ -11,14 +11,14 @@ constants = {
     "remote": {
         "mysql": {
             "db_name": "Ecomm",
-            "host": "142.93.109.181",
+            "host": "143.198.153.179",
             "user": "root",
-            "password": "!123ShopexPass",
+            "password": "!Jakpasvord123",
         },
         "static_root": "/usr/share/nginx/html/shopex/"
     },
 }
 
 SECRET_KEY = "420420420420420"
-selector = "local"
+selector = "remote"
 constants = constants[selector]

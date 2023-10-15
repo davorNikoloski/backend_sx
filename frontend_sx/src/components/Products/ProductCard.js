@@ -18,11 +18,11 @@ const ProductCard = ({ product }) => {
   };
 
   useEffect(() => {
-    const backendURL = 'http://localhost:5000';
+    const backendURL = 'http://143.198.153.179';
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${backendURL}/products/images/${product_path}`);
+        const response = await axios.get(`${backendURL}/uploads/${product_path}`);
         if (response.status === 200) {
           setImageURL(response.config.url);
         } else {

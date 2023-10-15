@@ -27,10 +27,10 @@ const ProductsList = () => {
       let response;
 
       if (scid) {
-        response = await axios.get(`/products/getProductsBySubcategory/${scid}`);
+        response = await axios.get(`/api/products/getProductsBySubcategory/${scid}`);
         console.log(response)
       } else {
-        response = await axios.get('/products/getProducts');
+        response = await axios.get('/api/products/getProducts');
         console.log(response)
       }
 
@@ -42,7 +42,7 @@ const ProductsList = () => {
 
   const fetchSubcategories = async () => {
     try {
-      const response = await axios.get('/products/getSub');
+      const response = await axios.get('/api/products/getSub');
       setSubcategories(response.data.subcategories);
     } catch (error) {
       console.log('Error fetching subcategories:', error);
@@ -111,7 +111,7 @@ const ProductsList = () => {
         />
       )}
 
-      <div className="flex flex-col flex-1">
+      <div className="flex w-screen flex-col flex-1">
         {/* Sortbar */}
         <Sortbar
           categoryName={getCurrentCategoryName() || selectedCategory}

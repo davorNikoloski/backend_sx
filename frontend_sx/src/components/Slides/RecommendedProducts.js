@@ -20,7 +20,7 @@ const RecommendedProducts = () => {
   useEffect(() => {
     const fetchRecommendedProducts = async () => {
       try {
-        const response = await axios.get('/products/getProducts');
+        const response = await axios.get('/api/products/getProducts');
         if (response.data && response.data.products) {
           const products = response.data.products;
           const shuffledProducts = shuffleArray(products);

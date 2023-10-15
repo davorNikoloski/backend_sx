@@ -19,7 +19,7 @@ const Sidebar = ({ setSearchQuery, /*showMobileSidebar, setShowMobileSidebar */}
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('/products/getCategories');
+      const response = await axios.get('/api/products/getCategories');
       setCategories(response.data.categories);
     } catch (error) {
       console.log('Error fetching categories:', error);
@@ -28,7 +28,7 @@ const Sidebar = ({ setSearchQuery, /*showMobileSidebar, setShowMobileSidebar */}
 
   const fetchSubcategories = async () => {
     try {
-      const response = await axios.get('/products/getSub');
+      const response = await axios.get('/api/products/getSub');
       setSubcategories(response.data.subcategories);
     } catch (error) {
       console.log('Error fetching subcategories:', error);
@@ -46,7 +46,7 @@ const Sidebar = ({ setSearchQuery, /*showMobileSidebar, setShowMobileSidebar */}
 
     if (subcategoryID) {
       // Navigate to the new route for the selected subcategory
-      navigate(`/products/getProducts/${subcategoryID}`);
+      navigate(`/api/products/getProducts/${subcategoryID}`);
     }
   };
 

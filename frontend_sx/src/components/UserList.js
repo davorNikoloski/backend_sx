@@ -8,7 +8,7 @@ const UserList = () => {
     // Function to fetch data from the Flask API
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('/user/users'); // Add the full API route
+        const response = await axios.get('api/user/users'); // Add the full API route
         setUsers(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);

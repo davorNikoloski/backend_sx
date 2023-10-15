@@ -32,11 +32,11 @@ const CartPage = () => {
     };
 
     try {
-      const response = await axios.post('/order/order', orderData);
+      const response = await axios.post('/api/order/order', orderData);
       const orderDetails = response.data.orderDetails;
       const orderDetailsJson = JSON.stringify(orderDetails);
 
-      navigate('/OrderConfirmation', { state: { orderDetailsJson } });
+      navigate('/', { state: { orderDetailsJson } });
     } catch (error) {
       console.error('Error sending order:', error);
       console.log('Error response data:', error.response.data);

@@ -16,7 +16,7 @@ const Contact = () => {
     };
 
     try {
-      const response = await axios.post('/contact/contact', formData);
+      const response = await axios.post('/api/contact/contact', formData);
       console.log(response.data); // You can handle the response as needed
     } catch (error) {
       console.error('Error sending message:', error);

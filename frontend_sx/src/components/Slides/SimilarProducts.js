@@ -12,7 +12,7 @@ const SimilarProducts = ({ productDet }) => {
   useEffect(() => {
     const fetchSimilarProducts = async () => {
       try {
-        const response = await axios.get(`/products/getProductsBySubcategory/${scid}`);
+        const response = await axios.get(`/api/products/getProductsBySubcategory/${scid}`);
         setProducts(response.data.products);
       } catch (error) {
         console.error('Error fetching recommended products:', error);

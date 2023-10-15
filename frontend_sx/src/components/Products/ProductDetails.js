@@ -46,7 +46,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`/products/product/${pid}`);
+        const response = await axios.get(`/api/products/product/${pid}`);
         setProduct(response.data.products);
         setLoading(false);
 
@@ -67,10 +67,10 @@ const ProductDetails = () => {
 console.log(imageFilename + "-------------")
   useEffect(() => {
 
-    const backendURL = 'http://localhost:5000';
+    const backendURL = 'http://143.198.153.179';
     
 
-    axios.get(`${backendURL}/products/images/${imageFilename}`)
+    axios.get(`${backendURL}/uploads/${imageFilename}`)
       .then((response) => {
         if (response.status === 200) {
           setImageURL(response.config.url);

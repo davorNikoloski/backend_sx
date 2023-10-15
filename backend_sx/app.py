@@ -39,7 +39,7 @@ app.register_blueprint(admin_api, url_prefix='/secret')
 
 
 if __name__ == "__main__":
-    app.run(debug=True) 
+    app.run(host="0.0.0.0", debug=True) 
 
 #--------------------TODO-------------------------------
     #- Fix the Sidebar design and functionality

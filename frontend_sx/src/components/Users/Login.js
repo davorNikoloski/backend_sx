@@ -12,7 +12,7 @@ const Login = ({ setIsLoggedIn }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('/auth/login', {
+      const response = await axios.post('/api/auth/login', {
         email,
         password,
       }, {
@@ -28,7 +28,7 @@ const Login = ({ setIsLoggedIn }) => {
         Cookies.set('access_token', access_token);
 
         // Fetch the user data using the access_token
-        const userResponse = await axios.get('/auth/getUser', {
+        const userResponse = await axios.get('/api/auth/getUser', {
           headers: {
             'Authorization': `Bearer ${access_token}`,
           },

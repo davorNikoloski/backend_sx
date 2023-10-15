@@ -35,7 +35,7 @@ const Register = ({ setIsLoggedIn }) => {
 
     try {
       const response = await axios.post(
-        '/auth/register',
+        '/api/auth/register',
         {
           first_name,
           last_name,
@@ -52,6 +52,7 @@ const Register = ({ setIsLoggedIn }) => {
           },
         }
       );
+      console.log(response.data);
       const { access_token } = response.data;
 
       if (access_token) {
@@ -62,11 +63,13 @@ const Register = ({ setIsLoggedIn }) => {
         setIsLoggedIn(true);
         navigate('/login');
       } else {
+        navigate('/login');
         setMessage('Registration failed. Please try again later.');
       }
     } catch (error) {
-      // If registration fails, show an error message
-      setMessage('Registration failed. Please try again later.' + error);
+      // Log the full error object for troubleshooting
+      console.error('Error during registration:', error);
+      setMessage('Registration failed. Please try again later.');
     }
   };
 

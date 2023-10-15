@@ -9,7 +9,7 @@
 <body>
     <div class="container mt-4">
         <h1>Add Subcategory</h1>
-        <form method="post" action="{{ url_for('subcategories.create_subcategory') }}">
+        <form method="post" action="/api/subcategories/create_subcategory">
             <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" class="form-control" id="name" name="name" required>
