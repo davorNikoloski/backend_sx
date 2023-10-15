@@ -26,9 +26,9 @@
                     <td>{{ category.info }}</td>
                     <td>
                         <!-- Link to the update page for the category -->
-                        <a href="{{ url_for('categories.update_category', cid=category.cid) }}" class="btn btn-primary">Update</a>
+                        <a href="/api/categories/update_category?cid={{ category.cid }}" class="btn btn-primary">Update</a>
                         <!-- Form to delete the category -->
-                        <form action="{{ url_for('categories.delete_category', cid=category.cid) }}" method="post" style="display: inline;">
+                        <form action="/api/categories/delete_category?cid={{ category.cid }}" method="post" style="display: inline;">
                             <input type="submit" value="Delete" class="btn btn-danger">
                         </form>
                     </td>
@@ -37,7 +37,7 @@
             </tbody>
         </table>
         <!-- Link to add a new category -->
-        <a href="{{ url_for('categories.add_category') }}" class="btn btn-success">Add New Category</a>
+        <a href="/api/categories/add_category" class="btn btn-success">Add New Category</a>
     </div>
 </body>
 </html>

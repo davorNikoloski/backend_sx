@@ -34,9 +34,9 @@
                     </td>
                     <td>
                         <!-- Link to the update page for the subcategory -->
-                        <a href="{{ url_for('subcategories.update_subcategory', scid=subcategory.scid) }}" class="btn btn-primary">Update</a>
+                        <a href="/api/subcategories/update_subcategory?scid={{ subcategory.scid }}" class="btn btn-primary">Update</a>
                         <!-- Form to delete the subcategory -->
-                        <form method="post" action="{{ url_for('subcategories.delete_subcategory', scid=subcategory.scid) }}">
+                        <form method="post" action="/api/subcategories/delete_subcategory?scid={{ subcategory.scid }}">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
                     </td>
@@ -54,7 +54,7 @@
                 {% endwith %}
             </tbody>
         </table>
-        <a href="{{ url_for('subcategories.add_subcategory') }}" class="btn btn-success">Add Subcategory</a>
+        <a href="/api/subcategories/add_subcategory" class="btn btn-success">Add Subcategory</a>
     </div>
 </body>
 </html>
