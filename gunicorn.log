@@ -1,0 +1,16 @@
+[2023-10-14 17:46:58 +0000] [126602] [INFO] Starting gunicorn 21.2.0
+[2023-10-14 17:46:58 +0000] [126602] [INFO] Listening at: http://127.0.0.1:8000 (126602)
+[2023-10-14 17:46:58 +0000] [126602] [INFO] Using worker: sync
+[2023-10-14 17:46:58 +0000] [126603] [INFO] Booting worker with pid: 126603
+[2023-10-14 17:47:12 +0000] [126602] [INFO] Handling signal: int
+buidling db
+Connection to database is valid.
+[2023-10-14 17:47:13 +0000] [126602] [INFO] Shutting down: Master
+[2023-10-14 17:47:18 +0000] [126621] [INFO] Starting gunicorn 21.2.0
+[2023-10-14 17:47:18 +0000] [126621] [INFO] Listening at: http://127.0.0.1:8000 (126621)
+[2023-10-14 17:47:18 +0000] [126621] [INFO] Using worker: sync
+[2023-10-14 17:47:18 +0000] [126624] [INFO] Booting worker with pid: 126624
+[2023-10-14 17:47:36 +0000] [126621] [INFO] Handling signal: int
+buidling db
+Connection to database is valid.
+[2023-10-14 17:47:36 +0000] [126621] [INFO] Shutting down: Master

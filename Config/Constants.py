@@ -13,12 +13,12 @@ constants = {
             "db_name": "Ecomm",
             "host": "143.198.153.179",
             "user": "root",
-            "password": "1Shopexxx",
+            "password": "!Jakpasvord123",
         },
         "static_root": "/usr/share/nginx/html/shopex/"
     },
 }
 
 SECRET_KEY = "420420420420420"
-selector = "local"
+selector = "remote"
 constants = constants[selector]
