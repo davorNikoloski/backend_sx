@@ -15,7 +15,7 @@ constants = {
             "user": "root",
             "password": "!Jakpasvord123",
         },
-        "static_root": "/usr/share/nginx/html/shopex/"
+        "static_root": "/usr/share/nginx/html/static/"
     },
 }
 

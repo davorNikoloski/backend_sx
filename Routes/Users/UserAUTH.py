@@ -33,7 +33,7 @@ class UsersAuth():
 
         #--------------CHECKS-----------------------
 
-        required = ["first_name", "last_name","phone_number","address", "email", "password"]
+        required = ["first_name", "last_name","phone_number","address","address_number" , "email", "password"]
         for key in required:
             if key not in data:
                 return custom_abort(400, "Недостасува компулсивен клуч - " + key)

@@ -71,7 +71,7 @@
                     {% endfor %}
                     <td>
                         <!-- Link to the update page for the product -->
-                        <a href="/api/secret/update_product/{{ product.pid }}" class="btn btn-primary">Update</a>
+                        <a href="/api/secret/update_products/{{ product.pid }}" class="btn btn-primary">Update</a>
                         <form action="/api/secret/delete_product/{{ product.pid }}" method="POST" class="d-inline">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
