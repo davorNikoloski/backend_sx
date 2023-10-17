@@ -47,10 +47,17 @@
                 <input type="text" class="form-control" id="productNo" name="productNo" required>
             </div>
 
+
             <div class="form-group">
-                <label for="productImage">Product Image:</label>
-                <input type="file" class="form-control-file" id="productImage" name="product_path" accept=".jpg, .jpeg, .png">
+                <label for="productImages">Product Alt images:</label>
+                <input type="file" class="form-control-file" id="productImages" name="product_images[]" multiple accept=".jpg, .jpeg, .png">
             </div>
+
+            <div class="form-group">
+                <label for="productImage">Product gif:</label>
+                <input type="file" class="form-control-file" id="productImage" name="product_path" accept=".jpg, .jpeg, .png, .gif">
+            </div>
+            
 
             <!-- Category dropdown -->
             <div class="form-group">

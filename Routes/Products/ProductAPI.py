@@ -15,7 +15,7 @@ products_api = Blueprint('products', __name__)
 
 @products_api.route('/images/<filename>')
 def send_image(filename):
-    return send_from_directory('C:/Users/Davor/Desktop/Shopex/backend_sx/Static/img/products', filename)
+    return send_from_directory('/home/davor/Pictures/Static-Sx/', filename)
 
 #ADD----------------------------------------------------
 @products_api.route('/add_product', methods=['GET'])

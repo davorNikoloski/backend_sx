@@ -24,16 +24,16 @@ with app.app_context():
         print("Error: Could not essk rutablish a connection to the database.")
         print("Error message:", e)
 
-app.register_blueprint(user_api, url_prefix='/auth')
-app.register_blueprint(products_api, url_prefix='/products')
-app.register_blueprint(categories_api, url_prefix='/categories')
-app.register_blueprint(subcategories_api, url_prefix='/subcategories')
-app.register_blueprint(contact_api, url_prefix='/contact')
-app.register_blueprint(order_api, url_prefix='/order')
+app.register_blueprint(user_api, url_prefix='/api/auth')
+app.register_blueprint(products_api, url_prefix='/api/products')
+app.register_blueprint(categories_api, url_prefix='/api/categories')
+app.register_blueprint(subcategories_api, url_prefix='/api/subcategories')
+app.register_blueprint(contact_api, url_prefix='/api/contact')
+app.register_blueprint(order_api, url_prefix='/api/order')
 
 
 
-app.register_blueprint(admin_api, url_prefix='/secret')
+app.register_blueprint(admin_api, url_prefix='/api/secret')
 
 
 

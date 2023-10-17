@@ -23,6 +23,7 @@ class Product():
             "price": "Integer",
             "productNo": "String",
             "product_path": "String",
+            "product_paths": "String",
             
             "cid": "Integer",
             "scid": "Integer",
@@ -41,7 +42,28 @@ class Product():
         data = request.form
         print(data)
         product_path = None
+        product_paths = []
 
+# MULTIPLE IMAGES
+        if 'product_images[]' in request.files:
+            product_images = request.files.getlist('product_images[]')
+
+            for product_image in product_images:
+                print("Uploaded file name:", product_image.filename)
+
+                if self.allowed_file(product_image.filename):
+                    filename = secure_filename(product_image.filename)
+
+                    print("Saving file to:", os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+                    image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    product_image.save(image_path)
+                    product_paths.append(filename)
+                else:
+                    return custom_abort(400, "Invalid file format. Allowed formats: jpg, jpeg, png, gif")
+#-------------------------------------------------------------------------
+#------------------------------_ONE IMAGE
+        
         if 'product_path' in request.files:
             product_image = request.files['product_path']
 
@@ -54,8 +76,13 @@ class Product():
 
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 product_image.save(image_path)
+                product_path = filename
             else:
                 return custom_abort(400, "Invalid file format. Allowed formats: jpg, jpeg, png, gif")
+            
+        
+        product_paths_str = ','.join(product_paths)
+
 
         required_keys = ["name", "info", "price", "productNo", "cid", "scid"]
         for key in required_keys:
@@ -73,7 +100,9 @@ class Product():
         [setattr(product, key, data[key]) for key in required_keys]
         [setattr(product, u_key, data[u_key]) for u_key in secondary_keys]
 
-        product.product_path = filename #PRIVREMENO VAKA TREBA DA BIDI URL
+        product.product_path = product_path #PRIVREMENO VAKA TREBA DA BIDI URL
+        product.product_paths = product_paths_str
+
         db.session.add(product)
         db.session.commit()
         product = Products.query.filter_by(pid=product.pid).first()

@@ -1,12 +1,12 @@
 constants = {
     "local": {
         "mysql": {
-            "db_name": "Ecomm",
+            "db_name": "Ecomm2",
             "host": "localhost",
-            "user": "root",
-            "password": "admin11",
+            "user": "davor",
+            "password": "Davornik123321",
         },
-        "static_root": r"C:\Users\Davor\Desktop\Shopex\backend_sx\Static\img\products"
+        "static_root": r"/home/davor/Pictures/Static-Sx/"
     },
     "remote": {
         "mysql": {
@@ -20,5 +20,5 @@ constants = {
 }
 
 SECRET_KEY = "420420420420420"
-selector = "remote"
+selector = "local"
 constants = constants[selector]
