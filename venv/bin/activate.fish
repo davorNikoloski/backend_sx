@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/davor/Workspace/Shopex/backend_sx/venv"
+set -gx VIRTUAL_ENV "/var/www/143.198.153.179-api/backend_sx/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

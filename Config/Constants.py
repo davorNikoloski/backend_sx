@@ -4,7 +4,7 @@ constants = {
             "db_name": "Ecomm2",
             "host": "localhost",
             "user": "davor",
-            "password": "Davornik123321",
+            "password": "*****",
         },
         "static_root": r"/home/davor/Pictures/Static-Sx/"
     },
@@ -20,5 +20,5 @@ constants = {
 }
 
 SECRET_KEY = "420420420420420"
-selector = "local"
+selector = "remote"
 constants = constants[selector]

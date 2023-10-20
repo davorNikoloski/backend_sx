@@ -15,7 +15,7 @@ products_api = Blueprint('products', __name__)
 
 @products_api.route('/images/<filename>')
 def send_image(filename):
-    return send_from_directory('/home/davor/Pictures/Static-Sx/', filename)
+    return send_from_directory('/usr/share/nginx/html/static/', filename)
 
 #ADD----------------------------------------------------
 @products_api.route('/add_product', methods=['GET'])
@@ -68,7 +68,7 @@ def delete_product(pid):
 
 
 
-@products_api.route('/images/<filename>')
+@products_api.route('/image/<filename>')
 def serve_image(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 

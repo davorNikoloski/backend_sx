@@ -1,4 +1,4 @@
-#!/home/davor/Workspace/Shopex/backend_sx/venv/bin/python
+#!/var/www/143.198.153.179-api/backend_sx/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
