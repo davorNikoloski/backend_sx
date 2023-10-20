@@ -4,7 +4,7 @@ constants = {
             "db_name": "Ecomm2",
             "host": "localhost",
             "user": "davor",
-            "password": "*****",
+            "password": "Davornik123321",
         },
         "static_root": r"/home/davor/Pictures/Static-Sx/"
     },

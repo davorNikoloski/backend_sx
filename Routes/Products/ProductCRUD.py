@@ -47,7 +47,7 @@ class Product():
 # MULTIPLE IMAGES
         if 'product_images[]' in request.files:
             product_images = request.files.getlist('product_images[]')
-
+            print(product_images[0])
             for product_image in product_images:
                 print("Uploaded file name:", product_image.filename)
 

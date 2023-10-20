@@ -59,6 +59,8 @@
                     <td>{{ product.price }}</td>
                     <td>{{ product.productNo }}</td>
                     <td>{{ product.product_path }}</td>
+                    <td>{{ product.product_paths }}</td>
+
                     {% for category in category_list %}
                     {% if product.cid == category.cid %}
                     <td>{{ product.cid }} - {{ category.name }}</td>
@@ -80,6 +82,33 @@
                 {% endfor %}    
             </tbody>
         </table>
+        <div>
+
+
+            <form method="post" action="/api/csv/category_csv" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="csvFile">Upload CSV File for Category:</label>
+                    <input type="file" class="form-control-file" id="csvFile" name="csvFile">
+                </div>
+                <button type="submit" class="btn btn-primary">Upload CSV</button>
+            </form>
+            <form method="post" action="/api/csv/subcategory_csv" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="csvFile">Upload CSV File for Subcategory:</label>
+                    <input type="file" class="form-control-file" id="csvFile" name="csvFile">
+                </div>
+                <button type="submit" class="btn btn-primary">Upload CSV</button>
+            </form>
+            <form method="post" action="/api/csv/product_csv" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="csvFile">Upload CSV File for Products:</label>
+                    <input type="file" class="form-control-file" id="csvFile" name="csvFile">
+                </div>
+                <button type="submit" class="btn btn-primary">Upload CSV</button>
+            </form>
+
+        </div>
+       
     </div>
 </body>
 
