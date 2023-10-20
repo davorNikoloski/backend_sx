@@ -5,6 +5,7 @@ from Routes.Categories.CategoryAPI import categories_api
 from Routes.Categories.SubcategoryAPI import subcategories_api
 from Routes.Contact.ContactAPI import contact_api
 from Routes.Order.Order import order_api
+from Routes.Csv.csv_add import csv_api
 
 
 from Routes.Admin.AdminAPI import admin_api
@@ -30,6 +31,7 @@ app.register_blueprint(categories_api, url_prefix='/categories')
 app.register_blueprint(subcategories_api, url_prefix='/subcategories')
 app.register_blueprint(contact_api, url_prefix='/contact')
 app.register_blueprint(order_api, url_prefix='/order')
+app.register_blueprint(csv_api, url_prefix='/csv')
 
 
 
