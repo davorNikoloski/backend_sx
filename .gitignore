@@ -1,0 +1,7 @@
+# Ignore site-packages directory
+site-packages/
+# Ignore system files and directories
+__pycache__/
+*.pyc
+.DS_Store
+*.log
