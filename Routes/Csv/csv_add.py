@@ -43,6 +43,48 @@ def upload_csv_category():
     except Exception as e:
         return str(e)
 
+
+@csv_api.route('/subcategory_csv', methods=['POST'])
+def upload_csv_subcategory():
+    try:
+        # Access the uploaded CSV file using request.files
+        csv_file = request.files['csvFile']
+
+        if csv_file:
+            # Read the CSV file using pandas
+            csv_data = pd.read_csv(csv_file)
+
+            for index, row in csv_data.iterrows():
+                # Check if the 'cid' value is present in the CSV file
+                if 'cid' in row:
+                    # Retrieve the 'cid' value from the CSV file
+                    cid_value = row['cid']
+
+                    # Query the 'Categories' table to find the associated category
+                    category = Categories.query.filter_by(cid=cid_value).first()
+
+                    if category:
+                        # If the category exists, create a new subcategory and associate it with the category
+                        new_subcategory = Subcategories(name=row['name'], info=row['info'], cid=category.cid)
+                        db.session.add(new_subcategory)
+                    else:
+                        return f"Error: Category with cid={cid_value} not found in the database."
+
+            db.session.commit()
+
+            return "CSV data uploaded and processed successfully."
+
+        return "No file selected or an error occurred."
+
+    except Exception as e:
+        return str(e)
+
+
+
+
+
+
+
 # Product csv upload
 
 @csv_api.route('/product_csv', methods=['POST'])
@@ -50,7 +92,7 @@ def upload_csv_product():
     try:
         # Access the uploaded CSV file using request.files
         csv_file = request.files['csvFile']
-
+        source_folder = request.form['sourceFolder']
         if csv_file:
             # Read the CSV file using pandas
             csv_data = pd.read_csv(csv_file)
@@ -76,13 +118,13 @@ def upload_csv_product():
                 #print(product_img)
                 uploaded_image_paths = []
                 if product_path:
-                    source_folder = '/home/davor/Downloads/'
+                    #source_folder = '/home/davor/Downloads/'
 
                     uploaded_image_paths.append(upload_image(product_path,source_folder))
                     print(product_path + "-pp")
                 if product_paths:
                     multiple_paths = product_paths.split(',')
-                    source_folder = '/home/davor/Downloads/'
+                    source_folder = request.form['sourceFolder']
                     print(multiple_paths[0] + "-multiple_paths")
                     uploaded_image_paths.extend([upload_image(path, source_folder) for path in multiple_paths])
                     print(uploaded_image_paths[0] + "-uploaded_image_paths")
