@@ -1,10 +1,14 @@
-from flask import Flask, request, render_template, Blueprint, jsonify
 from Config.Config import app, db
+from flask import Flask, request, render_template, Blueprint, jsonify
 import os
+from werkzeug.exceptions import BadRequest
+import logging
+
 import shutil
 from werkzeug.utils import secure_filename
 
 import pandas as pd
+
 
 csv_api = Blueprint('csv', __name__)
 
@@ -12,10 +16,12 @@ from Models.Models import Categories
 from Models.Models import Subcategories
 from Models.Models import Products
 
-        
+from Config.Common import custom_abort, crud_routes, build_params, get_user_from_jwt, convertor, hash_query_results, get_hash_info, get_random_alphanumerical, get_extension
 
-def allowed_file(self, filename):
-        return '.' in filename and filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}  # Define your allowed extensions here
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Category csv upload
 
@@ -43,10 +49,9 @@ def upload_csv_category():
     except Exception as e:
         return str(e)
 
-# Product csv upload
 
-@csv_api.route('/product_csv', methods=['POST'])
-def upload_csv_product():
+@csv_api.route('/subcategory_csv', methods=['POST'])
+def upload_csv_subcategory():
     try:
         # Access the uploaded CSV file using request.files
         csv_file = request.files['csvFile']
@@ -56,7 +61,61 @@ def upload_csv_product():
             csv_data = pd.read_csv(csv_file)
 
             for index, row in csv_data.iterrows():
+                # Check if the 'cid' value is present in the CSV file
+                if 'cid' in row:
+                    # Retrieve the 'cid' value from the CSV file
+                    cid_value = row['cid']
+
+                    # Query the 'Categories' table to find the associated category
+                    category = Categories.query.filter_by(cid=cid_value).first()
+
+                    if category:
+                        # If the category exists, create a new subcategory and associate it with the category
+                        new_subcategory = Subcategories(name=row['name'], info=row['info'], cid=category.cid)
+                        db.session.add(new_subcategory)
+                    else:
+                        return f"Error: Category with cid={cid_value} not found in the database."
+
+            db.session.commit()
+
+            return "CSV data uploaded and processed successfully."
+
+        return "No file selected or an error occurred."
+
+    except Exception as e:
+        return str(e)
+
+
+
+
+
+
+
+
+
+
+
+
+@csv_api.route('/product_csv', methods=['POST'])
+def upload_csv_product():
+    try:
+        csv_file = request.files['csvFile']
+        product_gifs = request.files.getlist('product_gifs[]')
+        product_images = request.files.getlist('product_images[]')
+        product_images_paths = []
+        product_gifs_paths = []
+
+        if csv_file:
+            # Read the CSV file using pandas
+            csv_data = pd.read_csv(csv_file)
+
+            for index, row in csv_data.iterrows():
                 # Extract product data from the CSV file
+
+
+                product_images_paths = []
+                product_gifs_paths = []
+
                 product_name = row['name']
                 product_info = row['info']
                 product_price = row['price']
@@ -68,25 +127,49 @@ def upload_csv_product():
                 product_scid = row['scid']  # Assuming 'scid' is provided in the CSV
 
                 # Check for and handle image paths in the CSV
-                product_path = row.get('product_path', '')
-                product_paths = row.get('product_paths', '')  # Assuming multiple paths are comma-separated
+                gif_paths = row.get('product_path')
+                product_paths = row.get('product_paths').split(',')  # Assuming multiple paths are comma-separated
+
+                if 'product_images[]' in request.files:
+                   # product_images = request.files.getlist('product_images[]')
+                    print(product_images[0])
+                    for product_image in product_images:
+                        print("Uploaded file name:", product_image.filename)
+
+                        if allowed_file(product_image.filename):
+                            filename = secure_filename(product_image.filename)
+                           # images_filename = filename(product_image.filename)
+                            print("Saving file to:", os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+                            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                            product_image.save(image_path)
+                            product_images_paths.append(filename)
+                        else:
+                            return custom_abort(400, "Invalid file format. Allowed formats: jpg, jpeg, png, gif")
 
 
-                #product_img = product_path.filename
-                #print(product_img)
-                uploaded_image_paths = []
-                if product_path:
-                    source_folder = '/home/davor/Downloads/'
+                if 'product_gifs[]' in request.files:
+                   # product_gifs = request.files.getlist('product_gifs[]')
+                    print(product_gifs[0])
+                    for product_gif in product_gifs:
+                        print("Uploaded file name:", product_gif.filename)
 
-                    uploaded_image_paths.append(upload_image(product_path,source_folder))
-                    print(product_path + "-pp")
-                if product_paths:
-                    multiple_paths = product_paths.split(',')
-                    source_folder = '/home/davor/Downloads/'
-                    print(multiple_paths[0] + "-multiple_paths")
-                    uploaded_image_paths.extend([upload_image(path, source_folder) for path in multiple_paths])
-                    print(uploaded_image_paths[0] + "-uploaded_image_paths")
+                        if allowed_file(product_gif.filename):
+                            filename = secure_filename(product_gif.filename)
+                            gif_filename = secure_filename(product_gif.filename)
+                            print("Saving file to:", os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
+                            gif_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                            product_gif.save(gif_path)
+                            product_gifs_paths.append(filename)
+                        else:
+                            return custom_abort(400, "Invalid file format. Allowed formats: jpg, jpeg, png, gif")
+
+
+
+
+                product_paths_str = ','.join(product_paths)
+                gif_paths = ','.join(product_gifs_paths)
 
 
                 # Query the 'Categories' and 'Subcategories' tables to find the associated category and subcategory
@@ -105,9 +188,10 @@ def upload_csv_product():
                         color=product_color,
                         cid=category.cid,
                         scid=subcategory.scid,
-                        product_path=product_path,
-                        product_paths=product_paths
+                        product_path=gif_filename,
+                        product_paths=product_paths_str
                     )
+                    print (product_paths)
                     db.session.add(new_product)
                 else:
                     return f"Error: Category with cid={product_cid} or Subcategory with scid={product_scid} not found in the database."
@@ -120,27 +204,3 @@ def upload_csv_product():
 
     except Exception as e:
         return str(e)
-
-
-def upload_image(image_filename, source_folder):
-    # Handle image uploads here
-    # Define the destination folder for saving the image
-    upload_folder = app.config['UPLOAD_FOLDER']
-
-    # Ensure the destination folder exists; create it if it doesn't
-    os.makedirs(upload_folder, exist_ok=True)
-
-    # Generate a secure filename for the image
-    filename = secure_filename(image_filename)
-
-    # Combine the source folder and filename to get the full source path
-    source_path = os.path.join(source_folder, filename)
-
-    # Combine the destination folder and filename to get the full path for saving
-    destination_path = os.path.join(upload_folder, filename)
-
-    # Save the image from the source folder to the destination folder
-    # Add your code to copy the image from source to destination
-    shutil.copy(source_path, destination_path)
-
-    return destination_path  # Return the full path where the image is saved
