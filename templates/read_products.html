@@ -7,6 +7,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
     <div class="container mt-4">
@@ -40,8 +43,10 @@
                     <th>Color</th>
                     <th>Brand</th>
                     <th>Price</th>
+                    <th>Discounted price</th>
                     <th>Product Number</th>
-                    <th>Image</th>
+                    <th>Gif</th>
+                    <th>Images</th>
                     <th>Category ID</th>
                     <th>Subcategory ID</th>
                     <th>Actions</th>
@@ -52,11 +57,33 @@
                 <tr>
                     <td>{{ product.pid }}</td>
                     <td>{{ product.name }}</td>
-                    <td>{{ product.info }}</td>
-                    <td>{{ product.description }}</td>
+             	    <td>
+        <div class="text-truncate" style="max-width: 300px;"> <!-- Adjust max-width as needed -->
+            {{ product.info }}
+        </div>
+        <button class="btn btn-link" data-toggle="collapse" data-target="#infoCollapse{{ product.pid }}">
+            Read More
+        </button>
+        <div class="collapse" id="infoCollapse{{ product.pid }}">
+            {{ product.info }}
+        </div>
+    </td>
+    <td>
+        <div class="text-truncate" style="max-width: 300px;"> <!-- Adjust max-width as needed -->
+            {{ product.description }}
+        </div>
+        <button class="btn btn-link" data-toggle="collapse" data-target="#descriptionCollapse{{ product.pid }}">
+            Read More
+        </button>
+        <div class="collapse" id="descriptionCollapse{{ product.pid }}">
+            {{ product.description }}
+        </div>
+    </td>
+
                     <td>{{ product.color }}</td>
                     <td>{{ product.brand }}</td>
                     <td>{{ product.price }}</td>
+                    <td>{{ product.price_Discount }}</td>
                     <td>{{ product.productNo }}</td>
                     <td>{{ product.product_path }}</td>
                     <td>{{ product.product_paths }}</td>
@@ -104,12 +131,28 @@
                     <label for="csvFile">Upload CSV File for Products:</label>
                     <input type="file" class="form-control-file" id="csvFile" name="csvFile">
                 </div>
+                <div class="form-group">
+                    <label for="productGifs">Product gifs:</label>
+                    <input type="file" class="form-control-file" id="productGifs" name="product_gifs[]" multiple accept=".jpg, .jpeg, .png, .gif">
+                </div>
+                <div class="form-group">
+                    <label for="productImages">Product Alt images:</label>
+                    <input type="file" class="form-control-file" id="productImages" name="product_images[]" multiple accept=".jpg, .jpeg, .png">
+                </div>
                 <button type="submit" class="btn btn-primary">Upload CSV</button>
             </form>
 
         </div>
        
     </div>
+<script>
+    $(document).ready(function() {
+        // Initialize Bootstrap's collapse component
+        $('.collapse').collapse();
+    });
+</script>
+
+
 </body>
 
 <script>

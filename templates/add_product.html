@@ -41,6 +41,11 @@
                 <label for="price">Price:</label>
                 <input type="number" class="form-control" id="price" name="price" required>
             </div>
+            
+            <div class="form-group">
+                <label for="price_Discount">Discounted Price:</label>
+                <input type="number" class="form-control" id="price_Discount" name="price_Discount">
+            </div>
 
             <div class="form-group">
                 <label for="productNo">Product Number:</label>
@@ -95,26 +100,24 @@
     <!-- Add JavaScript to dynamically update the subcategory dropdown based on the selected category -->
     <script>
         $(document).ready(function () {
-            // Get the subcategory dropdown element
-            const subcategoryDropdown = $("#scid");
+        const subcategoryDropdown = $("#scid");
+        const categoryDropdown = $("#cid");
 
-            // Get the category dropdown element
-            const categoryDropdown = $("#cid");
+        categoryDropdown.on("click", function () {
+            // Handle the click event on the category dropdown
+            const selectedCategoryId = $(this).val();
 
-            // On category selection change, update the subcategory dropdown options
-            categoryDropdown.on("change", function () {
-                const selectedCategoryId = $(this).val();
+            // Clear and disable the subcategory dropdown initially
+            subcategoryDropdown.empty().prop("disabled", true);
 
-                // Clear and disable the subcategory dropdown initially
-                subcategoryDropdown.empty().prop("disabled", true);
-
-                // Fetch subcategories from the server based on the selected category
-                if (selectedCategoryId) {
-                    jQuery.ajax({
-                        url: "/api/products/get_subcategories",
-                        type: "GET",
-                        data: { cid: selectedCategoryId },
-                        success: function (response) {
+            // Fetch subcategories from the server based on the selected category
+            if (selectedCategoryId) {
+                $.ajax({
+                    url: "/api/products/get_subcategories",
+                    type: "GET",
+                    data: { cid: selectedCategoryId },
+                    success: function (response) {
+                        if (response && response.subcategories) {
                             // Populate subcategory dropdown with fetched options
                             response.subcategories.forEach((subcategory) => {
                                 subcategoryDropdown.append(
@@ -124,14 +127,18 @@
 
                             // Enable the subcategory dropdown
                             subcategoryDropdown.prop("disabled", false);
-                        },
-                        error: function (error) {
-                            console.log("Error fetching subcategories:", error);
+                        } else {
+                            console.error("Invalid response data:", response);
                         }
-                    });
-                }
-            });
+                    },
+                    error: function (error) {
+                        console.log("Error fetching subcategories:", error);
+                    }
+                });
+            }
         });
+    });
+
     </script>
 </body>
 </html>
