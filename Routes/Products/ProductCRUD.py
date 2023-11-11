@@ -21,6 +21,7 @@ class Product():
             "brand": "String",
             "color": "String",
             "price": "Integer",
+            "price_Discount": "Integer",
             "productNo": "String",
             "product_path": "String",
             "product_paths": "String",
@@ -82,9 +83,13 @@ class Product():
             
         
         product_paths_str = ','.join(product_paths)
+        price_discount = request.form_data.get('price_Discount', None)
 
+  # Set a default value of 0 if "price_Discount" is not provided
+        if price_discount is None:
+            price_discount = 0
 
-        required_keys = ["name", "info", "price", "productNo", "cid", "scid"]
+        required_keys = ["name", "info", "price", "productNo", "cid", "scid", "price_Discount"]
         for key in required_keys:
             if key not in data:
                 return custom_abort(400, "Required key is missing - " + key + "-----")

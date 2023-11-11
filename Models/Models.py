@@ -42,6 +42,7 @@ class Products(db.Model):
     name = db.Column(db.String(128), nullable=False)
     info = db.Column(db.String(512), nullable=False)
     price = db.Column(db.Integer, nullable=False)
+    price_Discount = db.Column(db.Integer, nullable=True)
     productNo = db.Column(db.String(128), nullable=True)
     product_path = db.Column(db.String(256), nullable=True, default='default_path.jpg')
     product_paths = db.Column(db.String(256), nullable=True, default='default_path.jpg')
