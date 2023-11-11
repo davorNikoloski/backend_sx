@@ -7,7 +7,7 @@ from flask_login import LoginManager
 
 import os
 
-app = Flask(__name__, template_folder='../templates', static_url_path='/Static/react', static_folder='backend_sx/Static/react')
+app = Flask(__name__, template_folder='../templates', static_url_path='/Static/react', static_folder=constants["static_root"])
 
 #-----------------------DATABASE CONFIG----------------------
 uri = "mysql+pymysql://"+constants["mysql"]["user"]+":"+constants["mysql"]["password"]+"@"+constants["mysql"]["host"]+"/"+constants["mysql"]["db_name"]+"?&autocommit=false"

@@ -128,10 +128,14 @@
                     <label for="csvFile">Upload CSV File for Products:</label>
                     <input type="file" class="form-control-file" id="csvFile" name="csvFile">
                 </div>
-		<div class="form-group">
-        		<label for="sourceFolder">Source Folder for Images:</label>
-        		<input type="text" class="form-control" id="sourceFolder" name="sourceFolder">
-    		</div>
+                <div class="form-group">
+                    <label for="productGifs">Product gifs:</label>
+                    <input type="file" class="form-control-file" id="productGifs" name="product_gifs[]" multiple accept=".jpg, .jpeg, .png, .gif">
+                </div>
+                <div class="form-group">
+                    <label for="productImages">Product Alt images:</label>
+                    <input type="file" class="form-control-file" id="productImages" name="product_images[]" multiple accept=".jpg, .jpeg, .png, .gif">
+                </div>
                 <button type="submit" class="btn btn-primary">Upload CSV</button>
             </form>
 
