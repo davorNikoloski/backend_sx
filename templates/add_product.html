@@ -100,45 +100,36 @@
     <!-- Add JavaScript to dynamically update the subcategory dropdown based on the selected category -->
     <script>
         $(document).ready(function () {
-        const subcategoryDropdown = $("#scid");
-        const categoryDropdown = $("#cid");
-
-        categoryDropdown.on("click", function () {
-            // Handle the click event on the category dropdown
-            const selectedCategoryId = $(this).val();
-
-            // Clear and disable the subcategory dropdown initially
-            subcategoryDropdown.empty().prop("disabled", true);
-
-            // Fetch subcategories from the server based on the selected category
-            if (selectedCategoryId) {
-                $.ajax({
-                    url: "/api/products/get_subcategories",
-                    type: "GET",
-                    data: { cid: selectedCategoryId },
-                    success: function (response) {
-                        if (response && response.subcategories) {
-                            // Populate subcategory dropdown with fetched options
-                            response.subcategories.forEach((subcategory) => {
-                                subcategoryDropdown.append(
-                                    `<option value="${subcategory.scid}">${subcategory.name}</option>`
-                                );
-                            });
-
-                            // Enable the subcategory dropdown
-                            subcategoryDropdown.prop("disabled", false);
-                        } else {
-                            console.error("Invalid response data:", response);
-                        }
-                    },
-                    error: function (error) {
-                        console.log("Error fetching subcategories:", error);
+            const subcategoryDropdown = $("#scid");
+            const categoryDropdown = $("#cid");
+    
+            // Get subcategories data from the rendered template
+            const subcategoriesData = JSON.parse('{{ subcategories | tojson | safe }}');
+    
+            categoryDropdown.on("change", function () {
+                const selectedCategoryId = $(this).val();
+                subcategoryDropdown.empty().prop("disabled", true);
+    
+                if (selectedCategoryId) {
+                    const selectedSubcategories = subcategoriesData[selectedCategoryId];
+                    if (selectedSubcategories) {
+                        selectedSubcategories.forEach((subcategory) => {
+                            const option = $(`<option value="${subcategory.scid}">${subcategory.name}</option>`);
+                            if (subcategory.scid) {
+                                option.prop('selected', true);
+                            }
+                            subcategoryDropdown.append(option);
+                        });
+                        subcategoryDropdown.prop("disabled", false);
+                    } else {
+                        console.error("No subcategories found for the selected category");
                     }
-                });
-            }
+                }
+            });
+    
+            // Trigger the change event on page load to pre-fill the subcategory
+            categoryDropdown.trigger('change');
         });
-    });
-
     </script>
 </body>
 </html>

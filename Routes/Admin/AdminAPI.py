@@ -80,8 +80,16 @@ def add_product():
     categories = Categories.query.all()
     subcategories = Subcategories.query.all()
 
+    subcategories_data = {}
+    for subcategory in subcategories:
+        if subcategory.cid not in subcategories_data:
+            subcategories_data[subcategory.cid] = []
+        subcategories_data[subcategory.cid].append({
+            'scid': subcategory.scid,
+            'name': subcategory.name
+        })
 
-    return render_template('add_product.html', categories = categories, subcategories = subcategories)
+    return render_template('add_product.html', categories = categories, subcategories = subcategories_data)
 
 @admin_api.route('/create_product', methods=['POST'])
 @login_required
@@ -105,9 +113,21 @@ def read_products():
 @login_required
 def update_product(pid):
     product = Products.query.filter_by(pid=pid).first()
+    categories = Categories.query.all()
+    subcategories = Subcategories.query.all()   
+    print(product.product_path)
     if not product:
         return "Product not found", 404
-    return render_template('update_products.html', product=product)
+    
+    subcategories_data = {}
+    for subcategory in subcategories:
+        if subcategory.cid not in subcategories_data:
+            subcategories_data[subcategory.cid] = []
+        subcategories_data[subcategory.cid].append({
+            'scid': subcategory.scid,
+            'name': subcategory.name
+        })
+    return render_template('update_products.html', product=product, categories=categories, subcategories=subcategories_data)
 
 @admin_api.route('/update_products', methods=['POST'])
 @login_required

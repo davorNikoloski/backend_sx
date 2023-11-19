@@ -64,10 +64,6 @@ def delete_product(pid):
 
 
 
-
-
-
-
 @products_api.route('/image/<filename>')
 def serve_image(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)

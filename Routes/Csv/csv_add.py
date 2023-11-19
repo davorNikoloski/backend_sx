@@ -87,15 +87,6 @@ def upload_csv_subcategory():
 
 
 
-
-
-
-
-
-
-
-
-
 @csv_api.route('/product_csv', methods=['POST'])
 def upload_csv_product():
     try:
@@ -119,6 +110,7 @@ def upload_csv_product():
                 product_name = row['name']
                 product_info = row['info']
                 product_price = row['price']
+                product_price_Discount = row['price_Discount']
                 product_productNo = row['productNo']
                 product_description = row.get('description', '')  # Handle optional field
                 product_brand = row.get('brand', '')  # Handle optional field
@@ -127,11 +119,11 @@ def upload_csv_product():
                 product_scid = row['scid']  # Assuming 'scid' is provided in the CSV
 
                 # Check for and handle image paths in the CSV
-                gif_paths = row.get('product_path')
-                product_paths = row.get('product_paths').split(',')  # Assuming multiple paths are comma-separated
+                product_gif_path = row.get('product_path')
+                product_product_paths = row.get('product_paths').split(',')  # Assuming multiple paths are comma-separated
 
                 if 'product_images[]' in request.files:
-                   # product_images = request.files.getlist('product_images[]')
+                    product_images = request.files.getlist('product_images[]')
                     print(product_images[0])
                     for product_image in product_images:
                         print("Uploaded file name:", product_image.filename)
@@ -149,7 +141,7 @@ def upload_csv_product():
 
 
                 if 'product_gifs[]' in request.files:
-                   # product_gifs = request.files.getlist('product_gifs[]')
+                    product_gifs = request.files.getlist('product_gifs[]')
                     print(product_gifs[0])
                     for product_gif in product_gifs:
                         print("Uploaded file name:", product_gif.filename)
@@ -165,11 +157,8 @@ def upload_csv_product():
                         else:
                             return custom_abort(400, "Invalid file format. Allowed formats: jpg, jpeg, png, gif")
 
-
-
-
-                product_paths_str = ','.join(product_paths)
-                gif_paths = ','.join(product_gifs_paths)
+                product_paths_str = ','.join(product_product_paths)
+                #gif_paths = ','.join(product_gifs_paths)
 
 
                 # Query the 'Categories' and 'Subcategories' tables to find the associated category and subcategory
@@ -182,22 +171,26 @@ def upload_csv_product():
                         name=product_name,
                         info=product_info,
                         price=product_price,
+                        price_Discount = product_price_Discount,
                         productNo=product_productNo,
                         description=product_description,
                         brand=product_brand,
                         color=product_color,
                         cid=category.cid,
                         scid=subcategory.scid,
-                        product_path=gif_filename,
+                        product_path=product_gif_path,
                         product_paths=product_paths_str
                     )
-                    print (product_paths)
+                    print (product_gif_path + 'product_gif_path')
+                    for pr_p in product_paths_str:
+
+                        print (pr_p + 'pr_p')
                     db.session.add(new_product)
                 else:
                     return f"Error: Category with cid={product_cid} or Subcategory with scid={product_scid} not found in the database."
-
+            print('------ ADDED -----' +product_name)
             db.session.commit()
-
+            
             return "CSV data uploaded and processed successfully."
 
         return "No file selected or an error occurred."
