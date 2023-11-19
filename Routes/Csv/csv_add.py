@@ -2,9 +2,7 @@ from Config.Config import app, db
 from flask import Flask, request, render_template, Blueprint, jsonify
 import os
 from werkzeug.exceptions import BadRequest
-import logging
 
-import shutil
 from werkzeug.utils import secure_filename
 
 import pandas as pd
@@ -85,10 +83,6 @@ def upload_csv_subcategory():
     except Exception as e:
         return str(e)
 
-
-
-
-
 @csv_api.route('/product_csv', methods=['POST'])
 def upload_csv_product():
     try:
@@ -104,11 +98,8 @@ def upload_csv_product():
 
             for index, row in csv_data.iterrows():
                 # Extract product data from the CSV file
-
-
                 product_images_paths = []
                 product_gifs_paths = []
-
                 product_name = row['name']
                 product_info = row['info']
                 product_price = row['price']
@@ -123,47 +114,49 @@ def upload_csv_product():
                 gif_paths = row.get('product_path')
                 product_paths = row.get('product_paths').split(',')  # Assuming multiple paths are comma-separated
 
+                # Assuming 'allowed_file' and 'custom_abort' functions are defined elsewhere
+
                 if 'product_images[]' in request.files:
-                   # product_images = request.files.getlist('product_images[]')
-                    print(product_images[0])
+                    product_images = request.files.getlist('product_images[]')
                     for product_image in product_images:
                         print("Uploaded file name:", product_image.filename)
 
                         if allowed_file(product_image.filename):
                             filename = secure_filename(product_image.filename)
-                           # images_filename = filename(product_image.filename)
-                            print("Saving file to:", os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
                             image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                            product_image.save(image_path)
+
+                            if not os.path.exists(image_path):
+                                print("Saving file to:", image_path)
+                                product_image.save(image_path)
+                            else:
+                                print(f"File '{filename}' already exists in the upload folder. Skipping upload.")
                             product_images_paths.append(filename)
+
                         else:
                             return custom_abort(400, "Invalid file format. Allowed formats: jpg, jpeg, png, gif")
 
-
                 if 'product_gifs[]' in request.files:
-                   # product_gifs = request.files.getlist('product_gifs[]')
-                    print(product_gifs[0])
+                    product_gifs = request.files.getlist('product_gifs[]')
                     for product_gif in product_gifs:
                         print("Uploaded file name:", product_gif.filename)
 
                         if allowed_file(product_gif.filename):
                             filename = secure_filename(product_gif.filename)
                             gif_filename = secure_filename(product_gif.filename)
-                            print("Saving file to:", os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
                             gif_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                            product_gif.save(gif_path)
+
+                            if not os.path.exists(gif_path):
+                                print("Saving file to:", gif_path)
+                                product_gif.save(gif_path)
+                            else:
+                                print(f"File '{filename}' already exists in the upload folder. Skipping upload.")
                             product_gifs_paths.append(filename)
+
                         else:
                             return custom_abort(400, "Invalid file format. Allowed formats: jpg, jpeg, png, gif")
 
-
-
-
                 product_paths_str = ','.join(product_paths)
                 gif_paths = ','.join(product_gifs_paths)
-
 
                 # Query the 'Categories' and 'Subcategories' tables to find the associated category and subcategory
                 category = Categories.query.filter_by(cid=product_cid).first()
