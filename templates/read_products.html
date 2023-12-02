@@ -40,6 +40,8 @@
                     <th>Name</th>
                     <th>Info</th>
                     <th>Description</th>
+
+                    <th>Description2</th>
                     <th>Color</th>
                     <th>Brand</th>
                     <th>Price</th>
@@ -77,6 +79,18 @@
         </button>
         <div class="collapse" id="descriptionCollapse{{ product.pid }}">
             {{ product.description }}
+        </div>
+    </td>
+
+    <td>
+        <div class="text-truncate" style="max-width: 300px;"> <!-- Adjust max-width as needed -->
+            {{ product.description2 }}
+        </div>
+        <button class="btn btn-link" data-toggle="collapse" data-target="#descriptionCollapse{{ product.pid }}">
+            Read More
+        </button>
+        <div class="collapse" id="descriptionCollapse{{ product.pid }}">
+            {{ product.description2 }}
         </div>
     </td>
 

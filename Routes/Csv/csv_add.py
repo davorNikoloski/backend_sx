@@ -103,8 +103,10 @@ def upload_csv_product():
                 product_name = row['name']
                 product_info = row['info']
                 product_price = row['price']
+                product_price_Discount = row['price_Discount']
                 product_productNo = row['productNo']
                 product_description = row.get('description', '')  # Handle optional field
+                product_description2 = row.get('description2', '')  
                 product_brand = row.get('brand', '')  # Handle optional field
                 product_color = row.get('color', '')  # Handle optional field
                 product_cid = row['cid']  # Assuming 'cid' is provided in the CSV
@@ -168,8 +170,10 @@ def upload_csv_product():
                         name=product_name,
                         info=product_info,
                         price=product_price,
+                        price_Discount=product_price_Discount,
                         productNo=product_productNo,
                         description=product_description,
+                        description2=product_description2,
                         brand=product_brand,
                         color=product_color,
                         cid=category.cid,

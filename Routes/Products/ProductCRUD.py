@@ -18,6 +18,7 @@ class Product():
             "name": "String",
             "info": "String",
             "description": "String",
+            "description2": "String",
             "brand": "String",
             "color": "String",
             "price": "Integer",
@@ -102,7 +103,7 @@ class Product():
             if key not in data:
                 return custom_abort(400, "Required key is missing - " + key + "-----")
         
-        secondary_keys = ["description", "brand", "color"]
+        secondary_keys = ["description","description2", "brand", "color"]
 
         for u_key in secondary_keys:
             if u_key not in data:

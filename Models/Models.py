@@ -48,6 +48,7 @@ class Products(db.Model):
     product_paths = db.Column(db.String(256), nullable=True, default='default_path.jpg')
 
     description = db.Column(db.String(512), nullable=True)
+    description2 = db.Column(db.String(1024), nullable=True)
     brand = db.Column(db.String(40), nullable=True)
     color = db.Column(db.String(255), nullable=True)
 
