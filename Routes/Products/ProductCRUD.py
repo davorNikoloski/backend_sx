@@ -26,7 +26,7 @@ class Product():
             "productNo": "String",
             "product_path": "String",
             "product_paths": "String",
-            
+            "available": "Boolean", 
             "cid": "Integer",
             "scid": "Integer",
     }
@@ -103,7 +103,7 @@ class Product():
             if key not in data:
                 return custom_abort(400, "Required key is missing - " + key + "-----")
         
-        secondary_keys = ["description","description2", "brand", "color"]
+        secondary_keys = ["description","description2", "brand", "color","available"]
 
         for u_key in secondary_keys:
             if u_key not in data:
@@ -212,6 +212,15 @@ class Product():
 
 
         [setattr(product, key, data[key]) for key in self.table_keys if key in data]
+        if 'available' in data:
+            available = data['available']  # Convert to lowercase
+            if available == '1':
+                product.available = 1
+            elif available == '0':
+                product.available = 0
+            else:
+                # Handle invalid input (if needed)
+                return custom_abort(400, "Invalid value for 'available' field")
         db.session.commit()
         product = Products.query.filter_by(pid=product.pid).first()
         ret = convertor(product)

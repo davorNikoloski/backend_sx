@@ -26,14 +26,23 @@
                     <td>{{ category.info }}</td>
                     <td>
                         <!-- Link to the update page for the category -->
-                        <a href="/api/categories/update_category?cid={{ category.cid }}" class="btn btn-primary">Update</a>
+                        <a href="/api/categories/update_category/{{category.cid}}" class="btn btn-primary">Update</a>
                         <!-- Form to delete the category -->
-                        <form action="/api/categories/delete_category?cid={{ category.cid }}" method="post" style="display: inline;">
+                        <form action="/api/categories/delete_category/{{ category.cid }}" method="post" style="display: inline;">
                             <input type="submit" value="Delete" class="btn btn-danger">
                         </form>
                     </td>
                 </tr>
                 {% endfor %}
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="flash-messages">
+                            {% for message in messages %}
+                                <div class="flash-message">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
             </tbody>
         </table>
         <!-- Link to add a new category -->
@@ -41,3 +50,4 @@
     </div>
 </body>
 </html>
+

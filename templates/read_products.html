@@ -37,11 +37,10 @@
             <thead>
                 <tr>
                     <th>PID</th>
+                    <th>Available</th>
                     <th>Name</th>
                     <th>Info</th>
                     <th>Description</th>
-
-                    <th>Description2</th>
                     <th>Color</th>
                     <th>Brand</th>
                     <th>Price</th>
@@ -58,6 +57,7 @@
                 {% for product in product_list %}
                 <tr>
                     <td>{{ product.pid }}</td>
+                    <td>{{ product.available }}</td>
                     <td>{{ product.name }}</td>
              	    <td>
         <div class="text-truncate" style="max-width: 300px;"> <!-- Adjust max-width as needed -->
@@ -66,31 +66,24 @@
         <button class="btn btn-link" data-toggle="collapse" data-target="#infoCollapse{{ product.pid }}">
             Read More
         </button>
-        <div class="collapse" id="infoCollapse{{ product.pid }}">
-            {{ product.info }}
-        </div>
-    </td>
-    <td>
-        <div class="text-truncate" style="max-width: 300px;"> <!-- Adjust max-width as needed -->
-            {{ product.description }}
-        </div>
-        <button class="btn btn-link" data-toggle="collapse" data-target="#descriptionCollapse{{ product.pid }}">
-            Read More
-        </button>
-        <div class="collapse" id="descriptionCollapse{{ product.pid }}">
-            {{ product.description }}
-        </div>
-    </td>
+        <div class="collapse show" id="infoCollapse{{ product.pid }}">
+            <div class="card card-body">
+                {{ product.info }}
 
+            </div>
+        </div>
+    </td>
     <td>
         <div class="text-truncate" style="max-width: 300px;"> <!-- Adjust max-width as needed -->
-            {{ product.description2 }}
+            {{ product.description }}
         </div>
-        <button class="btn btn-link" data-toggle="collapse" data-target="#descriptionCollapse{{ product.pid }}">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#descriptionCollapse{{ product.pid }} " aria-expanded="false" aria-controls="#descriptionCollapse{{ product.pid }}">
             Read More
         </button>
-        <div class="collapse" id="descriptionCollapse{{ product.pid }}">
-            {{ product.description2 }}
+        <div class="collapse multi-collapse show" id="descriptionCollapse{{ product.pid }}">
+            <div class="card card-body">
+                {{ product.description }}
+            </div>
         </div>
     </td>
 
@@ -128,32 +121,40 @@
 
             <form method="post" action="/api/csv/category_csv" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="csvFile">Upload CSV File for Category:</label>
+                    <label for="csvFile">CSV File за scategory:</label>
                     <input type="file" class="form-control-file" id="csvFile" name="csvFile">
                 </div>
-                <button type="submit" class="btn btn-primary">Upload CSV</button>
+                <button type="submit" class="btn btn-primary">Прикачи CSV</button>
             </form>
+            <br>
+            <hr>
             <form method="post" action="/api/csv/subcategory_csv" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="csvFile">Upload CSV File for Subcategory:</label>
+                    <label for="csvFile">CSV File за subcategory:</label>
                     <input type="file" class="form-control-file" id="csvFile" name="csvFile">
                 </div>
-                <button type="submit" class="btn btn-primary">Upload CSV</button>
+                <button type="submit" class="btn btn-primary">Прикачи CSV</button>
             </form>
+            <br>
+            <hr>
             <form method="post" action="/api/csv/product_csv" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="csvFile">Upload CSV File for Products:</label>
+                    <label for="csvFile">CSV File со податоци за продукт:</label>
                     <input type="file" class="form-control-file" id="csvFile" name="csvFile">
                 </div>
+                <br>
+
                 <div class="form-group">
-                    <label for="productGifs">Product gifs:</label>
+                    <label for="productGifs">Gif или слика :</label>
                     <input type="file" class="form-control-file" id="productGifs" name="product_gifs[]" multiple accept=".jpg, .jpeg, .png, .gif">
                 </div>
+                <br>
+
                 <div class="form-group">
-                    <label for="productImages">Product Alt images:</label>
+                    <label for="productImages">Главни слики за продукт:</label>
                     <input type="file" class="form-control-file" id="productImages" name="product_images[]" multiple accept=".jpg, .jpeg, .png, .gif">
                 </div>
-                <button type="submit" class="btn btn-primary">Upload CSV</button>
+                <button type="submit" class="btn btn-primary">Прикачи Податоци и Слики</button>
             </form>
 
         </div>

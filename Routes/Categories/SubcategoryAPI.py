@@ -48,7 +48,7 @@ def save_updated_subcategory():
 
     if response.status_code == 200 :
         flash('Subcategory updated successfully!', 'success')
-        return redirect(url_for('subcategories.read_subcategories'))
+        return redirect("https://shopex.mk/api/secret/read_subcategories")
     else:
         return response
     

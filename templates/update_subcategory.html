@@ -9,7 +9,7 @@
 <body>
     <div class="container mt-4">
         <h1>Update Subcategory</h1>
-        <form method="post" action="{{ url_for('subcategories.save_updated_subcategory', scid=subcategory.scid) }}">
+        <form method="post" action="/api/subcategories/update_subcategory">
             <input type="hidden" name="scid" value="{{ subcategory.scid }}">
 
             <div class="form-group">

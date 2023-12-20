@@ -54,6 +54,7 @@ class Products(db.Model):
 
     cid = db.Column(db.Integer, db.ForeignKey('Categories.cid'), nullable=True)
     scid = db.Column(db.Integer, db.ForeignKey('Subcategories.scid'), nullable=True)
+    available = db.Column(db.Boolean, nullable=True, default=True)
 
     Categories = db.relationship('Categories', backref=db.backref('Products', lazy=True))
     Subcategories = db.relationship('Subcategories', backref=db.backref('Products', lazy=True))

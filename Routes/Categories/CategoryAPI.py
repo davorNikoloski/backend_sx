@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify,redirect, url_for
+from flask import Blueprint, render_template, request, jsonify,redirect, url_for, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, InputRequired, Length, ValidationError, EqualTo
@@ -41,7 +41,8 @@ def update_category(cid):
 def save_updated_category():
     response = CategoryCrud.update(request)
     if response.status_code == 200:
-        return redirect(url_for('categories.read_categories'))
+        flash('Category updated successfully!', 'success')
+        return redirect("https://shopex.mk/api/secret/read_categories")
     else:
         return response
     

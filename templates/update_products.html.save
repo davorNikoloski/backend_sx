@@ -35,12 +35,6 @@
                 <label for="color">Color:</label>
                 <input type="text" class="form-control" id="color" name="color" value="{{ product.color }}" required>
             </div>
-            <label for="available">Available:</label>
-            <select name="available" id="available">
-                <option value=1 {% if product.available == 1 %} selected {% endif %}>True</option>
-                <option value=0 {% if product.available == 0 %} selected {% endif %}>False</option>
-            </select>
-
             <div class="form-group">
                 <label for="price">Price:</label>
                 <input type="number" class="form-control" id="price" name="price" value="{{ product.price }}" required>
@@ -51,8 +45,8 @@
             </div>
 
 	    <div class="form-group">
-                <label for="price_Discount">Price disc:</label>
-                <input type="number" class="form-control" id="price_Discount" name="price_Discount" value="{{ product.price_Discount }}" required>
+                <label for="price">Price dis:</label>
+                <input type="number" class="form-control" id="price" name="price" value="{{ product.price }}" required>
             </div>
             <div class="form-group">
                 <label for="productImages">Product Images:</label>
