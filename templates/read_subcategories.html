@@ -34,9 +34,9 @@
                     </td>
                     <td>
                         <!-- Link to the update page for the subcategory -->
-                        <a href="/api/subcategories/update_subcategory/{{ subcategory.scid }}" class="btn btn-primary">Update</a>
+                        <a href="/subcategories/update_subcategory/{{ subcategory.scid }}" class="btn btn-primary">Update</a>
                         <!-- Form to delete the subcategory -->
-                        <form method="post" action="/api/subcategories/delete_subcategory/{{ subcategory.scid }}">
+                        <form method="post" action="/subcategories/delete_subcategory/{{ subcategory.scid }}">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
                     </td>
@@ -54,7 +54,7 @@
                 {% endwith %}
             </tbody>
         </table>
-        <a href="/api/subcategories/add_subcategory" class="btn btn-success">Add Subcategory</a>
+        <a href="/subcategories/add_subcategory" class="btn btn-success">Add Subcategory</a>
     </div>
 </body>
 </html>

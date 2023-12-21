@@ -42,7 +42,7 @@ def save_updated_category():
     response = CategoryCrud.update(request)
     if response.status_code == 200:
         flash('Category updated successfully!', 'success')
-        return redirect("https://shopex.mk/api/secret/read_categories")
+        return redirect("https://localhost:5000/secret/read_categories")
     else:
         return response
     

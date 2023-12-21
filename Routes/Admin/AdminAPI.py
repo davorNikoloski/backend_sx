@@ -46,7 +46,7 @@ def login():
         if admin and admin.password == password:  # Compare passwords without hashing
             print("Login successful for user:", username)
             login_user(admin)
-            return redirect('/api/secret/read_products')  # Use direct URL path
+            return redirect('/secret/read_products')  # Use direct URL path
 
         print("Invalid login attempt for user:", username)
         flash('Invalid username or password', 'danger')

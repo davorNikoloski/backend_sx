@@ -26,7 +26,7 @@ class UsersAuth():
         }
         pass
 
-    def register(self, request):
+    def register(self, request): 
         data = request.get_json()
         print(data)
 
@@ -56,6 +56,7 @@ class UsersAuth():
         hashed_password = bcrypt.hashpw(data["password"].encode("utf-8"), bcrypt.gensalt())
 
         user = Users()
+        user.profile_path='d'
         [setattr(user, key, data[key]) for key in required]
         user.password = hashed_password.decode("utf-8") 
         db.session.add(user)

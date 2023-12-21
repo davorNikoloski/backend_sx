@@ -116,7 +116,15 @@ class Product():
 
         product.product_path = product_path #PRIVREMENO VAKA TREBA DA BIDI URL
         product.product_paths = product_paths_str
-
+        if 'available' in data:
+            available = data['available']  # Convert to lowercase
+            if available == '1':
+                product.available = 1
+            elif available == '0':
+                product.available = 0
+            else:
+                # Handle invalid input (if needed)
+                return custom_abort(400, "Invalid value for 'available' field")
         db.session.add(product)
         db.session.commit()
         product = Products.query.filter_by(pid=product.pid).first()
