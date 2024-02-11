@@ -7,7 +7,7 @@ from Routes.Categories.CategoryCRUD import CategoryCrud
 from Routes.Categories.SubcategoryCRUD import SubcategoryCrud
 
 from Config.Common import crud_routes, convertor
-from Models.Models import Products, Categories, Subcategories, Auth, Specification
+from Models.Models import Products, Categories, Subcategories, Auth
 
 admin_api = Blueprint('Auth', __name__)
 
@@ -115,10 +115,6 @@ def update_product(pid):
     product = Products.query.filter_by(pid=pid).first()
     categories = Categories.query.all()
     subcategories = Subcategories.query.all()   
-    specifications = Specification.query.filter_by(pid=pid).all()
-
-    specification_counter = len(specifications)
-
     print(product.product_path)
     if not product:
         return "Product not found", 404
@@ -131,7 +127,7 @@ def update_product(pid):
             'scid': subcategory.scid,
             'name': subcategory.name
         })
-    return render_template('update_products.html', product=product, categories=categories, subcategories=subcategories_data, specifications=specifications, specification_counter=specification_counter)
+    return render_template('update_products.html', product=product, categories=categories, subcategories=subcategories_data)
 
 @admin_api.route('/update_products', methods=['POST'])
 @login_required

@@ -219,22 +219,20 @@ class Product():
         ret_subcategory = convertor(subcategory, ["password", "reset_code"], True)
         ret_specification = convertor(specification, ["password", "reset_code"], True)
 
+
         if hash_info["enable_hash"] == True:
             ret_product = hash_query_results(ret_product, hash_info["hash_key"], hash_info["hash_type"])
-       
-        return jsonify({ "products" : ret_product,"specifications" : ret_specification, "category" : ret_category, "subcategory" : ret_subcategory,"hash_info" : hash_info }) 
-    
-    
+
+        return jsonify({ "products" : ret_product,"specifications" : ret_specification, "category" : ret_category, "subcategory" : ret_subcategory,"hash_info" : hash_info })
     #-----------UPDATE------------------------------
 
     def update(self, request):
         data = request.form
         print(data)
-        print('--------------------------------------')
         product_path = None
         product_paths = []
         product_images = []
-        retSpec = None
+
         product_path = request.files.get('product_path')
         product_images = request.files.getlist('product_images[]')
 
@@ -306,6 +304,43 @@ class Product():
                 
 
                 # Update product specifications
+
+        # Delete existing specifications associated with the product
+        Specification.query.filter_by(pid=product.pid).delete()
+
+        product_id = product.pid
+
+        try:
+            specification_counter = int(request.form.get('specificationCounter', 0))
+            print(str(specification_counter) + ' test1')
+
+            for i in range(specification_counter):
+                print(str(i) + ' test2')
+
+                # Check if the specification should be removed
+                if request.form.get(f'remove_specification[{i+1}]') == '1':
+                    continue  # Skip this iteration for removal
+
+                color = request.form.get(f'spec_color[{i+1}]')
+                size = request.form.get(f'spec_size[{i+1}]')
+                new_price = request.form.get(f'spec_new_price[{i+1}]')
+
+                specification = Specification()
+                specification.pid = product_id
+                specification.color = color
+                specification.size = size
+                specification.new_price = new_price
+
+                db.session.add(specification)
+
+            # Commit the specifications transaction
+            db.session.commit()
+
+        except Exception as e:
+            # Handle the exception, rollback the session, and return an error response
+            db.session.rollback()
+            return jsonify({"error": str(e)}), 500
+
         # After setting other attributes, handle 'available' checkbox input
         delivery_cost = request.form.get('deliveryCost')
 
@@ -334,84 +369,13 @@ class Product():
                 # Handle invalid input (if needed)
                 return custom_abort(400, "Invalid value for 'available' field")
         db.session.commit()
+        product = Products.query.filter_by(pid=product.pid).first()
  
+        ret = convertor(product)
 
-        product_id = product.pid
-        try:
-            # Get data from the form
-            colors = request.form.getlist('spec_color[]')
-            sizes = request.form.getlist('spec_size[]')
-            new_prices = request.form.getlist('spec_new_price[]')
-            specificationCounter = int(request.form.get('specificationCounter'))
-
-            print(str(colors) + '---' + str(sizes) + '----' + str(new_prices) + '------' + str(specificationCounter))
-            # Fetch existing specifications from the database
-            existing_specifications = Specification.query.filter_by(pid=product_id).all()
-
-                    # Handle specifications
-            for i in range(specificationCounter+1):
-                color = colors[i]
-                size = sizes[i]
-                new_price = new_prices[i]
-                print(str(color))
-                if color or size or new_price:
-                    # Check if the specification already exists
-                    existing_specification = None
-                    if i < len(existing_specifications):
-                        existing_specification = existing_specifications[i]
-                        print(str(existing_specification) + '---------existing_specification')
-
-                    if existing_specification:
-                        # Check if values are different before updating
-                        if (
-                            
-                            existing_specification.color != color
-                            or existing_specification.size != size
-                            or existing_specification.new_price != new_price
-                        ):
-                            # Update existing specification
-                            print('test' + existing_specification.color + '--' + color)
-                            existing_specification.color = color
-                            existing_specification.size = size
-                            existing_specification.new_price = int(new_price) if new_price else None
-                    else:
-                        # Add new specification
-                        specification = Specification()
-                        specification.pid = product_id
-                        specification.color = color
-                        specification.size = size
-                        specification.new_price = int(new_price) if new_price else None
-
-                        db.session.add(specification)
-
-            # Remove extra specifications not needed
-            specifications_to_delete = existing_specifications[specificationCounter:]
-            for specification in specifications_to_delete:
-                db.session.delete(specification)
-
-            # Commit the specifications transaction
-            db.session.commit()
-
-
-            # Fetch the updated product and associated specifications
-            product = Products.query.filter_by(pid=product.pid).first()
-            specifications = Specification.query.filter_by(pid=product_id).all()
-
-            # Convert product and specifications, and return the response
-            ret = convertor(product)
-            retSpec = convertor(specifications)
-
-            return jsonify({
-                "product": ret,
-                "spec": retSpec
-            }), 200
-
-        except Exception as e:
-            # Handle the exception, rollback the session, and return an error response
-            db.session.rollback()
-            return jsonify({"error": str(e)}), 500
-        
-        
+        return jsonify({
+            "product": ret
+        })
 
 
     

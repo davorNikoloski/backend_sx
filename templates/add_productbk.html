@@ -11,41 +11,51 @@
         <h1>Add New Product</h1>
         <form action="/api/products/create_product" method="POST" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="name">Име:</label>
+                <label for="name">Name:</label>
                 <input type="text" class="form-control" id="name" name="name" required>
             </div>
 
             <div class="form-group">
-                <label for="info">Спецификации за продуктот:</label>
+                <label for="info">Info:</label>
                 <textarea class="form-control" id="info" name="info" required></textarea>
             </div>
 
             <div class="form-group">
-                <label for="info">Опис на продкутот:</label>
+                <label for="description">Description:</label>
                 <textarea class="form-control" id="description" name="description" required></textarea>
             </div>
 
+	     <div class="form-group">
+                <label for="description2">Description2:</label>
+                <textarea class="form-control" id="description2" name="description2" required></textarea>
+            </div>
+
             <div class="form-group">
-                <label for="brand">Бренд:</label>
+                <label for="brand">Brand:</label>
                 <input type="text" class="form-control" id="brand" name="brand" required>
             </div>
 
-            <div>
-                <label for="available">Достапно?:</label>
+            <div class="form-group">
+                <label for="color">Color:</label>
+                <input type="text" class="form-control" id="color" name="color" required>
+            </div>
+	    <div>
+                <label for="available">Available:</label>
                 <select name="available" id="available">
-                    <option value=1>Да</option>
-                    <option value=0>Не</option>
+                    <option value=1>True</option>
+                    <option value=0>False</option>
                 </select>
             </div>
             <div class="form-group">
-                <label for="price">Цена:</label>
+                <label for="price">Price:</label>
                 <input type="number" class="form-control" id="price" name="price" required>
             </div>
             
             <div class="form-group">
-                <label for="price_Discount">Цена пред попуст:</label>
-                <input type="number" class="form-control" id="price_D   iscount" name="price_Discount">
+                <label for="price_Discount">Discounted Price:</label>
+                <input type="number" class="form-control" id="price_Discount" name="price_Discount">
             </div>
+
             <div>
                 <label for="deliveryCost">Достава:</label>
                 <select name="deliveryCost" id="deliveryCost">
@@ -57,47 +67,27 @@
                 <input type="number" id="customDeliveryCost" name="customDeliveryCost" placeholder="Внеси цена" style="display: none;">
 
             </div>
+           
             <div class="form-group">
-                <label for="productNo">ID на продкут:</label>
+                <label for="productNo">Product Number:</label>
                 <input type="text" class="form-control" id="productNo" name="productNo" required>
             </div>
 
 
             <div class="form-group">
-                <label for="productImages">Фотографии за продуктот:</label>
+                <label for="productImages">Product Alt images:</label>
                 <input type="file" class="form-control-file" id="productImages" name="product_images[]" multiple accept=".jpg, .jpeg, .png">
             </div>
 
             <div class="form-group">
-                <label for="productImage">gif за продуктот:</label>
+                <label for="productImage">Product gif:</label>
                 <input type="file" class="form-control-file" id="productImage" name="product_path" accept=".jpg, .jpeg, .png, .gif">
-            </div>
-
-            <div class="form-group" id="specificationSection">
-                <h2>Боја,Големина,Нова цена</h2>
-                <div class="specification d-none">
-                    <div class="form-group">
-                        <label for="spec_color">Боја:</label>
-                        <input type="text" class="form-control" name="spec_color[]" >
-                    </div>
-                    <div class="form-group">
-                        <label for="spec_size">Големина:</label>
-                        <input type="text" class="form-control" name="spec_size[]" >
-                    </div>
-                    <div class="form-group">
-                        <label for="spec_new_price">Нова Цена:</label>
-                        <input type="number" class="form-control" name="spec_new_price[]" >
-                    </div>
-                </div>
-                <input type="hidden" name="specificationCounter" id="specificationCounter" value="0">
-
-                <button type="button" class="btn btn-primary" id="addSpecification">Додади спецификација</button>
             </div>
             
 
             <!-- Category dropdown -->
             <div class="form-group">
-                <label for="cid">Категорија:</label>
+                <label for="cid">Category:</label>
                 <select class="form-control" id="cid" name="cid" required>
                     <option value="" selected disabled>Select Category</option>
                     {% for category in categories %}
@@ -108,9 +98,9 @@
 
             <!-- Subcategory dropdown -->
             <div class="form-group">
-                <label for="scid">Под-категорија:</label>
+                <label for="scid">Subcategory:</label>
                 <select class="form-control" id="scid" name="scid" required disabled>
-                    <option value="" selected disabled>Избери</option>
+                    <option value="" selected disabled>Select Subcategory</option>
                     <!-- The options will be populated dynamically using JavaScript -->
                 </select>
             </div>
@@ -162,7 +152,7 @@
             categoryDropdown.trigger('change');
         });
     </script>
-    <script>
+<script>
         // JavaScript to handle the custom input option
         const deliveryCostSelect = document.getElementById('deliveryCost');
         const customDeliveryCostInput = document.getElementById('customDeliveryCost');
@@ -178,36 +168,5 @@
             }
         });
     </script>
-    <script>
-        $(document).ready(function () {
-            // Counter to keep track of added specifications
-            let specificationCounter = 1;
-    
-            // Event handler for adding a new specification
-            $("#addSpecification").on("click", function () {
-                // Clone the existing specification div and update the input names
-                const newSpecification = $(".specification:first").clone();
-                newSpecification.find("input").each(function () {
-                    const currentName = $(this).attr("name");
-                    $(this).attr("name", currentName.replace("[]", `[${specificationCounter}]`));
-                    $(this).val("");  // Optionally clear the input values
-                });
-    
-                // Increment the counter and update the hidden input field
-                specificationCounter++;
-                $("#specificationCounter").val(specificationCounter);
-    
-                // Append the new specification
-                $("#specificationSection").append(newSpecification);
-    
-                // Check if specificationCounter is greater than 1
-                if (specificationCounter > 1) {
-                    // If specificationCounter is greater than 1, remove the 'd-none' class
-                    newSpecification.removeClass("d-none");
-                }
-            });
-        });
-    </script>
-    
 </body>
 </html>

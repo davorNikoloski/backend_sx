@@ -6,7 +6,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from Config.Config import app
 from Routes.Products.ProductCRUD import ProductCrud
 from Config.Common import crud_routes, convertor
-from Models.Models import Products, Categories, Subcategories
+from Models.Models import Products, Categories, Subcategories, Specification
 from flask import send_from_directory
 
 products_api = Blueprint('products', __name__)
@@ -80,6 +80,15 @@ def products_crud():
 @products_api.route('/product/<int:pid>', methods=["GET", "PUT" , "POST"])
 def get_product_by_id(pid):
     return ProductCrud.get_product_by_id(pid)
+
+
+@products_api.route('/getSpecifications', methods=['GET'])
+def get_specifications():
+
+    specifications = Specification.query.all()
+    ret_specification = [{"pid": specification.pid, "color": specification.color, "size": specification.size, "new_price": specification.new_price} for specification in specifications]
+
+    return jsonify({"specifications": ret_specification})
 
 
     #POST TO Sidebar 

@@ -138,6 +138,13 @@
             </form>
             <br>
             <hr>
+<!-- Add this to your HTML -->
+<div id="loading-overlay" class="overlay d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
             <form method="post" action="/api/csv/product_csv" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="csvFile">CSV File со податоци за продукт:</label>
@@ -200,5 +207,20 @@
             }
         });
     });
+</script>
+
+<script>
+$(document).ready(function() {
+    $('form').submit(function() {
+        // Show loading overlay using Bootstrap's 'show' class
+        $('#loading-overlay').addClass('show');
+
+        // Disable form elements to prevent multiple submissions
+        $(this).find('button, input, select, textarea').prop('disabled', true);
+
+        // Continue with form submission
+        return true;
+    });
+});
 </script>
 </html>

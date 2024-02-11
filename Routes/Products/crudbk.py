@@ -1,11 +1,11 @@
-from Models.Models import Products, Categories, Subcategories, Specification
+from Models.Models import Products, Categories, Subcategories
 from Config.Config import app, db
 from werkzeug.utils import secure_filename
 import os
 from flask import jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
 from Config import Constants, Common
-from Config.Common import custom_abort, crud_routes, build_params, get_user_from_jwt, convertor, hash_query_results, get_hash_info, get_random_alphanumerical
+from Config.Common import custom_abort, crud_routes, build_params, get_user_from_jwt, convertor, hash_query_results, get_hash_info
 
 #MODEL
 class Product():
@@ -18,15 +18,16 @@ class Product():
             "name": "String",
             "info": "String",
             "description": "String",
+            "description2": "String",
             "brand": "String",
+            "color": "String",
             "price": "Integer",
             "price_Discount": "Integer",
             "productNo": "String",
             "product_path": "String",
             "product_paths": "String",
-            "available": "Boolean", 
-            "deliveryCost": "Integer", 
-
+            "available": "Boolean",
+            "deliveryCost": "Integer",
             "cid": "Integer",
             "scid": "Integer",
     }
@@ -54,13 +55,7 @@ class Product():
                 print("Uploaded file name:", product_image.filename)
 
                 if self.allowed_file(product_image.filename):
-                    random_title = get_random_alphanumerical()
-
-                    # Extract the original file extension
-                    original_extension = os.path.splitext(product_image.filename)[1]
-                    print(original_extension)
-                    # Create the new filename with the random title and original extension
-                    filename = f"{random_title}{original_extension}"
+                    filename = secure_filename(product_image.filename)
                     image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
                     if not os.path.exists(image_path):
@@ -78,17 +73,11 @@ class Product():
         
         if 'product_path' in request.files:
             product_image = request.files['product_path']
-            print(request.form)
+
             print("Uploaded file name:", product_image.filename)
 
             if self.allowed_file(product_image.filename):
-                random_title = get_random_alphanumerical()
-
-                # Extract the original file extension
-                original_extension = os.path.splitext(product_image.filename)[1]
-                print(original_extension)
-                # Create the new filename with the random title and original extension
-                filename = f"{random_title}{original_extension}"
+                filename = secure_filename(product_image.filename)
                 image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
                 if not os.path.exists(image_path):
@@ -109,19 +98,18 @@ class Product():
         # Set a default value of 0 if "price_Discount" is not provided
         if price_discount is None:
             price_discount = 0
-        
-        
 
         required_keys = ["name", "info", "price", "productNo", "cid", "scid", "price_Discount"]
         for key in required_keys:
             if key not in data:
                 return custom_abort(400, "Required key is missing - " + key + "-----")
         
-        secondary_keys = ["description", "brand", "available", "deliveryCost"]
+        secondary_keys = ["description","description2", "brand", "color","available", "deliveryCost"]
 
         for u_key in secondary_keys:
             if u_key not in data:
                 return print("Недостасува : " + u_key)
+
 
 
         product = Products()
@@ -141,7 +129,6 @@ class Product():
             except ValueError:
                 # Handle the case where the custom delivery cost is not a valid integer
                 return jsonify({'error': 'Invalid custom delivery cost'}), 400
-
         [setattr(product, key, data[key]) for key in required_keys]
         [setattr(product, u_key, data[u_key]) for u_key in secondary_keys]
         if 'available' in data:
@@ -153,48 +140,12 @@ class Product():
             else:
                 # Handle invalid input (if needed)
                 return custom_abort(400, "Invalid value for 'available' field")
-
+        
         product.product_path = product_path #PRIVREMENO VAKA TREBA DA BIDI URL
         product.product_paths = product_paths_str
 
         db.session.add(product)
-
-        # Commit the product transaction
-        
         db.session.commit()
-
-        # Get the product ID generated during the commit
-        product_id = product.pid
-        
-        #print('EVE GOOOOO PID ---------------' + str(product.pid))
-        # Create Specifications
-        try:
-            specification_counter = int(request.form.get('specificationCounter'))
-            print (str(specification_counter) + 'test1')
-            for i in range(specification_counter-1):
-                print (str(i) + 'test2')
-
-                color = request.form.get(f'spec_color[{i+1}]')
-                size = request.form.get(f'spec_size[{i+1}]')
-                new_price = request.form.get(f'spec_new_price[{i+1}]')
-
-                specification = Specification()
-                specification.pid = product_id
-                specification.color = color
-                specification.size = size
-                specification.new_price = new_price
-
-                db.session.add(specification)
-
-            # Commit the specifications transaction
-            db.session.commit()
-
-        except Exception as e:
-            # Handle the exception, rollback the session, and return an error response
-            db.session.rollback()
-            return jsonify({"error": str(e)}), 500
-
-
         product = Products.query.filter_by(pid=product.pid).first()
 
         ret = convertor(product)
@@ -211,30 +162,26 @@ class Product():
         product = Products.query.filter_by(**params).all()
         category = Categories.query.filter_by(**params).all()
         subcategory = Subcategories.query.filter_by(**params).all()
-        specification = Specification.query.filter_by(**params).all()
 
 
         ret_product = convertor(product, ["password", "reset_code"], True)
         ret_category = convertor(category, ["password", "reset_code"], True)
         ret_subcategory = convertor(subcategory, ["password", "reset_code"], True)
-        ret_specification = convertor(specification, ["password", "reset_code"], True)
 
         if hash_info["enable_hash"] == True:
             ret_product = hash_query_results(ret_product, hash_info["hash_key"], hash_info["hash_type"])
        
-        return jsonify({ "products" : ret_product,"specifications" : ret_specification, "category" : ret_category, "subcategory" : ret_subcategory,"hash_info" : hash_info }) 
+        return jsonify({ "products" : ret_product,"category" : ret_category, "subcategory" : ret_subcategory,"hash_info" : hash_info }) 
     
     
     #-----------UPDATE------------------------------
 
     def update(self, request):
         data = request.form
-        print(data)
-        print('--------------------------------------')
         product_path = None
         product_paths = []
         product_images = []
-        retSpec = None
+
         product_path = request.files.get('product_path')
         product_images = request.files.getlist('product_images[]')
 
@@ -245,13 +192,7 @@ class Product():
             if product_image.filename:
                 print(product_image.filename + 'product_image.filename')
                 if self.allowed_file(product_image.filename):
-                    random_title = get_random_alphanumerical()
-
-                    # Extract the original file extension
-                    original_extension = os.path.splitext(product_image.filename)[1]
-                    print(original_extension)
-                    # Create the new filename with the random title and original extension
-                    filename = f"{random_title}{original_extension}"
+                    filename = secure_filename(product_image.filename)
                     image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
                     if not os.path.exists(image_path):
@@ -269,8 +210,7 @@ class Product():
 
         if product is None:
                     return custom_abort(404, "Product not found")
-    
-
+        
         for product_image in product_images:
             if product_image.filename:
                 # Join new paths if there are new images
@@ -283,14 +223,7 @@ class Product():
             if product_image.filename:
                 print(product_image.filename + 'kraen product_path')
                 if self.allowed_file(product_image.filename):
-                    random_title = get_random_alphanumerical()
-
-                    # Extract the original file extension
-                    original_extension = os.path.splitext(product_image.filename)[1]
-                    print(original_extension)
-
-                    # Create the new filename with the random title and original extension
-                    filename = f"{random_title}{original_extension}"
+                    filename = secure_filename(product_image.filename)
                     image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
                     if not os.path.exists(image_path):
@@ -303,10 +236,7 @@ class Product():
                         product.product_path = filename
                 else:
                     return custom_abort(400, "Invalid file format. Allowed formats: jpg, jpeg, png, gif")
-                
 
-                # Update product specifications
-        # After setting other attributes, handle 'available' checkbox input
         delivery_cost = request.form.get('deliveryCost')
 
         # Check if the delivery_cost is 'custom'
@@ -322,7 +252,7 @@ class Product():
             except ValueError:
                 # Handle the case where the custom delivery cost is not a valid integer
                 return jsonify({'error': 'Invalid custom delivery cost'}), 400
-    
+
         [setattr(product, key, data[key]) for key in self.table_keys if key in data]
         if 'available' in data:
             available = data['available']  # Convert to lowercase
@@ -334,84 +264,12 @@ class Product():
                 # Handle invalid input (if needed)
                 return custom_abort(400, "Invalid value for 'available' field")
         db.session.commit()
- 
+        product = Products.query.filter_by(pid=product.pid).first()
+        ret = convertor(product)
 
-        product_id = product.pid
-        try:
-            # Get data from the form
-            colors = request.form.getlist('spec_color[]')
-            sizes = request.form.getlist('spec_size[]')
-            new_prices = request.form.getlist('spec_new_price[]')
-            specificationCounter = int(request.form.get('specificationCounter'))
-
-            print(str(colors) + '---' + str(sizes) + '----' + str(new_prices) + '------' + str(specificationCounter))
-            # Fetch existing specifications from the database
-            existing_specifications = Specification.query.filter_by(pid=product_id).all()
-
-                    # Handle specifications
-            for i in range(specificationCounter+1):
-                color = colors[i]
-                size = sizes[i]
-                new_price = new_prices[i]
-                print(str(color))
-                if color or size or new_price:
-                    # Check if the specification already exists
-                    existing_specification = None
-                    if i < len(existing_specifications):
-                        existing_specification = existing_specifications[i]
-                        print(str(existing_specification) + '---------existing_specification')
-
-                    if existing_specification:
-                        # Check if values are different before updating
-                        if (
-                            
-                            existing_specification.color != color
-                            or existing_specification.size != size
-                            or existing_specification.new_price != new_price
-                        ):
-                            # Update existing specification
-                            print('test' + existing_specification.color + '--' + color)
-                            existing_specification.color = color
-                            existing_specification.size = size
-                            existing_specification.new_price = int(new_price) if new_price else None
-                    else:
-                        # Add new specification
-                        specification = Specification()
-                        specification.pid = product_id
-                        specification.color = color
-                        specification.size = size
-                        specification.new_price = int(new_price) if new_price else None
-
-                        db.session.add(specification)
-
-            # Remove extra specifications not needed
-            specifications_to_delete = existing_specifications[specificationCounter:]
-            for specification in specifications_to_delete:
-                db.session.delete(specification)
-
-            # Commit the specifications transaction
-            db.session.commit()
-
-
-            # Fetch the updated product and associated specifications
-            product = Products.query.filter_by(pid=product.pid).first()
-            specifications = Specification.query.filter_by(pid=product_id).all()
-
-            # Convert product and specifications, and return the response
-            ret = convertor(product)
-            retSpec = convertor(specifications)
-
-            return jsonify({
-                "product": ret,
-                "spec": retSpec
-            }), 200
-
-        except Exception as e:
-            # Handle the exception, rollback the session, and return an error response
-            db.session.rollback()
-            return jsonify({"error": str(e)}), 500
-        
-        
+        return jsonify({
+            "product": ret
+        })
 
 
     

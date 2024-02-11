@@ -4,14 +4,8 @@
     <title>Update Product</title>
     <!-- Add Bootstrap CSS link -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script>
-        // Set the specificationCounter using the data attribute
-        document.documentElement.style.setProperty('--specification-counter', '{{ specification_counter }}');
-    </script>
 </head>
-
 <body>
-
     <div class="container mt-4">
         <h1>Update Product</h1>
         <form action="/api/secret/update_products" method="POST" enctype="multipart/form-data">
@@ -28,22 +22,41 @@
                 <label for="description">Description:</label>
                 <textarea class="form-control" id="description" name="description" required>{{ product.description }}</textarea>
             </div>
+	    <div class="form-group">
+                <label for="description2">Description2:</label>
+                <textarea class="form-control" id="description2" name="description2" required>{{ product.description2 }}</textarea>
+            </div>
+
             <div class="form-group">
                 <label for="brand">Brand:</label>
                 <input type="text" class="form-control" id="brand" name="brand" value="{{ product.brand }}" required>
             </div>
-
+            <div class="form-group">
+                <label for="color">Color:</label>
+                <input type="text" class="form-control" id="color" name="color" value="{{ product.color }}" required>
+            </div>
             <label for="available">Available:</label>
             <select name="available" id="available">
                 <option value=1 {% if product.available == 1 %} selected {% endif %}>True</option>
                 <option value=0 {% if product.available == 0 %} selected {% endif %}>False</option>
             </select>
-            
+
             <div class="form-group">
                 <label for="price">Price:</label>
                 <input type="number" class="form-control" id="price" name="price" value="{{ product.price }}" required>
             </div>
-            <div>
+            <div class="form-group">
+                <label for="productNo">Product Number:</label>
+                <input type="text" class="form-control" id="productNo" name="productNo" value="{{ product.productNo }}" required>
+            </div>
+
+	    <div class="form-group">
+                <label for="price_Discount">Price disc:</label>
+                <input type="number" class="form-control" id="price_Discount" name="price_Discount" value="{{ product.price_Discount }}" required>
+
+            </div>
+
+	     <div>
                 <label for="deliveryCost">Достава:</label>
                 <select name="deliveryCost" id="deliveryCost">
                     <option value=150>150</option>
@@ -53,12 +66,7 @@
                 </select>
                 <input type="number" id="customDeliveryCost" name="customDeliveryCost" placeholder="Внеси цена" style="display: none;">
 
-            </div>
-            <div class="form-group">
-                <label for="productNo">Product Number:</label>
-                <input type="text" class="form-control" id="productNo" name="productNo" value="{{ product.productNo }}" required>
-            </div>
-            <div class="form-group">
+            </div>            <div class="form-group">
                 <label for="productImages">Product Images:</label>
                 <input type="file" class="form-control-file" id="productImages" name="product_images[]" value="product_paths" multiple accept=".jpg, .jpeg, .png">
             </div>
@@ -66,74 +74,6 @@
                 <label for="productImage">Main Product Image:</label>
                 <input type="file" class="form-control-file" id="productImage" name="product_path" value="product_path" accept=".jpg, .jpeg, .png, .gif">
             </div>
-
-            <!-- Display existing specifications -->
-            <div class="mt-4">
-                <div class="form-group">
-                    <h2>Постоечки спецификации</h2>
-                    {% if specifications %}
-                        <div class="specifications">
-                            {% for spec in specifications %}
-                                <div class="specification">
-                                    <div class="form-group">
-                                        <label for="spec_color">Боја:</label>
-                                        <input type="text" class="form-control" name="spec_color[]" value="{{ spec.color }}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="spec_size">Големина:</label>
-                                        <input type="text" class="form-control" name="spec_size[]" value="{{ spec.size }}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="spec_new_price">Нова цена:</label>
-                                        <input type="number" class="form-control" name="spec_new_price[]" value="{{ spec.new_price }}">
-                                        <button type="button" class="btn btn-danger removeSpecification">Remove</button>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <p>No existing specifications found.</p>
-                    {% endif %}
-                </div>                
-            </div>
-
-
-            <div class="form-group" id="specificationSection">
-                <h2>Боја,Големина, нова цена</h2>
-                <div class="specification d-none">
-                    <div class="form-group">
-                        <label for="spec_color">Color:</label>
-                        <input type="text" class="form-control" name="spec_color[]" >
-                    </div>
-                    <div class="form-group">
-                        <label for="spec_size">Size:</label>
-                        <input type="text" class="form-control" name="spec_size[]" >
-                    </div>
-                    <div class="form-group">
-                        <label for="spec_new_price">New Price:</label>
-                        <input type="number" class="form-control" name="spec_new_price[]" >
-                    </div>
-                </div>
-
-                <button type="button" class="btn btn-primary" id="addSpecification">Add Specification</button>
-            </div>
-             <p>There are {{specification_counter}} specifications</p>
-            //-------
-
-            <!-- Hidden field to keep track of the specification counter
-            <input type="hidden" name="specificationCounterOld" id="specificationCounterOld" value={{specification_counter}}>
-         -->
-            
-
-            <input type="hidden" name="specificationCounter" id="specificationCounter" value={{specification_counter}}>
-
-            <!-- Specifications container -->
-            <div class="form-group" id="specificationSection">
-                <h2>New Specifications</h2>
-                <!-- New specifications will be added dynamically here -->
-            </div>
-
-
                <!-- Category dropdown -->
                <div class="form-group">
                 <label for="cid">Category:</label>
@@ -218,53 +158,7 @@
                 customDeliveryCostInput.style.display = 'none';
             }
         });
-    </script>
- <script>
-$(document).ready(function () {
-    // Counter to keep track of added specifications
-    var specificationCounterValue = getComputedStyle(document.documentElement).getPropertyValue('--specification-counter');
-    let specificationCounter = parseInt(specificationCounterValue);
-
-    // Event handler for adding a new specification
-    $("#addSpecification").on("click", function () {
-        // Clone the existing specification div
-        const newSpecification = $(".specification:first").clone();
-
-        // Clear the values from the cloned input fields
-        newSpecification.find("input").val("");
-
-        // Update the input names with the new counter
-        newSpecification.find("input").each(function () {
-            const currentName = $(this).attr("name");
-            const newName = currentName.replace(/\[\d+\]/, `[${specificationCounter}]`);
-            $(this).attr("name", newName);
-        });
-
-        // Increment the counter and update the hidden input field
-        specificationCounter++;
-        $("#specificationCounter").val(specificationCounter);
-
-        // Append the new specification
-        $("#specificationSection").append(newSpecification);
-
-        // Check if specificationCounter is greater than 1
-        if (specificationCounter > 0) {
-            // If specificationCounter is greater than 1, remove the 'd-none' class
-            newSpecification.removeClass("d-none");
-        }
-        console.log(specificationCounter + 'TEST ----------------- +');
-    });
-
-    // Event handler for removing a specification
-    $(document).on("click", ".removeSpecification", function () {
-        specificationCounter--;
-        $("#specificationCounter").val(specificationCounter.toString());
-        $(this).closest('.specification').remove();
-        console.log(specificationCounter + 'TEST ----------------- -');
-    });
-});
-
-</script>
-
+    </script>    
+    
 </body>
 </html>

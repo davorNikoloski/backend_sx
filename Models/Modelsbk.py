@@ -44,18 +44,17 @@ class Misc(db.Model):
 class Products(db.Model):
     __tablename__ = 'Products'
     pid = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), nullable=False)
-    info = db.Column(db.String(512), nullable=False)
+    name = db.Column(db.Text, nullable=False)
+    info = db.Column(db.Text, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     price_Discount = db.Column(db.Integer, nullable=True)
-    productNo = db.Column(db.String(128), nullable=True)
-    product_path = db.Column(db.String(256), nullable=True, default='default_path.jpg')
-    product_paths = db.Column(db.String(256), nullable=True, default='default_path.jpg')
+    productNo = db.Column(db.Text, nullable=True)
+    product_path = db.Column(db.Text, nullable=True, default='default_path.jpg')
+    product_paths = db.Column(db.Text, nullable=True, default='default_path.jpg')
 
-    description = db.Column(db.String(512), nullable=True)
-    description2 = db.Column(db.String(512), nullable=True)
-
-    brand = db.Column(db.String(40), nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    description2 = db.Column(db.Text, nullable=True)
+    brand = db.Column(db.Text, nullable=True)
 
     cid = db.Column(db.Integer, db.ForeignKey('Categories.cid'), nullable=True)
     scid = db.Column(db.Integer, db.ForeignKey('Subcategories.scid'), nullable=True)
@@ -65,15 +64,14 @@ class Products(db.Model):
     Categories = db.relationship('Categories', backref=db.backref('Products', lazy=True))
     Subcategories = db.relationship('Subcategories', backref=db.backref('Products', lazy=True))
 
-#SPECIFICATION-----------------------------------------------------------
 
+#SPECIFICATION
 class Specification(db.Model):
-    __tablename__ = 'Specification'
     id = db.Column(db.Integer, primary_key=True)
-    pid = db.Column(db.Integer, db.ForeignKey('Products.pid'), nullable=False)
+    pid = db.Column(db.Integer, db.ForeignKey('products.pid'), nullable=False)
     color = db.Column(db.String(255), nullable=True)
     size = db.Column(db.String(255), nullable=True)
-    new_price = db.Column(db.Integer, nullable=True)
+    new_price = db.Column(db.DECIMAL(10, 2), nullable=True)
 
     Products = db.relationship('Products', backref=db.backref('Specification', lazy=True))
 
@@ -86,4 +84,3 @@ class Auth(db.Model, UserMixin):
 
     def get_id(self):
         return str(self.id)
-

@@ -2,7 +2,6 @@ from Config.Config import app, db
 from flask import Flask, request, render_template, Blueprint, jsonify
 import os
 from werkzeug.exceptions import BadRequest
-import itertools
 
 from werkzeug.utils import secure_filename
 
@@ -14,7 +13,6 @@ csv_api = Blueprint('csv', __name__)
 from Models.Models import Categories
 from Models.Models import Subcategories
 from Models.Models import Products
-from Models.Models import Specification
 
 from Config.Common import custom_abort, crud_routes, build_params, get_user_from_jwt, convertor, hash_query_results, get_hash_info, get_random_alphanumerical, get_extension
 
@@ -93,7 +91,7 @@ def upload_csv_product():
         product_images = request.files.getlist('product_images[]')
         product_images_paths = []
         product_gifs_paths = []
-        
+
         if csv_file:
             # Read the CSV file using pandas
             csv_data = pd.read_csv(csv_file)
@@ -108,25 +106,18 @@ def upload_csv_product():
                 product_price_Discount = row['price_Discount']
                 product_available = row['available']
                 product_deliveryCost = row['deliveryCost']
+                product_description2 = row.get('description2', '')  # Handle optional field
 
                 product_productNo = row['productNo']
                 product_description = row.get('description', '')  # Handle optional field
-                product_description2 = row.get('description2', '')  # Handle optional field
-
                 product_brand = row.get('brand', '')  # Handle optional field
+                product_color = row.get('color', '')  # Handle optional field
                 product_cid = row['cid']  # Assuming 'cid' is provided in the CSV
                 product_scid = row['scid']  # Assuming 'scid' is provided in the CSV
 
                 # Check for and handle image paths in the CSV
                 gif_paths = row.get('product_path')
                 product_paths = row.get('product_paths').split(',')  # Assuming multiple paths are comma-separated
-
-                #SPECIFICATION
-
-                specification_colors = row.get('color', '').split(',') if 'color' in row else []
-                specification_sizes = row.get('size', '').split(',') if 'size' in row else []
-                specification_prices = str(row.get('new_price', '')).split(',') if 'new_price' in row else []
-
 
                 # Assuming 'allowed_file' and 'custom_abort' functions are defined elsewhere
 
@@ -140,7 +131,7 @@ def upload_csv_product():
 
                             # Extract the original file extension
                             original_extension = os.path.splitext(product_image.filename)[1]
-                            #print(original_extension)
+                            print(original_extension)
                             # Create the new filename with the random title and original extension
                             filename = f"{random_title}{original_extension}"
                             image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -154,8 +145,6 @@ def upload_csv_product():
 
                         else:
                             return custom_abort(400, "Invalid file format. Allowed formats: jpg, jpeg, png, gif")
-                    product_paths_str = ','.join(product_images_paths)
-
 
                 if 'product_gifs[]' in request.files:
                     product_gifs = request.files.getlist('product_gifs[]')
@@ -163,34 +152,34 @@ def upload_csv_product():
                         print("Uploaded file name:", product_gif.filename)
 
                         if allowed_file(product_gif.filename):
-                            #random_title = get_random_alphanumerical()
+                            random_title = get_random_alphanumerical()
                             random_giftitle = get_random_alphanumerical()
 
                             # Extract the original file extension
-                            original_extension = os.path.splitext(product_gif.filename)[1]
+                            original_extension = os.path.splitext(product_image.filename)[1]
 
-                            #image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                            # Create the new filename with the random title and original extension
+                            filename = f"{random_title}{original_extension}"
+                            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                             gif_filename = f"{random_giftitle}{original_extension}"
-                            gif_path = os.path.join(app.config['UPLOAD_FOLDER'], gif_filename)
+                            gif_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
                             if not os.path.exists(gif_path):
                                 print("Saving file to:", gif_path)
                                 product_gif.save(gif_path)
                             else:
                                 print(f"File '{filename}' already exists in the upload folder. Skipping upload.")
-                            product_gifs_paths.append(gif_filename)
+                            product_gifs_paths.append(filename)
 
                         else:
                             return custom_abort(400, "Invalid file format. Allowed formats: jpg, jpeg, png, gif")
-                    gif_paths = ','.join(product_gifs_paths)
-                #gif_paths = ','.join(product_gifs_paths)
-                #product_paths_str = ','.join(product_images_paths)
+
+                product_paths_str = ','.join(product_images_paths)
+                gif_paths = ','.join(product_gifs_paths)
 
                 # Query the 'Categories' and 'Subcategories' tables to find the associated category and subcategory
                 category = Categories.query.filter_by(cid=product_cid).first()
                 subcategory = Subcategories.query.filter_by(scid=product_scid).first()
-
-
 
                 if category and subcategory:
                     # If both category and subcategory exist, create a new product
@@ -205,36 +194,18 @@ def upload_csv_product():
                         description=product_description,
                         description2=product_description2,
                         brand=product_brand,
+                        color=product_color,
                         cid=category.cid,
                         scid=subcategory.scid,
-                        product_path=gif_paths,
+                        product_path=gif_filename,
                         product_paths=product_paths_str
                     )
                     print (product_paths)
                     db.session.add(new_product)
-                    db.session.commit()
                 else:
                     return f"Error: Category with cid={product_cid} or Subcategory with scid={product_scid} not found in the database."
-                p_pid = new_product.pid
-                max_length = max(len(specification_colors), len(specification_sizes), len(specification_prices))
 
-# Iterate over the range of the maximum length
-                for i in range(max_length):
-                    # Get the values at the current index or use 'Not Available' if the index is out of range
-                    color = specification_colors[i].strip() if i < len(specification_colors) else None
-                    size = specification_sizes[i].strip() if i < len(specification_sizes) else None
-                    new_price = int(specification_prices[i].strip()) if i < len(specification_prices) and specification_prices[i].strip() else None
-
-                    new_specification = Specification(
-                        pid=p_pid,
-                        color=color,
-                        size=size,
-                        new_price=new_price
-                    )
-                                    # Add the new specification record to the database session
-                    db.session.add(new_specification)
             db.session.commit()
-           
 
             return "CSV data uploaded and processed successfully."
 

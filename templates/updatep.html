@@ -29,6 +29,11 @@
                 <textarea class="form-control" id="description" name="description" required>{{ product.description }}</textarea>
             </div>
             <div class="form-group">
+                <label for="description2">Description2:</label>
+                <textarea class="form-control" id="description2" name="description2" required>{{ product.description2 }}</textarea>
+            </div>
+
+            <div class="form-group">
                 <label for="brand">Brand:</label>
                 <input type="text" class="form-control" id="brand" name="brand" value="{{ product.brand }}" required>
             </div>
@@ -43,6 +48,11 @@
                 <label for="price">Price:</label>
                 <input type="number" class="form-control" id="price" name="price" value="{{ product.price }}" required>
             </div>
+            <div class="form-group">
+                <label for="price_Discount">Discounted Price:</label>
+                <input type="number" class="form-control" id="price_Discount" name="price_Discount" value="{{ product.price_Discount }}">
+            </div>
+
             <div>
                 <label for="deliveryCost">Достава:</label>
                 <select name="deliveryCost" id="deliveryCost">
@@ -69,62 +79,37 @@
 
             <!-- Display existing specifications -->
             <div class="mt-4">
-                <div class="form-group">
-                    <h2>Постоечки спецификации</h2>
-                    {% if specifications %}
-                        <div class="specifications">
-                            {% for spec in specifications %}
-                                <div class="specification">
-                                    <div class="form-group">
-                                        <label for="spec_color">Боја:</label>
-                                        <input type="text" class="form-control" name="spec_color[]" value="{{ spec.color }}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="spec_size">Големина:</label>
-                                        <input type="text" class="form-control" name="spec_size[]" value="{{ spec.size }}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="spec_new_price">Нова цена:</label>
-                                        <input type="number" class="form-control" name="spec_new_price[]" value="{{ spec.new_price }}">
-                                        <button type="button" class="btn btn-danger removeSpecification">Remove</button>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <p>No existing specifications found.</p>
-                    {% endif %}
-                </div>                
+                <h2>Existing Specifications</h2>
+                {% if specifications %}
+                    <div class="specifications">
+                        {% for spec in specifications %}
+                            <div class="form-group">
+                                <label for="spec_color">Color:</label>
+                                <input type="text" class="form-control" name="spec_color[]" value="{{ spec.color }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="spec_size">Size:</label>
+                                <input type="text" class="form-control" name="spec_size[]" value="{{ spec.size }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="spec_new_price">New Price:</label>
+                                <input type="number" class="form-control" name="spec_new_price[]" value="{{ spec.new_price }}">
+                                <button type="button" class="btn btn-danger removeSpecification">Remove</button>
+
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No existing specifications found.</p>
+                {% endif %}
             </div>
-
-
-            <div class="form-group" id="specificationSection">
-                <h2>Боја,Големина, нова цена</h2>
-                <div class="specification d-none">
-                    <div class="form-group">
-                        <label for="spec_color">Color:</label>
-                        <input type="text" class="form-control" name="spec_color[]" >
-                    </div>
-                    <div class="form-group">
-                        <label for="spec_size">Size:</label>
-                        <input type="text" class="form-control" name="spec_size[]" >
-                    </div>
-                    <div class="form-group">
-                        <label for="spec_new_price">New Price:</label>
-                        <input type="number" class="form-control" name="spec_new_price[]" >
-                    </div>
-                </div>
-
-                <button type="button" class="btn btn-primary" id="addSpecification">Add Specification</button>
-            </div>
-             <p>There are {{specification_counter}} specifications</p>
-            //-------
-
-            <!-- Hidden field to keep track of the specification counter
-            <input type="hidden" name="specificationCounterOld" id="specificationCounterOld" value={{specification_counter}}>
-         -->
             
 
+            <div class="form-group mt-4">
+                <button type="button" class="btn btn-primary" id="addSpecification">Add Specification</button>
+            </div>
+
+            <!-- Hidden field to keep track of the specification counter -->
             <input type="hidden" name="specificationCounter" id="specificationCounter" value={{specification_counter}}>
 
             <!-- Specifications container -->
@@ -132,7 +117,6 @@
                 <h2>New Specifications</h2>
                 <!-- New specifications will be added dynamically here -->
             </div>
-
 
                <!-- Category dropdown -->
                <div class="form-group">
@@ -219,52 +203,73 @@
             }
         });
     </script>
- <script>
-$(document).ready(function () {
-    // Counter to keep track of added specifications
-    var specificationCounterValue = getComputedStyle(document.documentElement).getPropertyValue('--specification-counter');
-    let specificationCounter = parseInt(specificationCounterValue);
-
-    // Event handler for adding a new specification
-    $("#addSpecification").on("click", function () {
-        // Clone the existing specification div
-        const newSpecification = $(".specification:first").clone();
-
-        // Clear the values from the cloned input fields
-        newSpecification.find("input").val("");
-
-        // Update the input names with the new counter
-        newSpecification.find("input").each(function () {
-            const currentName = $(this).attr("name");
-            const newName = currentName.replace(/\[\d+\]/, `[${specificationCounter}]`);
-            $(this).attr("name", newName);
+    <script>
+        $(document).ready(function () {
+            // Counter to keep track of added specifications
+            let specificationCounter = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--specification-counter'));
+    
+            // Event handler for adding a new specification
+            $("#addSpecification").on("click", function () {
+                // Clone the existing specification div and update the input names
+                const newSpecification = $(".specification:first").clone();
+                newSpecification.find("input").each(function () {
+                    const currentName = $(this).attr("name");
+                    $(this).attr("name", currentName.replace("[]", `[${specificationCounter}]`));
+                    $(this).val("");  // Optionally clear the input values
+                });
+    
+                // Increment the counter and update the hidden input field
+                specificationCounter++;
+                $("#specificationCounter").val(specificationCounter);
+    
+                // Append the new specification
+                $("#specificationSection").append(newSpecification);
+    
+                // Check if specificationCounter is greater than 1
+                if (specificationCounter > 1) {
+                    // If specificationCounter is greater than 1, remove the 'd-none' class
+                    newSpecification.removeClass("d-none");
+                }
+    
+                // Add remove button to the new specification
+                addRemoveButton(newSpecification);
+            });
+    
+            // Function to add a remove button to a specification
+            function addRemoveButton(specification) {
+                const removeButton = $('<button type="button" class="btn btn-danger removeSpecification">Remove</button>');
+                removeButton.on("click", function () {
+                    specification.remove();
+                    specificationCounter--;
+                    $("#specificationCounter").val(specificationCounter);
+                });
+                specification.append(removeButton);
+            }
+    
+            // Initial removal button for existing specifications
+            $(".specifications .specification").each(function () {
+                addRemoveButton($(this));
+            });
+    
+            // Event handler for saving changes
+            $("#saveChanges").on("click", function () {
+                // You can implement the code to send the updated specifications to the Flask backend here
+                // Use AJAX or form submission to send the data
+                const formData = $("#yourFormId").serialize();
+                $.post("/api/secret/update_products", formData, function (response) {
+                    // Handle the response from the backend if needed
+                    console.log(response);
+                });
+            });
+    
+            // Event handler for input change (optional)
+            $(".specifications").on("input", "input", function () {
+                // You can implement the code to update the data in real-time
+                // For example, you can store the changed data in a JavaScript object
+            });
         });
-
-        // Increment the counter and update the hidden input field
-        specificationCounter++;
-        $("#specificationCounter").val(specificationCounter);
-
-        // Append the new specification
-        $("#specificationSection").append(newSpecification);
-
-        // Check if specificationCounter is greater than 1
-        if (specificationCounter > 0) {
-            // If specificationCounter is greater than 1, remove the 'd-none' class
-            newSpecification.removeClass("d-none");
-        }
-        console.log(specificationCounter + 'TEST ----------------- +');
-    });
-
-    // Event handler for removing a specification
-    $(document).on("click", ".removeSpecification", function () {
-        specificationCounter--;
-        $("#specificationCounter").val(specificationCounter.toString());
-        $(this).closest('.specification').remove();
-        console.log(specificationCounter + 'TEST ----------------- -');
-    });
-});
-
-</script>
-
+    </script>
+    
+    
 </body>
 </html>
