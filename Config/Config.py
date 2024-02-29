@@ -17,7 +17,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 #------------------------JWT CONFIG----------------------------------------
 app.secret_key = SECRET_KEY
-app.config['JWT_SECRET_KEY'] = '420420420'
+app.config['JWT_SECRET_KEY'] = '111'
 app.config['JWT_TOKEN_LOCATION'] = ['headers', 'query_string']
 app.config['JWT_BLACKLIST_ENABLED'] = True
 
