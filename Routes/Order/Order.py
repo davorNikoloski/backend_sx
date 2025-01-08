@@ -64,6 +64,7 @@ def process_order():
             email_html += f"<p><strong>Боја:</strong> {product['color']}</p>"
             email_html += f"<p><strong>Големина:</strong> {product['size']}</p>"
             email_html += f"<p><strong>Опис:</strong> {product['description']}</p>"
+            email_html += f"<p><strong>ID на продуктот:</strong> {product['productNo']}</p>"
             email_html += f"<p><strong>Количина:</strong> {product['quantity']}</p>"
             email_html += f"<p><strong>Цена на производот:</strong> {product['price']}</p>"
             email_html += "</div>"
@@ -95,7 +96,7 @@ def process_order():
         # Using redmail.send to send the email
         redmail.send(
             subject=subject,
-            receivers=['nikoloski.davorr@gmail.com', 'shopexmk1@gmail.com'],
+            receivers=['shopexmk1@gmail.com'],
             html=email_html,
             sender='pyFlaskDBTest@hotmail.com'
         )

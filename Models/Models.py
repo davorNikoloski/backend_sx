@@ -51,7 +51,7 @@ class Products(db.Model):
     productNo = db.Column(db.String(128), nullable=True)
     product_path = db.Column(db.String(256), nullable=True, default='default_path.jpg')
     product_paths = db.Column(db.String(256), nullable=True, default='default_path.jpg')
-
+    main_image = db.Column(db.String(256), nullable=True, default='default_path.jpg')
     description = db.Column(db.String(512), nullable=True)
     description2 = db.Column(db.String(512), nullable=True)
 

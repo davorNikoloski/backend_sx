@@ -9,6 +9,38 @@
         document.documentElement.style.setProperty('--specification-counter', '{{ specification_counter }}');
     </script>
 </head>
+<style>
+    .existing-product-image-container {
+        position: relative;
+        margin: 5px;
+        cursor: pointer;
+    }
+
+    .existing-product-image {
+        max-width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        transition: border-color 0.3s;
+    }
+
+    .existing-product-image.selected {
+        border-color: #007bff;
+    }
+
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 123, 255, 0.5); /* Highlight color */
+        display: none;
+    }
+
+    .existing-product-image-container:hover .image-overlay {
+        display: block;
+    }
+</style>
 
 <body>
 
@@ -17,19 +49,19 @@
         <form action="/api/secret/update_products" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="pid" value="{{ product.pid }}">
             <div class="form-group">
-                <label for="name">Name:</label>
+                <label for="name">Име:</label>
                 <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
             </div>
             <div class="form-group">
-                <label for="info">Info:</label>
+                <label for="info">Спецификации за продуктот:</label>
                 <textarea class="form-control" id="info" name="info" required>{{ product.info }}</textarea>
             </div>
             <div class="form-group">
-                <label for="description">Description:</label>
+                <label for="description">Опис на продуктот:</label>
                 <textarea class="form-control" id="description" name="description" required>{{ product.description }}</textarea>
             </div>
             <div class="form-group">
-                <label for="brand">Brand:</label>
+                <label for="brand">Брнд:</label>
                 <input type="text" class="form-control" id="brand" name="brand" value="{{ product.brand }}" required>
             </div>
 
@@ -40,30 +72,53 @@
             </select>
             
             <div class="form-group">
-                <label for="price">Price:</label>
+                <label for="price">Цена:</label>
                 <input type="number" class="form-control" id="price" name="price" value="{{ product.price }}" required>
+            </div>
+	    <div class="form-group">
+                <label for="price_Discount">Цена пред попуст:</label>
+                <input type="number" class="form-control" id="price_Discount" name="price_Discount" value="{{ product.price_Discount }}" required>
             </div>
             <div>
                 <label for="deliveryCost">Достава:</label>
                 <select name="deliveryCost" id="deliveryCost">
-                    <option value=150>150</option>
-                    <option value=0>Бесплатна Достава</option>
-                    <option value="custom">Внеси цена</option>
-
+                    <option value=150 {% if product.deliveryCost == 150 %} selected {% endif %}>150</option>
+                    <option value=0 {% if product.deliveryCost == 0 %} selected {% endif %}>Бесплатна Достава</option>
+                    <option value="custom" {% if product.deliveryCost not in [150, 0] %} selected {% endif %}>Внеси цена</option>
                 </select>
-                <input type="number" id="customDeliveryCost" name="customDeliveryCost" placeholder="Внеси цена" style="display: none;">
-
+                <input type="number" id="customDeliveryCost" name="customDeliveryCost" placeholder="Внеси цена" style="{% if product.deliveryCost not in [150, 0] %}display: block;{% else %}display: none;{% endif %}" value="{{ product.deliveryCost }}">
             </div>
             <div class="form-group">
-                <label for="productNo">Product Number:</label>
+                <label for="productNo">ID на продуктот:</label>
                 <input type="text" class="form-control" id="productNo" name="productNo" value="{{ product.productNo }}" required>
             </div>
             <div class="form-group">
-                <label for="productImages">Product Images:</label>
+                <label for="productImages">Слики за продуктот:</label>
                 <input type="file" class="form-control-file" id="productImages" name="product_images[]" value="product_paths" multiple accept=".jpg, .jpeg, .png">
             </div>
+              <div class="form-group">
+                <label for="existingProductImages">Постоечки слики од продуктот:</label>
+                <div id="existingProductImagesContainer" class="d-flex flex-wrap">
+                    {% if product.product_paths %}
+                        {% for image in product.product_paths.split(',') %}
+                            <div class="col-2 mb-3">
+                                <div class="position-relative">
+                                    <img src="/uploads/{{ image }}" alt="{{ image }}" class="existing-product-image img-fluid" onclick="selectImage(this)">
+                                    <input type="hidden" name="selectedImage" id="selectedImage" value="{{ image }}">
+
+                                    <div class="image-overlay"></div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Нема слики за продуктот.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+
             <div class="form-group">
-                <label for="productImage">Main Product Image:</label>
+                <label for="productImage">GIF за продуктот:</label>
                 <input type="file" class="form-control-file" id="productImage" name="product_path" value="product_path" accept=".jpg, .jpeg, .png, .gif">
             </div>
 
@@ -102,24 +157,22 @@
                 <h2>Боја,Големина, нова цена</h2>
                 <div class="specification d-none">
                     <div class="form-group">
-                        <label for="spec_color">Color:</label>
+                        <label for="spec_color">Боја:</label>
                         <input type="text" class="form-control" name="spec_color[]" >
                     </div>
                     <div class="form-group">
-                        <label for="spec_size">Size:</label>
+                        <label for="spec_size">Големина:</label>
                         <input type="text" class="form-control" name="spec_size[]" >
                     </div>
                     <div class="form-group">
-                        <label for="spec_new_price">New Price:</label>
+                        <label for="spec_new_price">Нова цена:</label>
                         <input type="number" class="form-control" name="spec_new_price[]" >
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-primary" id="addSpecification">Add Specification</button>
+                <button type="button" class="btn btn-primary" id="addSpecification">Додади спецификација</button>
             </div>
-             <p>There are {{specification_counter}} specifications</p>
-            //-------
-
+             <p>Има {{specification_counter}} спецификации</p>
             <!-- Hidden field to keep track of the specification counter
             <input type="hidden" name="specificationCounterOld" id="specificationCounterOld" value={{specification_counter}}>
          -->
@@ -167,6 +220,45 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var deliveryCostSelect = document.getElementById('deliveryCost');
+            var customDeliveryCostInput = document.getElementById('customDeliveryCost');
+        
+            deliveryCostSelect.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    customDeliveryCostInput.style.display = 'block';
+                } else {
+                    customDeliveryCostInput.style.display = 'none';
+                }
+            });
+        
+            // Trigger the change event on page load to set the initial visibility
+            deliveryCostSelect.dispatchEvent(new Event('change'));
+        });
+        </script>
+
+    <script>
+        function selectImage(imgElement) {
+            // Deselect all previously selected images
+            document.querySelectorAll('.existing-product-image.selected').forEach(function (img) {
+                img.classList.remove('selected');
+            });
+    
+            // Select the clicked image
+            imgElement.classList.add('selected');
+    
+            // Get the selected image name
+            let selectedImage = imgElement.alt;
+    
+            // Set the selected image value to the hidden input field
+            document.getElementById('selectedImage').value = selectedImage;
+    
+            // Log the selected image name (you can modify this part based on your requirements)
+            console.log('Selected Image:', selectedImage);
+        }
+    </script>
 
     <!-- Add JavaScript to dynamically update the subcategory dropdown based on the selected category -->
     <script>

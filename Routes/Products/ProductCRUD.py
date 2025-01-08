@@ -24,6 +24,7 @@ class Product():
             "productNo": "String",
             "product_path": "String",
             "product_paths": "String",
+            "main_image": "String",
             "available": "Boolean", 
             "deliveryCost": "Integer", 
 
@@ -45,23 +46,31 @@ class Product():
         print(data)
         product_path = None
         product_paths = []
+        main_pr_image = request.files['main_image']
+
+        product = Products()
 
         # MULTIPLE IMAGES
         if 'product_images[]' in request.files:
             product_images = request.files.getlist('product_images[]')
             print(product_images[0])
             for product_image in product_images:
+                
                 print("Uploaded file name:", product_image.filename)
 
                 if self.allowed_file(product_image.filename):
                     random_title = get_random_alphanumerical()
-
+                    
                     # Extract the original file extension
                     original_extension = os.path.splitext(product_image.filename)[1]
                     print(original_extension)
                     # Create the new filename with the random title and original extension
                     filename = f"{random_title}{original_extension}"
+                    if product_image.filename == main_pr_image.filename:
+                        print("THEY ARE THE SAME PICTURE HURRAY")
+                        product.main_image = filename
                     image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    print('test - filename - main_image ' + str(product_image.filename) + '----' + str(main_pr_image))
 
                     if not os.path.exists(image_path):
                         print("Saving file to:", image_path)
@@ -117,14 +126,13 @@ class Product():
             if key not in data:
                 return custom_abort(400, "Required key is missing - " + key + "-----")
         
-        secondary_keys = ["description", "brand", "available", "deliveryCost"]
+        secondary_keys = ["description", "brand", "available"]
 
         for u_key in secondary_keys:
             if u_key not in data:
                 return print("Недостасува : " + u_key)
 
 
-        product = Products()
 
         delivery_cost = request.form.get('deliveryCost')
 
@@ -138,6 +146,7 @@ class Product():
                 custom_delivery_cost = int(custom_delivery_cost)
                 # Assign the converted value to delivery_cost
                 delivery_cost = custom_delivery_cost
+                product.deliveryCost = delivery_cost
             except ValueError:
                 # Handle the case where the custom delivery cost is not a valid integer
                 return jsonify({'error': 'Invalid custom delivery cost'}), 400
@@ -237,6 +246,7 @@ class Product():
         retSpec = None
         product_path = request.files.get('product_path')
         product_images = request.files.getlist('product_images[]')
+        selected_image = request.form.get('selectedImage')
 
         if "pid" not in data:
             return custom_abort(400, "Required key is missing from the request - pid")
@@ -306,6 +316,8 @@ class Product():
                 
 
                 # Update product specifications
+
+        [setattr(product, key, data[key]) for key in self.table_keys if key in data]
         # After setting other attributes, handle 'available' checkbox input
         delivery_cost = request.form.get('deliveryCost')
 
@@ -319,11 +331,12 @@ class Product():
                 custom_delivery_cost = int(custom_delivery_cost)
                 # Assign the converted value to delivery_cost
                 delivery_cost = custom_delivery_cost
+                product.deliveryCost = delivery_cost
             except ValueError:
                 # Handle the case where the custom delivery cost is not a valid integer
                 return jsonify({'error': 'Invalid custom delivery cost'}), 400
-    
-        [setattr(product, key, data[key]) for key in self.table_keys if key in data]
+
+
         if 'available' in data:
             available = data['available']  # Convert to lowercase
             if available == '1':
@@ -333,8 +346,13 @@ class Product():
             else:
                 # Handle invalid input (if needed)
                 return custom_abort(400, "Invalid value for 'available' field")
+            
+        if selected_image:
+            print('selected_image: ' + str(selected_image))
+            product.main_image = selected_image
+            print('selected_image: ' + str(product.main_image))
         db.session.commit()
- 
+
 
         product_id = product.pid
         try:
@@ -370,9 +388,9 @@ class Product():
                             or existing_specification.new_price != new_price
                         ):
                             # Update existing specification
-                            print('test' + existing_specification.color + '--' + color)
-                            existing_specification.color = color
-                            existing_specification.size = size
+                            # print('test' + existing_specification.color + '--' + color)
+                            existing_specification.color = color if color else None
+                            existing_specification.size = size if size else None
                             existing_specification.new_price = int(new_price) if new_price else None
                     else:
                         # Add new specification
